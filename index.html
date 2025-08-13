@@ -1,108 +1,549 @@
 <!DOCTYPE html>
-<html>
-  <head>
-    <title>Muhammad Yahya</title>
-    
-    <!-- META STUFFS -->
-    <meta name="viewport" content="width=device-width, initial-scale=1" >
-    <meta name="description" content="Muhammad Yahya edits Wikipedia, writes blogs, and studies mathematics." >
-    <meta property="og:title" content="Muhammad Yahya" >
-        <meta
-            property="og:description"
-            content="Muhammad Yahya edits Wikipedia, writes blogs, and studies mathematics." >
-        <meta property="og:image" content="https://upload.wikimedia.org/wikipedia/commons/8/81/Muhammad_Yahya_at_Wikimania_Bangladesh_2022.jpg" >
-        <meta property="og:url" content="https://www.yahyabd.xyz" >
-        <meta name="twitter:title" content="Muhammad Yahya" >
-        <meta
-            name="twitter:description"
-            content="Muhammad Yahya edits Wikipedia, writes blogs, and studies mathematics." >
-        <meta name="twitter:image" content="https://upload.wikimedia.org/wikipedia/commons/8/81/Muhammad_Yahya_at_Wikimania_Bangladesh_2022.jpg" >
-        <meta name="twitter:card" content="summary_large_image" >
-        <meta name="twitter:site" content="@yahya_wiki" >
-	
-        <!-- Icons -->
-        <link rel="icon" href="https://upload.wikimedia.org/wikipedia/commons/c/cc/Eo_circle_indigo_letter-y.svg" sizes="32x32" >
-        <link rel="icon" href="https://upload.wikimedia.org/wikipedia/commons/c/cc/Eo_circle_indigo_letter-y.svg" sizes="192x192" >
-        <link rel="apple-touch-icon" href="https://upload.wikimedia.org/wikipedia/commons/c/cc/Eo_circle_indigo_letter-y.svg" >
-        <meta name="msapplication-TileImage" content="https://upload.wikimedia.org/wikipedia/commons/c/cc/Eo_circle_indigo_letter-y.svg" >
-        
-        <!-- STYLES  -->
-    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<html lang="en" class="scroll-smooth">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Muhammad Yahya - Wikimedia Leader & Advocate</title>
+
+    <!-- SEO CRAPS -->
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Muhammad Yahya edits Wikipedia, writes blogs, and studies mathematics.">
+    <meta property="og:title" content="Muhammad Yahya">
+    <meta property="og:description" content="Muhammad Yahya edits Wikipedia, writes blogs, and studies mathematics.">
+    <meta property="og:image"
+        content="https://upload.wikimedia.org/wikipedia/commons/8/81/Muhammad_Yahya_at_Wikimania_Bangladesh_2022.jpg">
+    <meta property="og:url" content="https://www.yahyabd.xyz">
+    <meta name="twitter:title" content="Muhammad Yahya">
+    <meta name="twitter:description" content="Muhammad Yahya edits Wikipedia, writes blogs, and studies mathematics.">
+    <meta name="twitter:image"
+        content="https://upload.wikimedia.org/wikipedia/commons/8/81/Muhammad_Yahya_at_Wikimania_Bangladesh_2022.jpg">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:site" content="@yahya_wiki">
+
+    <!-- Icons -->
+    <link rel="icon" href="https://upload.wikimedia.org/wikipedia/commons/c/cc/Eo_circle_indigo_letter-y.svg"
+        sizes="32x32">
+    <link rel="icon" href="https://upload.wikimedia.org/wikipedia/commons/c/cc/Eo_circle_indigo_letter-y.svg"
+        sizes="192x192">
+    <link rel="apple-touch-icon"
+        href="https://upload.wikimedia.org/wikipedia/commons/c/cc/Eo_circle_indigo_letter-y.svg">
+    <meta name="msapplication-TileImage"
+        content="https://upload.wikimedia.org/wikipedia/commons/c/cc/Eo_circle_indigo_letter-y.svg">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <script src="https://unpkg.com/lucide-react@0.292.0/dist/umd/lucide-react.js"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        'light-bg': '#f8fafc',
+                        'light-text': '#0f172a',
+                        'light-primary': '#10b981',
+                        'light-secondary': '#3b82f6',
+                        'light-card': '#ffffff',
+                        'dark-bg': '#0b1120',
+                        'dark-text': '#e2e8f0',
+                        'dark-primary': '#34d399',
+                        'dark-secondary': '#60a5fa',
+                        'dark-card': '#1e293b',
+                    }
+                }
+            }
+        }
+    </script>
     <style>
-      body {
-        font-family: 'Quicksand', sans-serif;
-        background-color: lightgray;
-      }
-      h1 {
-        font-size: 36px;
-        text-align: center;
-        color: steelblue;
-        margin-top: 50px;
-      }
-      p {
-        text-align: center;
-        font-size: 18px;
-        color: dimgray;
-        margin: 20px;
-      }
-      img {
-        display: block;
-        margin: 50px auto;
-        width: 50%;
-        border-radius: 50%;
-      }
-      .copyright {
-        position: absolute;
-        bottom: 5px;
-        right: 5px;
-        background-color: lightgray;
-        border-radius: 20px;
-        padding: 5px 10px;
-        font-size: 7px;
-        color: dimgray;
-      }
-      ul {
-        list-style: none;
-        padding: 0;
-        text-align: center;
-        margin: 10px 0 50px;
-      }
-      li {
-        display: inline-block;
-        margin: 10px;
-      }
-      a {
-        text-decoration: none;
-        color: steelblue;
-      }
-      a:hover {
-        color: lightblue;
-      }
-      .fab {
-        font-size: 20px;
-        margin-right: 10px;
-      }
-      .site-copyright {
-        font-size: 12px;
-      }
+        body {
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        .section-transition {
+            transition: background-color 0.3s ease-in-out, color 0.3s ease-in-out;
+        }
     </style>
-  </head>
-  <body>
-    <main>
-      <h1>Hello there traveller!</h1>
-      <p>My name is Muhammad Yahya.</p>
-      <p>I study mathematics, <a href="https://bn.wikipedia.org/wiki/User:Yahya">edit Wikipedia</a> and write <a href="https://blog.yahyabd.xyz">blogs</a>.</p>
-      <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/8/81/Muhammad_Yahya_at_Wikimania_Bangladesh_2022.jpg/457px-Muhammad_Yahya_at_Wikimania_Bangladesh_2022.jpg" alt="Muhammad Yahya at Wikimania Bangladesh 2022">
-      <p class="copyright">Image Credit: Shah Emtiaz/CC-BY-SA 4.0</p>
+</head>
+
+<body class="bg-light-bg text-light-text dark:bg-dark-bg dark:text-dark-text font-sans section-transition">
+
+    <!-- Header & Navigation -->
+    <header class="bg-light-card/80 dark:bg-dark-card/80 backdrop-blur-sm sticky top-0 z-50 shadow-sm">
+        <nav class="container mx-auto px-6 py-4 flex justify-between items-center">
+            <a href="#home" class="text-xl font-bold text-light-primary dark:text-dark-primary">Muhammad Yahya</a>
+            <div class="hidden md:flex items-center space-x-6">
+                <a href="#about"
+                    class="hover:text-light-primary dark:hover:text-dark-primary transition-colors">About</a>
+                <a href="#projects"
+                    class="hover:text-light-primary dark:hover:text-dark-primary transition-colors">Projects</a>
+                <a href="#events"
+                    class="hover:text-light-primary dark:hover:text-dark-primary transition-colors">Events</a>
+                <a href="#blog" class="hover:text-light-primary dark:hover:text-dark-primary transition-colors">Blog</a>
+                <a href="#contact"
+                    class="hover:text-light-primary dark:hover:text-dark-primary transition-colors">Contact</a>
+            </div>
+            <div class="flex items-center">
+                <button id="theme-toggle"
+                    class="p-2 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors">
+                    <svg id="theme-toggle-dark-icon" class="hidden h-5 w-5" fill="currentColor" viewBox="0 0 20 20">
+                        <path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"></path>
+                    </svg>
+                    <svg id="theme-toggle-light-icon" class="hidden h-5 w-5" fill="currentColor" viewBox="0 0 20 20">
+                        <path
+                            d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 5.05a1 1 0 00-1.414 1.414l.707.707a1 1 0 001.414-1.414l-.707-.707zM3 11a1 1 0 100-2H2a1 1 0 100 2h1z">
+                        </path>
+                    </svg>
+                </button>
+                <button id="mobile-menu-button"
+                    class="md:hidden ml-4 p-2 rounded-md hover:bg-gray-200 dark:hover:bg-gray-700">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                        xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M4 6h16M4 12h16m-7 6h7"></path>
+                    </svg>
+                </button>
+            </div>
+        </nav>
+        <!-- Mobile Menu -->
+        <div id="mobile-menu" class="hidden md:hidden px-6 pb-4 flex flex-col space-y-4">
+            <a href="#about"
+                class="block hover:text-light-primary dark:hover:text-dark-primary transition-colors">About</a>
+            <a href="#projects"
+                class="block hover:text-light-primary dark:hover:text-dark-primary transition-colors">Projects</a>
+            <a href="#events"
+                class="block hover:text-light-primary dark:hover:text-dark-primary transition-colors">Events</a>
+            <a href="#blog"
+                class="block hover:text-light-primary dark:hover:text-dark-primary transition-colors">Blog</a>
+            <a href="#contact"
+                class="block hover:text-light-primary dark:hover:text-dark-primary transition-colors">Contact</a>
+        </div>
+    </header>
+
+    <main class="container mx-auto px-6 py-8 md:py-16">
+        <!-- Home Section -->
+        <section id="home"
+            class="min-h-[80vh] flex flex-col md:flex-row items-center justify-center text-center md:text-left">
+            <div class="md:w-3/5">
+                <h1 class="text-4xl md:text-6xl font-bold tracking-tight">
+                    Hi, I'm Muhammad Yahya
+                </h1>
+                <p class="mt-4 text-lg md:text-xl text-slate-600 dark:text-slate-300">
+                    A leader in the global <span
+                        class="text-light-primary dark:text-dark-primary font-semibold">Wikimedia movement</span>,
+                    dedicated to building bridges and empowering underrepresented communities through open knowledge.
+                </p>
+                <div class="mt-8 flex justify-center md:justify-start space-x-4">
+                    <a href="#contact"
+                        class="bg-light-primary text-white dark:bg-dark-primary dark:text-dark-bg font-bold py-3 px-6 rounded-lg hover:opacity-90 transition-opacity">Get
+                        in Touch</a>
+                    <a href="#projects"
+                        class="bg-light-secondary text-white dark:bg-dark-secondary dark:text-dark-bg font-bold py-3 px-6 rounded-lg hover:opacity-90 transition-opacity">View
+                        My Work</a>
+                </div>
+            </div>
+            <div class="md:w-2/5 mt-10 md:mt-0 flex justify-center">
+                <div
+                    class="w-64 h-64 md:w-80 md:h-80 bg-slate-200 dark:bg-slate-700 rounded-full flex items-center justify-center overflow-hidden">
+                    <img src="https://static.wikitide.net/bnwikiwiki/thumb/f/fc/Yahya_with_Jimmy_Wales.JPG/800px-Yahya_with_Jimmy_Wales.JPG"
+                        alt="Muhammad Yahya with Wikipedia co-founder Jimmy Wales"
+                        class="w-full h-full object-cover scale-125 translate-x-6">
+                </div>
+            </div>
+            </div>
+        </section>
+
+        <!-- About Me Section -->
+        <section id="about" class="py-16 md:py-24 section-transition">
+            <h2 class="text-3xl md:text-4xl font-bold text-center mb-12">About Me</h2>
+            <div class="grid md:grid-cols-5 gap-12 items-start">
+                <div class="md:col-span-3">
+                    <h3 class="text-2xl font-semibold mb-4 text-light-primary dark:text-dark-primary">Biography</h3>
+                    <p class="mb-4 text-slate-600 dark:text-slate-300 leading-relaxed">
+                        I am a highly active and respected leader within the global Wikimedia movement, driven by a
+                        passion for open knowledge and community empowerment. My journey has led me to take on several
+                        key roles, including serving as a <span class="font-semibold"><a
+                                href="https://meta.wikimedia.org/wiki/Stewards" target="_blank"
+                                rel="noopener noreferrer"
+                                class="text-light-secondary dark:text-dark-secondary font-medium underline">Wikimedia
+                                steward</a></span>, and an administrator on major projects like <span
+                            class="font-semibold">Wikipedia, Wikidata, and Wikivoyage</span>.
+                    </p>
+                    <p class="mb-4 text-slate-600 dark:text-slate-300 leading-relaxed">
+                        As the Founder and (co)lead of <a href="https://meta.wikimedia.org/wiki/Bangla_WikiConnect"
+                            target="_blank" rel="noopener noreferrer"
+                            class="text-light-secondary dark:text-dark-secondary font-medium underline">Bangla
+                            WikiConnect</a>, I focus on connecting and supporting Bangla-speaking Wikimedia
+                        contributors. Locally, I serve as the Chief Coordinator for the Dhaka Wikimedia Community,
+                        organizing outreach programs, edit-a-thons, and capacity-building initiatives. I am also
+                        employed as a Young Professional – Program Support at Wikimedia Bangladesh, contributing to
+                        program planning, coordination, and community engagement at the national level.
+                    </p>
+                    <p class="text-slate-600 dark:text-slate-300 leading-relaxed">
+                        Academically, I hold a degree in Mathematics and am currently expanding my expertise by pursuing
+                        a Postgraduate Diploma in Business Information Technology from the prestigious Bangladesh
+                        University of Engineering and Technology (BUET).
+                    </p>
+                </div>
+                <div
+                    class="md:col-span-2 relative overflow-hidden bg-gradient-to-r from-light-primary/10 to-transparent dark:from-dark-primary/10 dark:to-transparent p-8 rounded-xl shadow-lg border-l-4 border-light-primary dark:border-dark-primary">
+                    <div class="flex items-start space-x-4">
+                        <!-- Icon -->
+                        <div class="flex-shrink-0">
+                            <svg class="w-10 h-10 text-light-primary dark:text-dark-primary" fill="currentColor"
+                                viewBox="0 0 24 24">
+                                <path
+                                    d="M12 2a10 10 0 0 0-3.16 19.46c.5.09.68-.22.68-.48 0-.24-.01-.87-.01-1.71-2.77.6-3.36-1.34-3.36-1.34-.45-1.16-1.11-1.47-1.11-1.47-.91-.62.07-.61.07-.61 1.01.07 1.54 1.04 1.54 1.04.9 1.53 2.36 1.09 2.94.84.09-.65.35-1.09.64-1.34-2.21-.25-4.55-1.1-4.55-4.92 0-1.09.39-1.98 1.03-2.68-.1-.25-.45-1.26.1-2.63 0 0 .84-.27 2.75 1.02A9.56 9.56 0 0 1 12 6.8a9.6 9.6 0 0 1 2.5.34c1.91-1.29 2.75-1.02 2.75-1.02.55 1.37.2 2.38.1 2.63.64.7 1.03 1.59 1.03 2.68 0 3.83-2.34 4.66-4.57 4.91.36.31.69.91.69 1.83 0 1.32-.01 2.38-.01 2.7 0 .27.18.58.69.48A10 10 0 0 0 12 2z" />
+                            </svg>
+                        </div>
+
+                        <!-- Text Content -->
+                        <div>
+                            <h3 class="text-2xl font-bold mb-3 text-light-primary dark:text-dark-primary">Mission</h3>
+                            <blockquote
+                                class="text-slate-600 dark:text-slate-300 italic border-l-4 border-light-primary dark:border-dark-primary pl-4">
+                                My mission is to <span
+                                    class="font-semibold text-light-primary dark:text-dark-primary">bridge knowledge
+                                    gaps</span>
+                                and ensure digital platforms are inclusive, representative, and rooted in the principles
+                                of open knowledge. I am committed to advocating for
+                                <span class="font-semibold">underrepresented communities</span> within the Wikimedia
+                                ecosystem, fostering
+                                collaboration, and building sustainable, freely accessible knowledge resources that
+                                empower everyone and contribute to a
+                                <span class="font-semibold">more equitable world</span>.
+                            </blockquote>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Projects Section -->
+        <section id="projects" class="py-16 md:py-24 section-transition">
+            <h2 class="text-3xl md:text-4xl font-bold text-center mb-12">Core Projects & Initiatives</h2>
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- Project Card 1: Bangla WikiConnect -->
+                <div
+                    class="bg-light-card dark:bg-dark-card p-6 rounded-lg shadow-md hover:shadow-xl transform hover:-translate-y-1 transition-all">
+                    <h3 class="text-xl font-bold mb-2 text-light-primary dark:text-dark-primary">Bangla WikiConnect</h3>
+                    <p class="text-slate-600 dark:text-slate-300">Founder and co-lead of a regional hub designed to
+                        connect, empower, and amplify the work of Bangla-speaking Wikimedia contributors across the
+                        globe. <a href="https://meta.wikimedia.org/wiki/Bangla_WikiConnect" target="_blank"
+                            rel="noopener noreferrer"
+                            class="text-light-secondary dark:text-dark-secondary font-medium underline">Explore the
+                            project</a>.</p>
+                </div>
+                <!-- Project Card 2: Wiki Loves Earth -->
+                <div
+                    class="bg-light-card dark:bg-dark-card p-6 rounded-lg shadow-md hover:shadow-xl transform hover:-translate-y-1 transition-all">
+                    <h3 class="text-xl font-bold mb-2 text-light-primary dark:text-dark-primary">Wiki Loves Earth 2025
+                    </h3>
+                    <p class="text-slate-600 dark:text-slate-300">Led the organization of the prestigious international
+                        photo contest in Bangladesh, coordinating with global teams to celebrate our natural heritage.
+                        <a href="https://commons.wikimedia.org/wiki/Commons:Wiki_Loves_Earth_2025_in_Bangladesh"
+                            target="_blank" rel="noopener noreferrer"
+                            class="text-light-secondary dark:text-dark-secondary font-medium underline">Visit the
+                            project page</a>.</p>
+                </div>
+                <!-- Project Card 3: Dhaka Wikimedia Community -->
+                <div
+                    class="bg-light-card dark:bg-dark-card p-6 rounded-lg shadow-md hover:shadow-xl transform hover:-translate-y-1 transition-all">
+                    <h3 class="text-xl font-bold mb-2 text-light-primary dark:text-dark-primary">Dhaka Wikimedia
+                        Community</h3>
+                    <p class="text-slate-600 dark:text-slate-300">As Chief Coordinator, I lead local outreach,
+                        edit-a-thons, and workshops to grow our contributor base and improve local content on Wikimedia
+                        projects. <a href="https://meta.wikimedia.org/wiki/Dhaka_Wikimedia_Community" target="_blank"
+                            rel="noopener noreferrer"
+                            class="text-light-secondary dark:text-dark-secondary font-medium underline">Get
+                            involved</a>.</p>
+                </div>
+                <!-- Project Card 4: WikiVoyage -->
+                <div
+                    class="bg-light-card dark:bg-dark-card p-6 rounded-lg shadow-md hover:shadow-xl transform hover:-translate-y-1 transition-all">
+                    <h3 class="text-xl font-bold mb-2 text-light-primary dark:text-dark-primary">Bangla Wikivoyage
+                        Article Writing Contests</h3>
+                    <p class="text-slate-600 dark:text-slate-300">Organized large-scale article writing contests on
+                        Bangla Wikivoyage in 2024 and September 2025 (marking International Tourism Day), significantly
+                        enhancing the project’s quality and elevating it to an extraordinary level.</p>
+                </div>
+                <!-- Project Card 5: Small Wiki Support --><!--
+                 <div class="bg-light-card dark:bg-dark-card p-6 rounded-lg shadow-md hover:shadow-xl transform hover:-translate-y-1 transition-all">
+                    <h3 class="text-xl font-bold mb-2 text-light-primary dark:text-dark-primary">Small Wiki Support</h3>
+                    <p class="text-slate-600 dark:text-slate-300">Providing vital support to emerging wikis like Wikivoyage and Wiktionary through content creation, translation, and community guidance.</p>
+                </div>-->
+                <!-- Project Card 6: Administrator Roles -->
+                <div
+                    class="bg-light-card dark:bg-dark-card p-6 rounded-lg shadow-md hover:shadow-xl transform hover:-translate-y-1 transition-all">
+                    <h3 class="text-xl font-bold mb-2 text-light-primary dark:text-dark-primary">Sysop & Steward</h3>
+                    <p class="text-slate-600 dark:text-slate-300">Serving as a steward for global Wikimedia and an
+                        administrator (sysop) on Wikipedia, Wikidata, and Wikivoyage to ensure project integrity.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Events & Talks Section -->
+        <section id="events" class="py-16 md:py-24 section-transition">
+            <h2 class="text-3xl md:text-4xl font-bold text-center mb-12">Events & Engagements</h2>
+            <div class="max-w-3xl mx-auto">
+                <div
+                    class="space-y-8 relative before:absolute before:inset-0 before:ml-5 before:w-0.5 before:bg-slate-200 dark:before:bg-slate-700">
+
+                    <!-- Event Item 1: Wikimania Nairobi -->
+                    <div class="relative flex items-start space-x-6">
+                        <div
+                            class="z-10 flex items-center justify-center w-10 h-10 bg-light-secondary dark:bg-dark-secondary rounded-full">
+                            <!-- Globe Icon -->
+                            <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M12 2a10 10 0 100 20 10 10 0 000-20zm0 0c2.21 0 4 4.48 4 10s-1.79 10-4 10-4-4.48-4-10 1.79-10 4-10zm0 0v20">
+                                </path>
+                            </svg>
+                        </div>
+                        <div>
+                            <h4 class="font-bold text-lg">Wikimania 2025 – Nairobi, Kenya</h4>
+                            <p class="text-slate-600 dark:text-slate-300">
+                                Attended the flagship global Wikimedia conference on a full scholarship to represent my
+                                community, share insights, and collaborate with Wikimedians worldwide.
+                                Also served as a member of the <strong>Scholarship Working Committee</strong>, helping
+                                review and select participants from across the globe.
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Event Item 2: Bangla WikiConference -->
+                    <div class="relative flex items-start space-x-6">
+                        <div
+                            class="z-10 flex items-center justify-center w-10 h-10 bg-light-secondary dark:bg-dark-secondary rounded-full">
+                            <!-- Users/Community Icon -->
+                            <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M17 20h5v-2a4 4 0 00-3-3.87M9 20h6M4 20h5v-2a4 4 0 013-3.87M7 10a4 4 0 110-8 4 4 0 010 8zm10 0a4 4 0 110-8 4 4 0 010 8z">
+                                </path>
+                            </svg>
+                        </div>
+                        <div>
+                            <h4 class="font-bold text-lg">Bangla WikiConference 2024 – Gazipur, Bangladesh</h4>
+                            <p class="text-slate-600 dark:text-slate-300">
+                                Participated in the international conference bringing together Bangla-speaking Wikimedia
+                                contributors from across the globe. Served as <strong>Communications Manager</strong>
+                                and <strong>Operations Team</strong> member, playing a key role in event coordination
+                                and outreach.
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Event Item 3: Wikimania Bangladesh -->
+                    <div class="relative flex items-start space-x-6">
+                        <div
+                            class="z-10 flex items-center justify-center w-10 h-10 bg-light-secondary dark:bg-dark-secondary rounded-full">
+                            <!-- Flag/Location Icon -->
+                            <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M5 3v17a2 2 0 002 2h10a2 2 0 002-2V3l-5 4-5-4z"></path>
+                            </svg>
+                        </div>
+                        <div>
+                            <h4 class="font-bold text-lg">Wikimania Bangladesh 2022 – Dhaka, Bangladesh</h4>
+                            <p class="text-slate-600 dark:text-slate-300">
+                                Served as a <strong>Core Organizing Team member</strong> for the national Wikimania
+                                celebration, attended by Wikimedia contributors from across Bangladesh.
+                            </p>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+
+
+        <!-- Blog/Updates Section -->
+        <section id="blog" class="py-16 md:py-24 section-transition">
+            <h2 class="text-3xl md:text-4xl font-bold text-center mb-12">Blog & Reflections</h2>
+
+            <div class="max-w-5xl mx-auto">
+                <p class="mb-12 text-center text-slate-600 dark:text-slate-300">
+                    Sharing my thoughts, experiences, and updates from my journey in the open knowledge world.
+                </p>
+
+                <!-- Blog Grid -->
+                <div class="grid gap-8 md:grid-cols-2">
+
+                    <!-- Dummy Blog Post -->
+                    <div
+                        class="blog-card p-6 bg-white dark:bg-slate-800 rounded-xl shadow hover:shadow-lg transition-shadow">
+                        <h3 class="font-bold text-xl mb-2">Reflections from Wikimania 2025</h3>
+                        <p class="text-sm text-slate-500 dark:text-slate-400 mb-4">August 20, 2025</p>
+                        <p class="text-slate-600 dark:text-slate-300 mb-4">
+                            My experiences and key takeaways from attending Wikimania 2025 in Nairobi, including
+                            community collaborations, inspiring talks, and future plans for the Bangla Wikimedia
+                            movement.
+                        </p>
+                        <a href="#"
+                            class="text-light-secondary dark:text-dark-secondary font-medium hover:underline">Read more
+                            →</a>
+                    </div>
+
+                    <!-- Upcoming Blog Post -->
+                    <div
+                        class="blog-card p-6 bg-white dark:bg-slate-800 rounded-xl border border-dashed border-slate-300 dark:border-slate-600">
+                        <h3 class="font-semibold text-xl mb-2">The Future of Bangla Wikimedia Projects</h3>
+                        <p class="text-sm text-slate-500 dark:text-slate-400 mb-4">Coming soon</p>
+                        <p class="text-slate-600 dark:text-slate-300">
+                            Exploring the growth potential and challenges for Bangla Wikimedia projects in the coming
+                            years.
+                        </p>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+
+        <!-- Contact Section -->
+        <section id="contact" class="py-16 md:py-24 section-transition">
+            <h2 class="text-3xl md:text-4xl font-bold text-center mb-4">Let's Connect</h2>
+            <p class="text-center text-slate-600 dark:text-slate-300 max-w-2xl mx-auto mb-12">
+                I'm always open to discussing new projects, creative ideas, or opportunities to be part of something
+                positive.
+                Feel free to reach out to me through my Wikimedia profiles or social media.
+            </p>
+            <div class="flex flex-wrap justify-center items-center gap-6 md:gap-8">
+
+                <!-- Meta-Wiki -->
+                <a href="https://meta.wikimedia.org/wiki/User:Yahya" target="_blank" rel="noopener noreferrer"
+                    class="text-slate-500 hover:text-light-primary dark:hover:text-dark-primary transition-colors"
+                    aria-label="Meta-Wiki Profile">
+                    <svg class="w-8 h-8" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" fill="currentColor">
+                        <path
+                            d="M25,2C12.318,2,2,12.317,2,25s10.318,23,23,23s23-10.317,23-23S37.682,2,25,2z M35,37.333h-5V22.222h-5V37.333h-5V13h5v3.389c1.839-2.28,3.473-3.389,5.834-3.389c4.155,0,8.166,2.378,8.166,9.111V37.333z" />
+                    </svg>
+                    <span class="sr-only">Meta-Wiki</span>
+                </a>
+
+                <!-- LinkedIn -->
+                <a href="https://www.linkedin.com/in/ieahhiea/" target="_blank" rel="noopener noreferrer"
+                    class="text-slate-500 hover:text-light-primary dark:hover:text-dark-primary transition-colors"
+                    aria-label="LinkedIn Profile">
+                    <svg class="w-8 h-8" fill="currentColor" viewBox="0 0 24 24">
+                        <path
+                            d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z" />
+                    </svg>
+                    <span class="sr-only">LinkedIn</span>
+                </a>
+
+                <!-- Twitter -->
+                <a href="https://x.com/yahya_wiki" target="_blank" rel="noopener noreferrer"
+                    class="text-slate-500 hover:text-light-primary dark:hover:text-dark-primary transition-colors"
+                    aria-label="Twitter Profile">
+                    <svg class="w-8 h-8" fill="currentColor" viewBox="0 0 24 24">
+                        <path
+                            d="M24 4.557c-.883.392-1.832.656-2.828.775 1.017-.609 1.798-1.574 2.165-2.724-.951.564-2.005.974-3.127 1.195-.897-.957-2.178-1.555-3.594-1.555-3.179 0-5.515 2.966-4.797 6.045-4.091-.205-7.719-2.165-10.148-5.144-1.29 2.213-.669 5.108 1.523 6.574-.806-.026-1.566-.247-2.229-.616v.064c0 2.296 1.634 4.208 3.951 4.644-.652.177-1.339.239-2.05.188.6 1.956 2.348 3.374 4.425 3.415-1.85 1.455-4.178 2.32-6.721 2.32-.436 0-.866-.026-1.291-.075 2.399 1.538 5.253 2.434 8.342 2.434 10.088 0 15.608-8.354 15.608-15.609 0-.238-.005-.476-.015-.712.947-.684 1.77-1.536 2.423-2.516z" />
+                    </svg>
+                    <span class="sr-only">Twitter</span>
+                </a>
+
+                <!-- Telegram -->
+                <a href="https://t.me/useryahya" target="_blank" rel="noopener noreferrer"
+                    class="text-slate-500 hover:text-light-primary dark:hover:text-dark-primary transition-colors"
+                    aria-label="Telegram Profile">
+                    <svg class="w-8 h-8" fill="currentColor" viewBox="0 0 24 24">
+                        <path
+                            d="M9.999 15.17l-.39 5.52c.56 0 .81-.24 1.1-.53l2.64-2.52 5.48 4.01c1 .55 1.71.26 1.96-.92l3.55-16.64c.36-1.64-.59-2.28-1.64-1.88L1.4 10.41c-1.6.64-1.58 1.54-.29 1.96l5.58 1.74L18.91 6.34c.6-.39 1.15-.17.7.25">
+                        </path>
+                    </svg>
+                    <span class="sr-only">Telegram</span>
+                </a>
+
+                <!-- Facebook -->
+                <a href="https://facebook.com/myahya22" target="_blank" rel="noopener noreferrer"
+                    class="text-slate-500 hover:text-light-primary dark:hover:text-dark-primary transition-colors"
+                    aria-label="Facebook Profile">
+                    <svg class="w-8 h-8" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M22.675 0h-21.35C.597 0 0 .597 0 1.326v21.348C0 23.403.597 24 1.326 
+                24H12.82v-9.294H9.692v-3.622h3.128V8.413c0-3.1 1.893-4.788 
+                4.659-4.788 1.325 0 2.464.099 2.796.143v3.24l-1.918.001c-1.504 
+                0-1.795.715-1.795 1.763v2.31h3.587l-.467 3.622h-3.12V24h6.116C23.403 
+                24 24 23.403 24 22.674V1.326C24 .597 23.403 0 22.675 0z" />
+                    </svg>
+                    <span class="sr-only">Facebook</span>
+                </a>
+
+            </div>
+        </section>
+
     </main>
-    <footer>
-      <p>Find me on:</p>
-      <ul>
-        <li><i class="fab fa-twitter"></i><a href="https://twitter.com/yahya_wiki">Twitter</a></li>
-        <li><i class="fab fa-github"></i><a href="https://github.com/useryahya">GitHub</a></li>
-        <li><i class="fab fa-linkedin"></i><a href="https://www.linkedin.com/in/myahya22">LinkedIn</a></li>
-        <li><i class="fas fa-blog"></i><a href="https://blog.yahyabd.xyz">Blog</a></li>
-        <p class="site-copyright">Made with <a href="https://chat.openai.com">ChatGPT</a>. Source code available on <a href="https://github.com/UserYahya/useryahya.github.io">GitHub</a>.</p>
-      </ul>
+
+    <!-- Footer -->
+    <footer class="bg-light-card dark:bg-dark-card section-transition">
+        <div class="container mx-auto px-6 py-4 text-center text-slate-500 dark:text-slate-400">
+            <p>&copy; 2025 Muhammad Yahya. All Rights Reserved.</p>
+           <!-- <p class="text-sm mt-1">Built with HTML & Tailwind CSS.</p>-->
+        </div>
     </footer>
-  </body>
+
+    <script>
+        // JavaScript for Theme Toggle and Mobile Menu
+        const themeToggleBtn = document.getElementById('theme-toggle');
+        const themeToggleDarkIcon = document.getElementById('theme-toggle-dark-icon');
+        const themeToggleLightIcon = document.getElementById('theme-toggle-light-icon');
+
+        // Check for saved theme in localStorage or user preference
+        if (localStorage.getItem('color-theme') === 'dark' || (!('color-theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+            document.documentElement.classList.add('dark');
+            themeToggleLightIcon.classList.remove('hidden');
+        } else {
+            document.documentElement.classList.remove('dark');
+            themeToggleDarkIcon.classList.remove('hidden');
+        }
+
+        themeToggleBtn.addEventListener('click', function () {
+            // toggle icons
+            themeToggleDarkIcon.classList.toggle('hidden');
+            themeToggleLightIcon.classList.toggle('hidden');
+
+            // if set via local storage previously
+            if (localStorage.getItem('color-theme')) {
+                if (localStorage.getItem('color-theme') === 'light') {
+                    document.documentElement.classList.add('dark');
+                    localStorage.setItem('color-theme', 'dark');
+                } else {
+                    document.documentElement.classList.remove('dark');
+                    localStorage.setItem('color-theme', 'light');
+                }
+            } else { // if NOT set via local storage previously
+                if (document.documentElement.classList.contains('dark')) {
+                    document.documentElement.classList.remove('dark');
+                    localStorage.setItem('color-theme', 'light');
+                } else {
+                    document.documentElement.classList.add('dark');
+                    localStorage.setItem('color-theme', 'dark');
+                }
+            }
+        });
+
+        // Mobile Menu Toggle
+        const mobileMenuButton = document.getElementById('mobile-menu-button');
+        const mobileMenu = document.getElementById('mobile-menu');
+
+        mobileMenuButton.addEventListener('click', () => {
+            mobileMenu.classList.toggle('hidden');
+        });
+
+        // Close mobile menu when a link is clicked
+        const mobileMenuLinks = mobileMenu.querySelectorAll('a');
+        mobileMenuLinks.forEach(link => {
+            link.addEventListener('click', () => {
+                mobileMenu.classList.add('hidden');
+            });
+        });
+
+    </script>
+</body>
+
+</html>
