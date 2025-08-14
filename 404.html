@@ -1,41 +1,63 @@
 <!DOCTYPE html>
-<html>
-  <head>
-    <title>Error 404: Page Not Found</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1" >
-    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<html lang="en" class="scroll-smooth">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>404 - Page Not Found</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        'light-bg': '#f0f4f8',
+                        'light-text': '#1f2937',
+                        'light-primary': '#2563eb',
+                        'light-secondary': '#8b5cf6',
+                        'light-card': '#ffffff',
+                        'dark-bg': '#111827',
+                        'dark-text': '#d1d5db',
+                        'dark-primary': '#60a5fa',
+                        'dark-secondary': '#a78bfa',
+                        'dark-card': '#1f2937',
+                    }
+                }
+            }
+        }
+    </script>
     <style>
-      body {
-        font-family: 'Quicksand', sans-serif;
-        background-color: lightgray;
-        text-align: center;
-      }
-      h1 {
-        font-size: 72px;
-        color: steelblue;
-        margin-top: 50px;
-      }
-      p {
-        font-size: 24px;
-        color: dimgray;
-        margin: 20px;
-      }
-      a {
-        text-decoration: none;
-        color: steelblue;
-        font-size: 18px;
-        margin: 20px;
-      }
-      a:hover {
-        color: lightblue;
-      }
+        body {
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        .section-transition {
+            transition: background-color 0.3s ease-in-out, color 0.3s ease-in-out;
+        }
     </style>
-  </head>
-  <body>
-    <main>
-      <h1>Error 404</h1>
-      <p>Page Not Found</p>
-      <a href="/">Go back to the home page</a>
-    </main>
-  </body>
+</head>
+
+<body class="bg-light-bg text-light-text dark:bg-dark-bg dark:text-dark-text font-sans section-transition min-h-screen flex items-center justify-center">
+
+    <div class="text-center p-8 max-w-lg">
+        <h1 class="text-9xl font-bold text-light-primary dark:text-dark-primary">404</h1>
+        <h2 class="text-3xl md:text-4xl font-bold mt-4 mb-4">Page Not Found</h2>
+        <p class="text-lg md:text-xl text-slate-600 dark:text-slate-300 mb-8">
+            The page you are looking for doesn't exist or has been moved.
+        </p>
+        <a href="/" class="inline-block bg-light-primary text-white dark:bg-dark-primary dark:text-dark-bg font-bold py-3 px-6 rounded-lg hover:opacity-90 transition-opacity">
+            Go back to the homepage
+        </a>
+    </div>
+
+</body>
+
 </html>
