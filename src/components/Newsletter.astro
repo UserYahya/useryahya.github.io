@@ -1,0 +1,44 @@
+---
+interface Props {
+  className?: string;
+}
+
+const { className = "" } = Astro.props;
+---
+
+<section class={`bg-surface-container dark:bg-dark-card border border-outline/20 dark:border-dark-border p-8 sm:p-12 text-center space-y-6 relative overflow-hidden ${className}`}>
+  <!-- Tactile dot pattern overlay -->
+  <div
+    class="absolute inset-0 opacity-10 dark:opacity-5 pointer-events-none"
+    style="background-image: radial-gradient(#D9A441 1.5px, transparent 1.5px); background-size: 20px 20px;"
+  ></div>
+
+  <div class="relative z-10 max-w-xl mx-auto space-y-3">
+    <h3 class="font-tiro text-2xl sm:text-3xl font-bold text-ink dark:text-gold leading-snug">
+      আমার নতুন লেখাগুলো সরাসরি আপনার ইনবক্সে পেতে চান?
+    </h3>
+    <p class="font-body text-sm sm:text-base text-slate dark:text-dark-muted leading-relaxed">
+      মাসে একবার চিঠি পাঠাই। কোনো স্প্যাম নয়, শুধুই চিন্তা উদ্রেককারী কিছু লেখা, ভ্রমণের অভিজ্ঞতা ও বই পড়ার সুপারিশ।
+    </p>
+  </div>
+
+  <form
+    class="flex flex-col sm:flex-row gap-3 max-w-md mx-auto relative z-10 pt-2"
+    onsubmit="event.preventDefault(); alert('ধন্যবাদ! সাবস্ক্রিপশন সম্পন্ন হয়েছে।');"
+  >
+    <label for="newsletter-email" class="sr-only">আপনার ইমেইল ঠিকানা</label>
+    <input
+      id="newsletter-email"
+      type="email"
+      required
+      placeholder="আপনার ইমেইল ঠিকানা"
+      class="flex-1 bg-transparent border-0 border-b-2 border-outline/40 dark:border-dark-border focus:border-gold dark:focus:border-gold focus:ring-0 font-body text-sm sm:text-base px-2 py-3 placeholder:text-slate/60 dark:placeholder:text-dark-muted/60 text-ink dark:text-dark-text transition-colors duration-200"
+    />
+    <button
+      type="submit"
+      class="bg-gold hover:bg-maroon text-ink hover:text-paper dark:text-ink dark:hover:text-paper font-semibold text-xs sm:text-sm px-6 py-3.5 tracking-wider uppercase transition-colors duration-300 rounded-none cursor-pointer"
+    >
+      সাবস্ক্রাইব
+    </button>
+  </form>
+</section>

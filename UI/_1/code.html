@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+
+<html lang="bn"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>ইয়াহিয়া - প্রযুক্তি ও জীবনবোধের কথকতা</title>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;600&amp;family=Tiro+Bangla:ital@0;1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "primary": "#7d5700",
+                        "on-surface-variant": "#4f4536",
+                        "outline-variant": "#d3c4b1",
+                        "on-primary-fixed-variant": "#5f4100",
+                        "on-tertiary-fixed": "#0a1a3a",
+                        "surface-container-high": "#eae8e3",
+                        "inverse-surface": "#30312e",
+                        "surface": "#fbf9f4",
+                        "secondary-fixed-dim": "#ffb2ba",
+                        "primary-fixed-dim": "#f5bd58",
+                        "secondary-fixed": "#ffd9dc",
+                        "surface-container-lowest": "#ffffff",
+                        "on-primary": "#ffffff",
+                        "on-primary-fixed": "#271900",
+                        "background": "#fbf9f4",
+                        "inverse-primary": "#f5bd58",
+                        "on-secondary": "#ffffff",
+                        "on-primary-container": "#573c00",
+                        "surface-container": "#f0eee9",
+                        "surface-dim": "#dbdad5",
+                        "on-secondary-fixed-variant": "#7a2c3a",
+                        "outline": "#817564",
+                        "error": "#ba1a1a",
+                        "on-error-container": "#93000a",
+                        "on-surface": "#1b1c19",
+                        "surface-container-highest": "#e4e2dd",
+                        "on-secondary-container": "#782a38",
+                        "tertiary-fixed-dim": "#b7c6ee",
+                        "tertiary-fixed": "#d9e2ff",
+                        "surface-bright": "#fbf9f4",
+                        "surface-tint": "#7d5700",
+                        "surface-container-low": "#f5f3ee",
+                        "on-error": "#ffffff",
+                        "primary-container": "#d9a441",
+                        "on-background": "#1b1c19",
+                        "tertiary": "#4f5e81",
+                        "secondary": "#984350",
+                        "inverse-on-surface": "#f2f1ec",
+                        "secondary-container": "#fe95a2",
+                        "primary-fixed": "#ffdeaa",
+                        "error-container": "#ffdad6",
+                        "surface-variant": "#e4e2dd",
+                        "on-tertiary-container": "#314061",
+                        "on-tertiary-fixed-variant": "#384668",
+                        "on-tertiary": "#ffffff",
+                        "tertiary-container": "#9eacd3",
+                        "on-secondary-fixed": "#400011"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "spacing": {
+                        "stack-sm": "1rem",
+                        "stack-md": "2.5rem",
+                        "identity-rail-width": "280px",
+                        "gutter": "2rem",
+                        "content-max-width": "800px",
+                        "stack-lg": "5rem"
+                    },
+                    "fontFamily": {
+                        "body-lg": ["Hind Siliguri"],
+                        "headline-md": ["Tiro Bangla"],
+                        "display-lg": ["Tiro Bangla"],
+                        "headline-lg": ["Tiro Bangla"],
+                        "label-lg": ["Hind Siliguri"],
+                        "body-md": ["Hind Siliguri"],
+                        "display-lg-mobile": ["Tiro Bangla"],
+                        "headline-sm": ["Tiro Bangla"]
+                    },
+                    "fontSize": {
+                        "body-lg": ["20px", { "lineHeight": "36px", "fontWeight": "400" }],
+                        "headline-md": ["28px", { "lineHeight": "40px", "fontWeight": "600" }],
+                        "display-lg": ["48px", { "lineHeight": "64px", "letterSpacing": "-0.01em", "fontWeight": "700" }],
+                        "headline-lg": ["36px", { "lineHeight": "48px", "fontWeight": "600" }],
+                        "label-lg": ["14px", { "lineHeight": "20px", "letterSpacing": "0.05em", "fontWeight": "600" }],
+                        "body-md": ["18px", { "lineHeight": "32px", "fontWeight": "400" }],
+                        "display-lg-mobile": ["32px", { "lineHeight": "42px", "fontWeight": "700" }],
+                        "headline-sm": ["22px", { "lineHeight": "32px", "fontWeight": "500" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        body {
+            background-color: #fbf9f4; /* Paper White */
+        }
+        .ink-brush-underline:hover {
+            position: relative;
+        }
+        .ink-brush-underline:hover::after {
+            content: '';
+            position: absolute;
+            left: 0;
+            bottom: -2px;
+            width: 100%;
+            height: 3px;
+            background-image: url('data:image/svg+xml;utf8,<svg preserveAspectRatio="none" viewBox="0 0 100 10" xmlns="http://www.w3.org/2000/svg"><path d="M0 5 Q 50 0 100 5 Q 50 10 0 5" fill="%237d5700"/></svg>');
+            background-size: 100% 100%;
+        }
+    </style>
+</head>
+<body class="font-body-md text-on-surface antialiased bg-surface">
+<!-- TopAppBar (Mobile) -->
+<header class="flex lg:hidden justify-between items-center px-4 h-16 w-full z-50 bg-surface border-b-2 border-primary">
+<div class="flex items-center gap-4">
+<button class="material-symbols-outlined text-on-surface-variant tap-highlight-transparent">menu</button>
+<span class="font-headline-sm-mobile text-headline-sm-mobile text-on-surface">ইয়াহিয়া</span>
+</div>
+<div class="flex gap-4">
+<a class="font-label-lg text-label-lg text-on-surface-variant tap-highlight-transparent hover:text-secondary" href="#">হোম</a>
+<a class="font-label-lg text-label-lg text-primary tap-highlight-transparent" href="#">ব্লগ</a>
+<a class="font-label-lg text-label-lg text-on-surface-variant tap-highlight-transparent hover:text-secondary" href="#">যোগাযোগ</a>
+</div>
+</header>
+<div class="flex min-h-screen">
+<!-- SideNavBar (Desktop Identity Rail) -->
+<nav class="hidden lg:flex flex-col p-8 space-y-stack-md bg-surface fixed left-0 top-0 h-screen w-identity-rail-width border-r border-outline/20">
+<div class="mb-8">
+<h1 class="font-display-lg text-display-lg text-on-surface mb-2">ইয়াহিয়া</h1>
+<p class="font-body-md text-on-surface-variant">প্রযুক্তি ও জীবনবোধের কথকতা</p>
+</div>
+<ul class="flex flex-col gap-4 flex-grow">
+<li>
+<a class="flex items-center gap-3 font-label-lg text-label-lg text-on-surface-variant hover:text-secondary transition-colors duration-300 group" href="#">
+<span class="material-symbols-outlined group-active:scale-90 transition-transform">home</span>
+                        হোম
+                    </a>
+</li>
+<li>
+<a class="flex items-center gap-3 font-label-lg text-label-lg text-primary font-bold border-b-2 border-primary pb-1 group" href="#">
+<span class="material-symbols-outlined group-active:scale-90 transition-transform">article</span>
+                        ব্লগ
+                    </a>
+</li>
+<li>
+<a class="flex items-center gap-3 font-label-lg text-label-lg text-on-surface-variant hover:text-secondary transition-colors duration-300 group" href="#">
+<span class="material-symbols-outlined group-active:scale-90 transition-transform">person</span>
+                        আমার সম্পর্কে
+                    </a>
+</li>
+<li>
+<a class="flex items-center gap-3 font-label-lg text-label-lg text-on-surface-variant hover:text-secondary transition-colors duration-300 group" href="#">
+<span class="material-symbols-outlined group-active:scale-90 transition-transform">mail</span>
+                        যোগাযোগ
+                    </a>
+</li>
+</ul>
+<div class="mt-auto flex flex-col gap-6">
+<button class="bg-primary text-on-primary font-label-lg text-label-lg py-2 px-4 w-full hover:bg-secondary hover:text-on-secondary transition-colors duration-300 active:scale-95 text-center">ডার্ক মোড</button>
+<div class="flex gap-4 text-on-surface-variant">
+<a class="hover:text-secondary transition-colors duration-300" href="#"><span class="material-symbols-outlined">public</span><span class="sr-only">ফেসবুক</span></a>
+<a class="hover:text-secondary transition-colors duration-300" href="#"><span class="material-symbols-outlined">share</span><span class="sr-only">লিঙ্কডইন</span></a>
+</div>
+</div>
+</nav>
+<!-- Main Content Area -->
+<main class="flex-1 lg:ml-[280px] w-full px-4 lg:px-12 py-12 lg:py-20 flex flex-col items-center">
+<article class="w-full max-w-content-max-width">
+<!-- Header -->
+<header class="mb-10">
+<div class="flex items-center gap-4 font-label-lg text-label-lg mb-6">
+<span class="text-secondary font-bold uppercase tracking-wider">Technology</span>
+<span class="text-outline/40">•</span>
+<time class="text-on-surface-variant" datetime="2023-10-27">২৭ অক্টোবর, ২০২৩</time>
+<span class="text-outline/40">•</span>
+<span class="text-on-surface-variant">৭ মিনিট পড়ার সময়</span>
+</div>
+<h1 class="font-display-lg text-display-lg lg:text-display-lg text-on-surface mb-8 leading-tight">
+                        ওপেন সোর্স দর্শনের গভীরে: কোডের বাইরেও যা কিছু
+                    </h1>
+</header>
+<!-- Cover Image -->
+<figure class="mb-12 w-full">
+<img alt="Cover Image" class="w-full h-[400px] object-cover grayscale-[20%] sepia-[10%] border border-outline/10" data-alt="A macro shot of a vintage mechanical typewriter keyboard merged seamlessly with glowing fiber optic cables. The scene is illuminated by warm, directional light, creating a tactile contrast between the metallic, oily textures of the ancient machine and the crisp, modern glow of the digital threads. The background is a soft, out-of-focus paper-white void, emphasizing a minimalist editorial aesthetic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDyJ3X93tQ6NoBZuh01_UBO0nJ6eNvS1Mm7l-zCbSjYA3Ev78kt0gyeecfXVcQoEkpI8u0i2x5Z75Efa_jEuAFh4OtNUkY5GH3BmGCKcCNVzIEgk6Ac-RdjdeKlFlQsqz58kH4v1ugcYkiGduTqyy_6t9pC5pOw_HZfGfVhDUDXUVl0DNowQYf-7mGr8zbVMoNh74PO7Qr1YZlyewZ3cRkBi_o2LIBlCUrmeWeGeURJdjPElolOe_ZnXQ"/>
+<figcaption class="font-label-lg text-label-lg text-on-surface-variant text-center mt-4 italic opacity-80">
+                        প্রযুক্তির বিবর্তন: পুরোনো যন্ত্র ও নতুন দর্শনের মেলবন্ধন
+                    </figcaption>
+</figure>
+<!-- Body Content -->
+<div class="prose prose-lg max-w-none text-on-surface font-body-lg text-body-lg space-y-8">
+<p class="first-letter:font-headline-lg first-letter:text-6xl first-letter:float-left first-letter:mr-3 first-letter:text-primary">
+                        ওপেন সোর্স কেবল একটি সফটওয়্যার ডেভেলপমেন্ট মডেল নয়, এটি একটি জীবনদর্শন। যখন আমরা কোড উন্মুক্ত করি, তখন আমরা কেবল কিছু লজিক বা অ্যালগরিদম শেয়ার করি না, আমরা একটি কমিউনিটি তৈরি করি। এই কমিউনিটির ভিত্তি হলো বিশ্বাস, সহযোগিতা এবং জ্ঞান বিনিময়ের অদম্য ইচ্ছা।
+                    </p>
+<p>
+                        ঐতিহাসিকভাবে দেখলে, জ্ঞানের উন্মুক্ত প্রবাহ মানব সভ্যতার সবচেয়ে বড় চালিকাশক্তি। আলেকজান্দ্রিয়ার লাইব্রেরি থেকে শুরু করে আধুনিক উইকিপিডিয়া—সবকিছুর মূলেই রয়েছে তথ্য সবার জন্য উন্মুক্ত করার এই তাড়না। প্রযুক্তি বিশ্বে লিনাক্স (Linux) বা গিটহাবের (GitHub) মতো প্ল্যাটফর্মগুলো এই দর্শনেরই আধুনিক প্রতিচ্ছবি।
+                    </p>
+<!-- Blockquote -->
+<blockquote class="my-10 pl-6 border-l-4 border-primary bg-surface-container-low p-6 font-headline-sm text-headline-sm text-on-surface-variant italic relative">
+<span class="material-symbols-outlined absolute top-4 left-4 text-outline/20 text-4xl -z-10">format_quote</span>
+                        "প্রযুক্তির আসল সৌন্দর্য তার জটিলতায় নয়, বরং এটি কতটা সহজে মানুষের জীবনে ইতিবাচক পরিবর্তন আনতে পারে তার মধ্যে নিহিত।"
+                    </blockquote>
+<p>
+                        অনেকেই মনে করেন, ওপেন সোর্স মানেই বিনামূল্যে কাজ করা। কিন্তু বাস্তবতা ভিন্ন। এটি আসলে একটি ইকোসিস্টেম যেখানে সবাই অবদান রাখে এবং সবাই উপকৃত হয়। যখন একটি বাগ ফিক্স করা হয় বা নতুন ফিচার যোগ করা হয়, তখন তা শুধু একজন নির্দিষ্ট ব্যবহারকারীর জন্যই নয়, বরং সারা বিশ্বের লাখো মানুষের উপকারে আসে।
+                    </p>
+<!-- Code Block -->
+<div class="my-10 bg-surface-container-highest p-6 font-mono text-sm overflow-x-auto border border-outline/20">
+<pre class="text-on-surface-variant"><code>function createCommunity(philosophy) {
+    if (philosophy === 'open-source') {
+        return {
+            collaboration: true,
+            transparency: true,
+            growth: 'exponential'
+        };
+    }
+    return null;
+}
+
+// Initialize the movement
+const future = createCommunity('open-source');
+console.log('Building the future together.');</code></pre>
+</div>
+<h2 class="font-headline-lg text-headline-lg text-on-surface mt-12 mb-6 border-b border-outline/20 pb-2">
+                        ভবিষ্যতের রূপরেখা
+                    </h2>
+<p>
+                        সামনের দিনগুলোতে ওপেন সোর্স আরও বেশি গুরুত্বপূর্ণ হয়ে উঠবে। কৃত্রিম বুদ্ধিমত্তা, ব্লকচেইন, এবং ক্লাউড কম্পিউটিংয়ের মতো প্রযুক্তিগুলো ওপেন সোর্সের ওপর ভিত্তি করেই বিকশিত হচ্ছে। তাই, শুধু কোড লেখা নয়, বরং এই দর্শনের পেছনের কারণগুলো বোঝা আমাদের জন্য জরুরি।
+                    </p>
+</div>
+<!-- Tags -->
+<div class="mt-16 flex flex-wrap gap-3">
+<span class="font-label-lg text-label-lg uppercase px-4 py-2 bg-primary/10 text-primary border border-primary/20 hover:bg-primary hover:text-on-primary transition-colors cursor-pointer">Open Source</span>
+<span class="font-label-lg text-label-lg uppercase px-4 py-2 border border-outline/20 text-on-surface-variant hover:border-primary hover:text-primary transition-colors cursor-pointer">Philosophy</span>
+<span class="font-label-lg text-label-lg uppercase px-4 py-2 border border-outline/20 text-on-surface-variant hover:border-primary hover:text-primary transition-colors cursor-pointer">Technology</span>
+</div>
+<hr class="my-16 border-t border-outline/20 w-4/5 mx-auto"/>
+<!-- Related Posts -->
+<section>
+<h3 class="font-headline-md text-headline-md text-on-surface mb-8 text-center">আরও পড়ুন</h3>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+<!-- Thumbnail 1 -->
+<a class="group block border border-outline/10 hover:border-primary/50 transition-colors p-4 bg-surface-container-lowest" href="#">
+<div class="h-48 w-full bg-surface-variant mb-4 overflow-hidden relative">
+<img alt="Related post thumbnail" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" data-alt="A minimalist architectural photograph of a brutalist concrete building against a stark white sky. Sharp angles and deep shadows create a strong geometric composition. The image has a subtle film grain and a muted, desaturated color palette, leaning heavily towards slate grays and paper whites." src="https://lh3.googleusercontent.com/aida-public/AB6AXuC0l92Dxm-DZjz2yPP5cl8pkWNFESmx8i1l3Zd56bLNwYDvDQ1umGnhVOG0HSUSbKoskDQM91FA3IBJhr1ceshtrLPvVTdvlPRpVUex1i1x08RUo1_vUkHOCF8VKSCYNczAGjEjqwzaCS8gBhsc-XWKv6BEBzfMLdy_IxKcruAHx5zXjMgV4sKokyGBvRY4fanYocEDga5DmRax0Z9HpfmTuETpER5LZHX6NcHm695xgyr70WJWGA5tqw"/>
+</div>
+<div class="font-label-lg text-label-lg text-secondary uppercase mb-2">Design</div>
+<h4 class="font-headline-sm text-headline-sm text-on-surface group-hover:text-primary transition-colors line-clamp-2">
+                                মিনিমালিজম: কম কথায় বেশি বলা
+                            </h4>
+</a>
+<!-- Thumbnail 2 -->
+<a class="group block border border-outline/10 hover:border-primary/50 transition-colors p-4 bg-surface-container-lowest" href="#">
+<div class="h-48 w-full bg-surface-variant mb-4 overflow-hidden relative">
+<img alt="Related post thumbnail" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" data-alt="An abstract, close-up shot of scattered, antique metal movable type blocks on a slightly textured parchment paper surface. The lighting is soft and diffused, casting gentle shadows that highlight the intricate, raised letters. A warm, turmeric gold hue softly reflects off some of the metal pieces, contrasting with the ink-indigo tones of the shadows." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCl1YdKP49uZ7E-sIz9UUybTYSILBcxMlm-mwPkBvNb4AECdFXCNp2zbhLFcC5XMTfjJ8CCKiy4yAYnMrr4zoZ3ybmWeeGDml06T2kdc8425IsqBaIlpui1dVF_3f043hvVgcCYcHphPBtiz9ndCgD0Y0qXJZBgCDsO0rjWjtOkGZn2RJgKdv3Xlk5NHaLLrWLYRkkSx_LmtO8tv0J6Bb-7ysOkfnNq01NJ6iijjz1Ux_6aDuNQrMGIvQ"/>
+</div>
+<div class="font-label-lg text-label-lg text-secondary uppercase mb-2">Literature</div>
+<h4 class="font-headline-sm text-headline-sm text-on-surface group-hover:text-primary transition-colors line-clamp-2">
+                                শব্দের ওজন এবং নীরবতার শক্তি
+                            </h4>
+</a>
+</div>
+</section>
+</article>
+<!-- Footer -->
+<footer class="mt-24 w-full max-w-content-max-width mx-auto flex flex-col items-center gap-4 py-12 border-t border-outline/10">
+<div class="flex gap-6 font-label-lg text-label-lg">
+<a class="text-on-surface-variant hover:text-primary transition-colors opacity-80 hover:opacity-100" href="#">গোপনীয়তা নীতি</a>
+<a class="text-on-surface-variant hover:text-primary transition-colors opacity-80 hover:opacity-100" href="#">শর্তাবলী</a>
+<a class="text-on-surface-variant hover:text-primary transition-colors opacity-80 hover:opacity-100" href="#">ম্যাপ</a>
+</div>
+<p class="font-label-lg text-label-lg text-outline text-center">
+                    © ২০২৪ মুহাম্মদ ইয়াহিয়া। সর্বস্বত্ব সংরক্ষিত।
+                </p>
+</footer>
+</main>
+</div>
+</body></html>

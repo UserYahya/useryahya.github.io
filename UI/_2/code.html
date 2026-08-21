@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>About Me - Yahya</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;600&amp;family=Tiro+Bangla:ital,wght@0,400;0,700;1,400&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "primary": "#7d5700",
+                      "on-surface-variant": "#4f4536",
+                      "outline-variant": "#d3c4b1",
+                      "on-primary-fixed-variant": "#5f4100",
+                      "on-tertiary-fixed": "#0a1a3a",
+                      "surface-container-high": "#eae8e3",
+                      "inverse-surface": "#30312e",
+                      "surface": "#fbf9f4",
+                      "secondary-fixed-dim": "#ffb2ba",
+                      "primary-fixed-dim": "#f5bd58",
+                      "secondary-fixed": "#ffd9dc",
+                      "surface-container-lowest": "#ffffff",
+                      "on-primary": "#ffffff",
+                      "on-primary-fixed": "#271900",
+                      "background": "#fbf9f4",
+                      "inverse-primary": "#f5bd58",
+                      "on-secondary": "#ffffff",
+                      "on-primary-container": "#573c00",
+                      "surface-container": "#f0eee9",
+                      "surface-dim": "#dbdad5",
+                      "on-secondary-fixed-variant": "#7a2c3a",
+                      "outline": "#817564",
+                      "error": "#ba1a1a",
+                      "on-error-container": "#93000a",
+                      "on-surface": "#1b1c19",
+                      "surface-container-highest": "#e4e2dd",
+                      "on-secondary-container": "#782a38",
+                      "tertiary-fixed-dim": "#b7c6ee",
+                      "tertiary-fixed": "#d9e2ff",
+                      "surface-bright": "#fbf9f4",
+                      "surface-tint": "#7d5700",
+                      "surface-container-low": "#f5f3ee",
+                      "on-error": "#ffffff",
+                      "primary-container": "#d9a441",
+                      "on-background": "#1b1c19",
+                      "tertiary": "#4f5e81",
+                      "secondary": "#984350",
+                      "inverse-on-surface": "#f2f1ec",
+                      "secondary-container": "#fe95a2",
+                      "primary-fixed": "#ffdeaa",
+                      "error-container": "#ffdad6",
+                      "surface-variant": "#e4e2dd",
+                      "on-tertiary-container": "#314061",
+                      "on-tertiary-fixed-variant": "#384668",
+                      "on-tertiary": "#ffffff",
+                      "tertiary-container": "#9eacd3",
+                      "on-secondary-fixed": "#400011"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.125rem",
+                      "lg": "0.25rem",
+                      "xl": "0.5rem",
+                      "full": "0.75rem"
+              },
+              "spacing": {
+                      "stack-sm": "1rem",
+                      "stack-md": "2.5rem",
+                      "identity-rail-width": "280px",
+                      "gutter": "2rem",
+                      "content-max-width": "800px",
+                      "stack-lg": "5rem"
+              },
+              "fontFamily": {
+                      "body-lg": [
+                              "Hind Siliguri"
+                      ],
+                      "headline-md": [
+                              "Tiro Bangla"
+                      ],
+                      "display-lg": [
+                              "Tiro Bangla"
+                      ],
+                      "headline-lg": [
+                              "Tiro Bangla"
+                      ],
+                      "label-lg": [
+                              "Hind Siliguri"
+                      ],
+                      "body-md": [
+                              "Hind Siliguri"
+                      ],
+                      "display-lg-mobile": [
+                              "Tiro Bangla"
+                      ],
+                      "headline-sm": [
+                              "Tiro Bangla"
+                      ]
+              },
+              "fontSize": {
+                      "body-lg": [
+                              "20px",
+                              {
+                                      "lineHeight": "36px",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "headline-md": [
+                              "28px",
+                              {
+                                      "lineHeight": "40px",
+                                      "fontWeight": "600"
+                              }
+                      ],
+                      "display-lg": [
+                              "48px",
+                              {
+                                      "lineHeight": "64px",
+                                      "letterSpacing": "-0.01em",
+                                      "fontWeight": "700"
+                              }
+                      ],
+                      "headline-lg": [
+                              "36px",
+                              {
+                                      "lineHeight": "48px",
+                                      "fontWeight": "600"
+                              }
+                      ],
+                      "label-lg": [
+                              "14px",
+                              {
+                                      "lineHeight": "20px",
+                                      "letterSpacing": "0.05em",
+                                      "fontWeight": "600"
+                              }
+                      ],
+                      "body-md": [
+                              "18px",
+                              {
+                                      "lineHeight": "32px",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "display-lg-mobile": [
+                              "32px",
+                              {
+                                      "lineHeight": "42px",
+                                      "fontWeight": "700"
+                              }
+                      ],
+                      "headline-sm": [
+                              "22px",
+                              {
+                                      "lineHeight": "32px",
+                                      "fontWeight": "500"
+                              }
+                      ]
+              }
+      },
+          },
+        }
+      </script>
+<style>
+        .ink-brush-hover {
+            position: relative;
+            display: inline-block;
+        }
+        .ink-brush-hover::after {
+            content: '';
+            position: absolute;
+            width: 100%;
+            transform: scaleX(0);
+            height: 4px;
+            bottom: 0;
+            left: 0;
+            background-color: theme('colors.secondary');
+            transform-origin: bottom right;
+            transition: transform 0.25s ease-out;
+            mask-image: url('data:image/svg+xml;utf8,<svg viewBox="0 0 100 10" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg"><path d="M0,5 Q50,0 100,5 T0,5" fill="black"/></svg>');
+            -webkit-mask-image: url('data:image/svg+xml;utf8,<svg viewBox="0 0 100 10" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg"><path d="M0,5 Q50,0 100,5 T0,5" fill="black"/></svg>');
+        }
+        .ink-brush-hover:hover::after {
+            transform: scaleX(1);
+            transform-origin: bottom left;
+        }
+        body {
+            background-color: theme('colors.surface');
+            color: theme('colors.on-surface');
+        }
+      </style>
+</head>
+<body class="flex min-h-screen bg-surface">
+<!-- Desktop SideNavBar -->
+<aside class="hidden lg:flex flex-col p-8 space-y-stack-md bg-surface border-r border-outline/20 fixed left-0 top-0 h-screen w-identity-rail-width z-40">
+<div class="mb-8">
+<h1 class="font-display-lg text-display-lg text-on-surface">ইয়াহিয়া</h1>
+<p class="font-body-md text-body-md text-on-surface-variant mt-2">প্রযুক্তি ও জীবনবোধের কথকতা</p>
+</div>
+<nav class="flex-1 flex flex-col gap-6">
+<a class="flex items-center gap-4 text-on-surface-variant hover:text-secondary transition-colors duration-300 font-label-lg text-label-lg scale-95 transition-transform active:scale-90 group" href="#">
+<span class="material-symbols-outlined text-2xl group-hover:text-secondary">home</span>
+                হোম
+            </a>
+<a class="flex items-center gap-4 text-on-surface-variant hover:text-secondary transition-colors duration-300 font-label-lg text-label-lg scale-95 transition-transform active:scale-90 group" href="#">
+<span class="material-symbols-outlined text-2xl group-hover:text-secondary">article</span>
+                ব্লগ
+            </a>
+<a class="flex items-center gap-4 text-primary font-bold border-b-2 border-primary pb-1 font-label-lg text-label-lg w-max" href="#">
+<span class="material-symbols-outlined text-2xl text-primary" style="font-variation-settings: 'FILL' 1;">person</span>
+                আমার সম্পর্কে
+            </a>
+<a class="flex items-center gap-4 text-on-surface-variant hover:text-secondary transition-colors duration-300 font-label-lg text-label-lg scale-95 transition-transform active:scale-90 group" href="#">
+<span class="material-symbols-outlined text-2xl group-hover:text-secondary">mail</span>
+                যোগাযোগ
+            </a>
+</nav>
+<div class="mt-auto flex flex-col gap-4">
+<button class="flex items-center gap-3 text-on-surface-variant hover:text-primary transition-colors font-label-lg text-label-lg w-fit">
+<span class="material-symbols-outlined">dark_mode</span>
+                ডার্ক মোড
+            </button>
+<div class="flex gap-4 border-t border-outline/20 pt-4 mt-2">
+<a aria-label="ফেসবুক" class="text-on-surface-variant hover:text-primary transition-colors" href="#">
+<span class="material-symbols-outlined">public</span>
+</a>
+<a aria-label="লিঙ্কডইন" class="text-on-surface-variant hover:text-primary transition-colors" href="#">
+<span class="material-symbols-outlined">share</span>
+</a>
+</div>
+</div>
+</aside>
+<!-- Mobile TopAppBar -->
+<header class="flex lg:hidden justify-between items-center px-4 h-16 w-full z-50 bg-surface border-b-2 border-primary fixed top-0 left-0">
+<button class="text-on-surface-variant hover:text-secondary p-2 tap-highlight-transparent">
+<span class="material-symbols-outlined">menu</span>
+</button>
+<h1 class="font-headline-md text-headline-md text-on-surface">ইয়াহিয়া</h1>
+<div class="w-10"></div> <!-- Spacer for centering -->
+</header>
+<!-- Main Content Area -->
+<main class="flex-1 lg:ml-identity-rail-width pt-16 lg:pt-0 min-h-screen">
+<div class="max-w-content-max-width mx-auto px-4 sm:px-gutter py-12 sm:py-20 lg:py-24 space-y-stack-lg">
+<!-- Hero / Bio Section -->
+<section class="flex flex-col-reverse lg:flex-row gap-gutter items-start">
+<div class="flex-1 space-y-6">
+<h2 class="font-headline-lg text-headline-lg text-on-surface">আমার সম্পর্কে</h2>
+<div class="font-body-lg text-body-lg text-on-surface-variant space-y-4">
+<p>আমি মুহাম্মদ ইয়াহিয়া। একজন প্রযুক্তিবিদ, লেখক এবং পর্যটক। প্রযুক্তির গভীরে ডুব দিয়ে মানুষের জীবনের সহজ সমাধান খোঁজার পাশাপাশি, পৃথিবীর পথে পথে ঘুরে বেড়িয়ে জীবনের অর্থ অন্বেষণ করাই আমার নেশা।</p>
+<p>দীর্ঘ এক যুগের বেশি সময় ধরে আমি সফটওয়্যার ইঞ্জিনিয়ারিং পেশায় যুক্ত আছি। কোডের জটিল বিন্যাস থেকে শুরু করে সিস্টেম আর্কিটেকচার—সবকিছুতেই আমি খুঁজে পাই এক অদ্ভুত শৃঙ্খলা ও সৌন্দর্য। আমার বিশ্বাস, প্রযুক্তি শুধু যন্ত্রের উন্নয়ন নয়, এটি মানুষের চিন্তার বিস্তৃতির হাতিয়ার।</p>
+<blockquote class="pl-6 border-l-4 border-secondary font-headline-sm italic text-primary/90 my-8">
+                            "প্রযুক্তি আর জীবনবোধ—দুটোই আসলে এক বিন্দুতে এসে মেলে, যদি আমরা দেখতে জানি।"
+                        </blockquote>
+</div>
+<div class="pt-4 flex flex-wrap gap-4">
+<a class="inline-flex items-center justify-center px-6 py-3 bg-primary text-on-primary font-label-lg text-label-lg uppercase tracking-wider hover:bg-secondary hover:text-white transition-colors duration-300" href="#">
+                            জীবনবৃত্তান্ত
+                        </a>
+<a class="inline-flex items-center justify-center px-6 py-3 border border-outline text-on-surface font-label-lg text-label-lg uppercase tracking-wider hover:border-secondary hover:text-secondary transition-colors duration-300" href="#">
+                            যোগাযোগ করুন
+                        </a>
+</div>
+</div>
+<div class="w-full lg:w-1/3 shrink-0">
+<div class="relative w-full aspect-[3/4] p-2 border border-outline/20">
+<img alt="Muhammed Yahya Portrait" class="w-full h-full object-cover grayscale hover:grayscale-0 transition-all duration-700" data-alt="A highly detailed professional portrait photograph of a thoughtful South Asian man in his mid-30s, standing outdoors in soft, overcast natural lighting. He is wearing smart-casual attire, blending technology professional with a traveler's aesthetic. The background is softly blurred featuring natural greenery and subtle architectural elements. Shot on 85mm lens, high-end editorial style, moody but warm tones." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAgzZ3a0I0C_TFC-lGg3LsokjjzhRKEFu0VIq-FYYaosHojLhvgNKUmC4a-oD4qKYSWD20JefaFOhzZ56NYr5W8IdpHwGuo8ufkz36ptO71w8GDx2f2RVyWbNr7ItJFO83lOxMH1QH9OOGlwEiM7S0H2oJOEKnPllLvSZwEc-hBilxrLgLXCKKuUVyFlTjhM4mjXztuqpi5y8mYiu9uQjo6JUSX_or996Fi3nx8CtpClG-W_X-iLQCdTA"/>
+<div class="absolute -bottom-4 -left-4 w-24 h-24 border-b-2 border-l-2 border-primary -z-10"></div>
+<div class="absolute -top-4 -right-4 w-24 h-24 border-t-2 border-r-2 border-primary -z-10"></div>
+</div>
+</div>
+</section>
+<!-- Timeline Section -->
+<section class="pt-8">
+<h3 class="font-headline-md text-headline-md text-on-surface mb-12">জীবনপঞ্জিকা</h3>
+<div class="relative pl-8 md:pl-0">
+<!-- Vertical Line -->
+<div class="absolute left-0 md:left-1/2 top-0 bottom-0 w-[1px] bg-primary/30 transform md:-translate-x-1/2"></div>
+<div class="space-y-16">
+<!-- Timeline Item 1 -->
+<div class="relative flex flex-col md:flex-row items-start md:items-center w-full group">
+<!-- Marker -->
+<div class="absolute left-[-33px] md:left-1/2 top-1 md:top-1/2 w-3 h-3 bg-primary rounded-none transform md:-translate-x-1/2 md:-translate-y-1/2 group-hover:bg-secondary transition-colors duration-300"></div>
+<!-- Content Left (Year) -->
+<div class="md:w-1/2 md:pr-12 md:text-right mb-2 md:mb-0">
+<span class="font-headline-sm text-headline-sm text-secondary block">২০২৩ - বর্তমান</span>
+</div>
+<!-- Content Right (Description) -->
+<div class="md:w-1/2 md:pl-12">
+<h4 class="font-label-lg text-label-lg text-primary uppercase mb-2 border-b border-outline/20 pb-1 inline-block">সিনিয়র আর্কিটেক্ট</h4>
+<p class="font-body-md text-body-md text-on-surface-variant mt-2">একটি আন্তর্জাতিক টেক ফার্মে এন্টারপ্রাইজ লেভেল সিস্টেম ডিজাইনের দায়িত্বে। পাশাপাশি ওপেন সোর্স প্রজেক্টে নিয়মিত অবদান রাখা শুরু।</p>
+</div>
+</div>
+<!-- Timeline Item 2 -->
+<div class="relative flex flex-col md:flex-row-reverse items-start md:items-center w-full group">
+<!-- Marker -->
+<div class="absolute left-[-33px] md:left-1/2 top-1 md:top-1/2 w-3 h-3 bg-surface border-2 border-primary rounded-none transform md:-translate-x-1/2 md:-translate-y-1/2 group-hover:border-secondary transition-colors duration-300"></div>
+<!-- Content Left (Year) -->
+<div class="md:w-1/2 md:pl-12 mb-2 md:mb-0 text-left">
+<span class="font-headline-sm text-headline-sm text-secondary block">২০১৯ - ২০২২</span>
+</div>
+<!-- Content Right (Description) -->
+<div class="md:w-1/2 md:pr-12 md:text-right">
+<h4 class="font-label-lg text-label-lg text-primary uppercase mb-2 border-b border-outline/20 pb-1 inline-block">ভ্রমণ ও উপলব্ধি</h4>
+<p class="font-body-md text-body-md text-on-surface-variant mt-2">ইউরোপ ও এশিয়ার প্রায় ১৫টি দেশ ভ্রমণ। বিভিন্ন সংস্কৃতির মানুষের সাথে মেশা এবং প্রযুক্তি কীভাবে তাদের জীবনকে প্রভাবিত করে তা নিয়ে গবেষণা।</p>
+</div>
+</div>
+<!-- Timeline Item 3 -->
+<div class="relative flex flex-col md:flex-row items-start md:items-center w-full group">
+<!-- Marker -->
+<div class="absolute left-[-33px] md:left-1/2 top-1 md:top-1/2 w-3 h-3 bg-surface border-2 border-primary rounded-none transform md:-translate-x-1/2 md:-translate-y-1/2 group-hover:border-secondary transition-colors duration-300"></div>
+<!-- Content Left (Year) -->
+<div class="md:w-1/2 md:pr-12 md:text-right mb-2 md:mb-0">
+<span class="font-headline-sm text-headline-sm text-secondary block">২০১৪ - ২০১৮</span>
+</div>
+<!-- Content Right (Description) -->
+<div class="md:w-1/2 md:pl-12">
+<h4 class="font-label-lg text-label-lg text-primary uppercase mb-2 border-b border-outline/20 pb-1 inline-block">ক্যারিয়ারের সূচনা</h4>
+<p class="font-body-md text-body-md text-on-surface-variant mt-2">সফটওয়্যার ডেভেলপার হিসেবে কর্মজীবন শুরু। লোকাল স্টার্টআপ ইকোসিস্টেমে কাজ করার অভিজ্ঞতা অর্জন।</p>
+</div>
+</div>
+</div>
+</div>
+</section>
+<section class="py-12 border-t border-outline/10">
+<div class="flex flex-wrap gap-3">
+<span class="px-3 py-1 border border-outline text-on-surface-variant font-label-lg text-label-lg uppercase hover:bg-primary hover:text-on-primary cursor-pointer transition-colors">সফটওয়্যার ইঞ্জিনিয়ারিং</span>
+<span class="px-3 py-1 border border-outline text-on-surface-variant font-label-lg text-label-lg uppercase hover:bg-primary hover:text-on-primary cursor-pointer transition-colors">ভ্রমণ কাহিনী</span>
+<span class="px-3 py-1 border border-outline text-on-surface-variant font-label-lg text-label-lg uppercase hover:bg-primary hover:text-on-primary cursor-pointer transition-colors">প্রযুক্তি দর্শন</span>
+<span class="px-3 py-1 border border-outline text-on-surface-variant font-label-lg text-label-lg uppercase hover:bg-primary hover:text-on-primary cursor-pointer transition-colors">ওপেন সোর্স</span>
+</div>
+</section>
+</div>
+<!-- Footer -->
+<footer class="bg-transparent full-width py-12 border-t border-outline/10 w-4/5 mx-auto max-w-content-max-width flex flex-col items-center gap-4 mt-auto">
+<div class="flex gap-6">
+<a class="text-outline font-label-lg text-label-lg hover:text-primary transition-colors opacity-80 hover:opacity-100" href="#">গোপনীয়তা নীতি</a>
+<a class="text-outline font-label-lg text-label-lg hover:text-primary transition-colors opacity-80 hover:opacity-100" href="#">শর্তাবলী</a>
+<a class="text-outline font-label-lg text-label-lg hover:text-primary transition-colors opacity-80 hover:opacity-100" href="#">ম্যাপ</a>
+</div>
+<p class="text-outline font-label-lg text-label-lg">© ২০২৪ মুহাম্মদ ইয়াহিয়া। সর্বস্বত্ব সংরক্ষিত।</p>
+</footer>
+</main>
+</body></html>

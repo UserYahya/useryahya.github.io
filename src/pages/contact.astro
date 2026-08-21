@@ -1,0 +1,108 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+
+<BaseLayout
+  title="যোগাযোগ"
+  description="মুহাম্মদ ইয়াহিয়ার সাথে যোগাযোগের ঠিকানা ও যোগাযোগ ফর্ম।"
+  activeNav="contact"
+>
+  <div class="space-y-12 max-w-2xl">
+    <!-- Header -->
+    <header class="space-y-4 pb-6 border-b border-outline/20 dark:border-dark-border">
+      <div class="inline-flex items-center gap-2 px-3 py-1 bg-gold/15 dark:bg-gold/10 border border-gold/40 text-xs font-semibold text-secondary dark:text-gold uppercase tracking-widest">
+        যোগাযোগ
+      </div>
+      <h2 class="font-tiro text-3xl sm:text-4xl font-bold text-ink dark:text-dark-text leading-tight">
+        কথা হোক
+      </h2>
+      <p class="font-body text-base text-slate dark:text-dark-muted leading-relaxed">
+        সফটওয়্যার আর্কিটেকচার, কনসালটেন্সি, যৌথ লেখালেখি কিংবা কেবল কুশল বিনিময়ের জন্য নিচের মাধ্যমে বার্তা পাঠাতে পারেন।
+      </p>
+    </header>
+
+    <!-- Direct Contact Methods -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+      <div class="p-5 border border-outline/20 dark:border-dark-border bg-surface-container/50 dark:bg-dark-card space-y-1">
+        <span class="text-xs font-semibold text-secondary dark:text-gold uppercase tracking-wider block">ইমেইল</span>
+        <a href="mailto:contact@yahya.bd" class="font-body font-medium text-ink dark:text-dark-text hover:text-gold transition-colors text-sm sm:text-base">
+          contact@yahya.bd
+        </a>
+      </div>
+
+      <div class="p-5 border border-outline/20 dark:border-dark-border bg-surface-container/50 dark:bg-dark-card space-y-1">
+        <span class="text-xs font-semibold text-secondary dark:text-gold uppercase tracking-wider block">সামাজিক যোগাযোগ</span>
+        <div class="flex gap-4 pt-1 text-sm font-semibold text-ink dark:text-dark-text">
+          <a href="https://github.com" target="_blank" rel="noopener noreferrer" class="hover:text-gold transition-colors">GitHub</a>
+          <span>•</span>
+          <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer" class="hover:text-gold transition-colors">LinkedIn</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Contact Form -->
+    <form
+      class="space-y-6 pt-4"
+      onsubmit="event.preventDefault(); alert('ধন্যবাদ! আপনার বার্তাটি পাঠানো হয়েছে।');"
+    >
+      <div class="space-y-2">
+        <label for="name" class="block font-tiro text-base font-bold text-ink dark:text-dark-text">
+          আপনার নাম
+        </label>
+        <input
+          id="name"
+          type="text"
+          required
+          placeholder="মুহাম্মদ রহিম"
+          class="w-full bg-transparent border-0 border-b-2 border-outline/40 dark:border-dark-border focus:border-gold dark:focus:border-gold focus:ring-0 font-body text-base px-2 py-3 placeholder:text-slate/50 dark:placeholder:text-dark-muted/50 text-ink dark:text-dark-text transition-colors"
+        />
+      </div>
+
+      <div class="space-y-2">
+        <label for="email" class="block font-tiro text-base font-bold text-ink dark:text-dark-text">
+          ইমেইল ঠিকানা
+        </label>
+        <input
+          id="email"
+          type="email"
+          required
+          placeholder="name@example.com"
+          class="w-full bg-transparent border-0 border-b-2 border-outline/40 dark:border-dark-border focus:border-gold dark:focus:border-gold focus:ring-0 font-body text-base px-2 py-3 placeholder:text-slate/50 dark:placeholder:text-dark-muted/50 text-ink dark:text-dark-text transition-colors"
+        />
+      </div>
+
+      <div class="space-y-2">
+        <label for="subject" class="block font-tiro text-base font-bold text-ink dark:text-dark-text">
+          বিষয়
+        </label>
+        <input
+          id="subject"
+          type="text"
+          required
+          placeholder="বার্তা প্রেরণের উদ্দেশ্য"
+          class="w-full bg-transparent border-0 border-b-2 border-outline/40 dark:border-dark-border focus:border-gold dark:focus:border-gold focus:ring-0 font-body text-base px-2 py-3 placeholder:text-slate/50 dark:placeholder:text-dark-muted/50 text-ink dark:text-dark-text transition-colors"
+        />
+      </div>
+
+      <div class="space-y-2">
+        <label for="message" class="block font-tiro text-base font-bold text-ink dark:text-dark-text">
+          বার্তা
+        </label>
+        <textarea
+          id="message"
+          rows="5"
+          required
+          placeholder="আপনার বার্তা বিস্তারিত লিখুন..."
+          class="w-full bg-transparent border-0 border-b-2 border-outline/40 dark:border-dark-border focus:border-gold dark:focus:border-gold focus:ring-0 font-body text-base px-2 py-3 placeholder:text-slate/50 dark:placeholder:text-dark-muted/50 text-ink dark:text-dark-text transition-colors"
+        ></textarea>
+      </div>
+
+      <button
+        type="submit"
+        class="inline-flex items-center justify-center px-8 py-3.5 bg-gold hover:bg-maroon text-ink hover:text-paper dark:text-ink dark:hover:text-paper font-semibold text-sm uppercase tracking-wider transition-colors duration-300 rounded-none shadow-sm cursor-pointer"
+      >
+        বার্তা পাঠান
+      </button>
+    </form>
+  </div>
+</BaseLayout>

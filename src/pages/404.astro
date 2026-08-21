@@ -1,0 +1,38 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+
+<BaseLayout
+  title="পৃষ্ঠাটি খুঁজে পাওয়া যায়নি (৪০৪)"
+  description="আপনি যে পৃষ্ঠাটি খুঁজছেন তা স্থানান্তরিত হয়েছে অথবা মুছে ফেলা হয়েছে।"
+>
+  <div class="py-16 sm:py-24 text-center space-y-6 max-w-xl mx-auto">
+    <div class="font-tiro text-7xl sm:text-9xl font-bold text-gold/30 dark:text-gold/20 select-none">
+      ৪০৪
+    </div>
+    
+    <div class="space-y-3">
+      <h2 class="font-tiro text-3xl sm:text-4xl font-bold text-ink dark:text-dark-text">
+        পথ হারিয়ে ফেলেছেন?
+      </h2>
+      <p class="font-body text-base sm:text-lg text-slate dark:text-dark-muted leading-relaxed">
+        আপনি যে পৃষ্ঠাটি খুঁজছেন তা হয়তো সরানো হয়েছে, নাম পরিবর্তন করা হয়েছে অথবা অস্তিত্বহীন।
+      </p>
+    </div>
+
+    <div class="pt-6 flex justify-center gap-4">
+      <a
+        href="/"
+        class="inline-flex items-center justify-center px-8 py-3.5 bg-gold hover:bg-maroon text-ink hover:text-paper dark:text-ink dark:hover:text-paper font-semibold text-sm uppercase tracking-wider transition-colors duration-300 rounded-none shadow-sm"
+      >
+        হোমপেজে ফিরে যান
+      </a>
+      <a
+        href="/blog"
+        class="inline-flex items-center justify-center px-8 py-3.5 border-2 border-outline/40 dark:border-dark-border text-ink dark:text-dark-text hover:border-gold hover:text-gold font-semibold text-sm uppercase tracking-wider transition-colors duration-300 rounded-none"
+      >
+        ব্লগ পড়ুন
+      </a>
+    </div>
+  </div>
+</BaseLayout>

@@ -1,0 +1,61 @@
+---
+import { formatBanglaDate } from '../utils/date';
+
+interface Props {
+  title: string;
+  description: string;
+  pubDate: Date;
+  slug: string;
+  category?: string;
+  readTime?: string;
+  heroImage?: string;
+  heroImageAlt?: string;
+}
+
+const {
+  title,
+  description,
+  pubDate,
+  slug,
+  category = "প্রবন্ধ",
+  readTime = "৫ মিনিট",
+  heroImage,
+  heroImageAlt = title,
+} = Astro.props;
+
+const formattedDate = formatBanglaDate(pubDate);
+---
+
+<article class="journal-item group flex flex-col sm:flex-row gap-6 py-8 border-b border-outline/15 dark:border-dark-border items-start w-full transition-all duration-300">
+  {heroImage && (
+    <a href={`/blog/${slug}`} class="w-full sm:w-36 sm:h-28 h-48 shrink-0 overflow-hidden bg-surface-container dark:bg-dark-card border border-outline/20 dark:border-dark-border block" tab-index="-1" aria-hidden="true">
+      <img
+        src={heroImage}
+        alt={heroImageAlt}
+        loading="lazy"
+        decoding="async"
+        class="w-full h-full object-cover filter grayscale-[25%] group-hover:grayscale-0 group-hover:scale-105 transition-all duration-500"
+      />
+    </a>
+  )}
+
+  <div class="flex-1 space-y-2.5">
+    <div class="flex items-center gap-3 text-xs tracking-wider">
+      <span class="text-secondary dark:text-gold font-semibold uppercase">{category}</span>
+      <span class="w-1 h-1 rounded-full bg-outline/40"></span>
+      <time datetime={pubDate.toISOString()} class="text-slate dark:text-dark-muted">{formattedDate}</time>
+      <span class="w-1 h-1 rounded-full bg-outline/40"></span>
+      <span class="text-slate dark:text-dark-muted">{readTime} পাঠ</span>
+    </div>
+
+    <h3 class="font-tiro text-xl sm:text-2xl font-bold leading-snug">
+      <a href={`/blog/${slug}`} class="text-ink dark:text-dark-text group-hover:text-primary dark:group-hover:text-gold transition-colors duration-200 brush-underline">
+        {title}
+      </a>
+    </h3>
+
+    <p class="font-body text-sm sm:text-base text-slate dark:text-dark-muted line-clamp-2 leading-relaxed">
+      {description}
+    </p>
+  </div>
+</article>

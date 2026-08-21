@@ -1,0 +1,63 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import JournalItem from '../../components/JournalItem.astro';
+
+const posts = await getCollection('blog', ({ data }) => !data.draft);
+const sortedPosts = posts.sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
+
+// Get unique categories
+const categories = Array.from(new Set(posts.map((p) => p.data.category)));
+---
+
+<BaseLayout
+  title="ব্লগ আর্কাইভ"
+  description="মুহাম্মদ ইয়াহিয়ার সমস্ত বাংলা প্রবন্ধ, ভ্রমণ কাহিনী এবং চিন্তাভাবনার পূর্ণাঙ্গ আর্কাইভ।"
+  activeNav="blog"
+>
+  <div class="space-y-12">
+    <!-- Header -->
+    <header class="space-y-4 pb-8 border-b border-outline/20 dark:border-dark-border">
+      <div class="inline-flex items-center gap-2 px-3 py-1 bg-gold/15 dark:bg-gold/10 border border-gold/40 text-xs font-semibold text-secondary dark:text-gold uppercase tracking-widest">
+        আর্কাইভ
+      </div>
+      <h2 class="font-tiro text-3xl sm:text-4xl font-bold text-ink dark:text-dark-text leading-tight">
+        সকল লেখালেখি
+      </h2>
+      <p class="font-body text-base text-slate dark:text-dark-muted max-w-2xl leading-relaxed">
+        প্রযুক্তি, ভ্রমণ, দর্শন এবং জীবনের নানা অনুষঙ্গ নিয়ে সাজানো প্রবন্ধ ও স্মৃতিকথা।
+      </p>
+
+      <!-- Category Filter Chips -->
+      <div class="flex flex-wrap gap-2 pt-4">
+        <span class="px-3 py-1 bg-gold text-ink font-semibold text-xs uppercase tracking-wider rounded-none cursor-pointer">
+          সকল ({sortedPosts.length})
+        </span>
+        {categories.map((cat) => {
+          const count = posts.filter((p) => p.data.category === cat).length;
+          return (
+            <span class="px-3 py-1 border border-outline/30 dark:border-dark-border text-slate dark:text-dark-muted font-semibold text-xs uppercase tracking-wider hover:border-gold hover:text-gold transition-colors cursor-pointer">
+              {cat} ({count})
+            </span>
+          );
+        })}
+      </div>
+    </header>
+
+    <!-- Post Listing -->
+    <section class="divide-y divide-transparent">
+      {sortedPosts.map((post) => (
+        <JournalItem
+          title={post.data.title}
+          description={post.data.description}
+          pubDate={post.data.pubDate}
+          slug={post.slug}
+          category={post.data.category}
+          readTime={post.data.readTime}
+          heroImage={post.data.heroImage}
+          heroImageAlt={post.data.heroImageAlt}
+        />
+      ))}
+    </section>
+  </div>
+</BaseLayout>
