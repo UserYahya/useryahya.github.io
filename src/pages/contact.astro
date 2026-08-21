@@ -17,7 +17,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
         কথা হোক
       </h2>
       <p class="font-body text-base text-slate dark:text-dark-muted leading-relaxed">
-        সফটওয়্যার আর্কিটেকচার, কনসালটেন্সি, যৌথ লেখালেখি কিংবা কেবল কুশল বিনিময়ের জন্য নিচের মাধ্যমে বার্তা পাঠাতে পারেন।
+        সফটওয়্যার আর্কিটেকচার, কনসালটেন্সি, যৌথ লেখালেখি কিংবা কেবল কুশল বিনিময়ের জন্য নিচের ফর্ম বা ইমেইলের মাধ্যমে বার্তা পাঠাতে পারেন।
       </p>
     </header>
 
@@ -33,76 +33,154 @@ import BaseLayout from '../layouts/BaseLayout.astro';
       <div class="p-5 border border-outline/20 dark:border-dark-border bg-surface-container/50 dark:bg-dark-card space-y-1">
         <span class="text-xs font-semibold text-secondary dark:text-gold uppercase tracking-wider block">সামাজিক যোগাযোগ</span>
         <div class="flex gap-4 pt-1 text-sm font-semibold text-ink dark:text-dark-text">
-          <a href="https://github.com" target="_blank" rel="noopener noreferrer" class="hover:text-gold transition-colors">GitHub</a>
+          <a href="https://github.com/UserYahya" target="_blank" rel="noopener noreferrer" class="hover:text-gold transition-colors">GitHub</a>
           <span>•</span>
           <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer" class="hover:text-gold transition-colors">LinkedIn</a>
         </div>
       </div>
     </div>
 
-    <!-- Contact Form -->
-    <form
-      class="space-y-6 pt-4"
-      onsubmit="event.preventDefault(); alert('ধন্যবাদ! আপনার বার্তাটি পাঠানো হয়েছে।');"
-    >
-      <div class="space-y-2">
-        <label for="name" class="block font-tiro text-base font-bold text-ink dark:text-dark-text">
-          আপনার নাম
-        </label>
-        <input
-          id="name"
-          type="text"
-          required
-          placeholder="মুহাম্মদ রহিম"
-          class="w-full bg-transparent border-0 border-b-2 border-outline/40 dark:border-dark-border focus:border-gold dark:focus:border-gold focus:ring-0 font-body text-base px-2 py-3 placeholder:text-slate/50 dark:placeholder:text-dark-muted/50 text-ink dark:text-dark-text transition-colors"
-        />
+    <!-- Contact Form with Serverless Submission (Safe for Public Static GitHub Pages) -->
+    <div class="space-y-6 pt-2">
+      <!-- Status Messages -->
+      <div id="contact-success" class="hidden p-4 bg-gold/15 border-2 border-gold text-ink dark:text-gold font-semibold text-sm rounded">
+        ✓ ধন্যবাদ! আপনার বার্তাটি সফলভাবে পাঠানো হয়েছে। শীঘ্রই যোগাযোগ করা হবে।
+      </div>
+      <div id="contact-error" class="hidden p-4 bg-maroon/15 border-2 border-maroon text-maroon dark:text-paper font-semibold text-sm rounded">
+        ✕ বার্তা পাঠাতে সাময়িক সমস্যা হয়েছে। অনুগ্রহ করে সরাসরি <a href="mailto:contact@yahya.bd" class="underline">contact@yahya.bd</a> এ ইমেইল করুন।
       </div>
 
-      <div class="space-y-2">
-        <label for="email" class="block font-tiro text-base font-bold text-ink dark:text-dark-text">
-          ইমেইল ঠিকানা
-        </label>
-        <input
-          id="email"
-          type="email"
-          required
-          placeholder="name@example.com"
-          class="w-full bg-transparent border-0 border-b-2 border-outline/40 dark:border-dark-border focus:border-gold dark:focus:border-gold focus:ring-0 font-body text-base px-2 py-3 placeholder:text-slate/50 dark:placeholder:text-dark-muted/50 text-ink dark:text-dark-text transition-colors"
-        />
-      </div>
+      <form id="contact-form" class="space-y-6">
+        <!-- Optional Web3Forms / Formspree Public Access Key (Default configured for direct mail fallback) -->
+        <input type="hidden" name="access_key" value="YOUR_ACCESS_KEY_HERE" />
+        <input type="hidden" name="from_name" value="Yahya.bd Contact Form" />
 
-      <div class="space-y-2">
-        <label for="subject" class="block font-tiro text-base font-bold text-ink dark:text-dark-text">
-          বিষয়
-        </label>
-        <input
-          id="subject"
-          type="text"
-          required
-          placeholder="বার্তা প্রেরণের উদ্দেশ্য"
-          class="w-full bg-transparent border-0 border-b-2 border-outline/40 dark:border-dark-border focus:border-gold dark:focus:border-gold focus:ring-0 font-body text-base px-2 py-3 placeholder:text-slate/50 dark:placeholder:text-dark-muted/50 text-ink dark:text-dark-text transition-colors"
-        />
-      </div>
+        <div class="space-y-2">
+          <label for="name" class="block font-tiro text-base font-bold text-ink dark:text-dark-text">
+            আপনার নাম <span class="text-maroon">*</span>
+          </label>
+          <input
+            id="name"
+            name="name"
+            type="text"
+            required
+            placeholder="আপনার নাম লিখুন"
+            class="w-full bg-transparent border-0 border-b-2 border-outline/40 dark:border-dark-border focus:border-gold dark:focus:border-gold focus:ring-0 font-body text-base px-2 py-3 placeholder:text-slate/50 dark:placeholder:text-dark-muted/50 text-ink dark:text-dark-text transition-colors"
+          />
+        </div>
 
-      <div class="space-y-2">
-        <label for="message" class="block font-tiro text-base font-bold text-ink dark:text-dark-text">
-          বার্তা
-        </label>
-        <textarea
-          id="message"
-          rows="5"
-          required
-          placeholder="আপনার বার্তা বিস্তারিত লিখুন..."
-          class="w-full bg-transparent border-0 border-b-2 border-outline/40 dark:border-dark-border focus:border-gold dark:focus:border-gold focus:ring-0 font-body text-base px-2 py-3 placeholder:text-slate/50 dark:placeholder:text-dark-muted/50 text-ink dark:text-dark-text transition-colors"
-        ></textarea>
-      </div>
+        <div class="space-y-2">
+          <label for="email" class="block font-tiro text-base font-bold text-ink dark:text-dark-text">
+            ইমেইল ঠিকানা <span class="text-maroon">*</span>
+          </label>
+          <input
+            id="email"
+            name="email"
+            type="email"
+            required
+            placeholder="name@example.com"
+            class="w-full bg-transparent border-0 border-b-2 border-outline/40 dark:border-dark-border focus:border-gold dark:focus:border-gold focus:ring-0 font-body text-base px-2 py-3 placeholder:text-slate/50 dark:placeholder:text-dark-muted/50 text-ink dark:text-dark-text transition-colors"
+          />
+        </div>
 
-      <button
-        type="submit"
-        class="inline-flex items-center justify-center px-8 py-3.5 bg-gold hover:bg-maroon text-ink hover:text-paper dark:text-ink dark:hover:text-paper font-semibold text-sm uppercase tracking-wider transition-colors duration-300 rounded-none shadow-sm cursor-pointer"
-      >
-        বার্তা পাঠান
-      </button>
-    </form>
+        <div class="space-y-2">
+          <label for="subject" class="block font-tiro text-base font-bold text-ink dark:text-dark-text">
+            বিষয় <span class="text-maroon">*</span>
+          </label>
+          <input
+            id="subject"
+            name="subject"
+            type="text"
+            required
+            placeholder="বার্তা প্রেরণের বিষয়"
+            class="w-full bg-transparent border-0 border-b-2 border-outline/40 dark:border-dark-border focus:border-gold dark:focus:border-gold focus:ring-0 font-body text-base px-2 py-3 placeholder:text-slate/50 dark:placeholder:text-dark-muted/50 text-ink dark:text-dark-text transition-colors"
+          />
+        </div>
+
+        <div class="space-y-2">
+          <label for="message" class="block font-tiro text-base font-bold text-ink dark:text-dark-text">
+            বার্তা <span class="text-maroon">*</span>
+          </label>
+          <textarea
+            id="message"
+            name="message"
+            rows="5"
+            required
+            placeholder="আপনার বার্তা বিস্তারিত লিখুন..."
+            class="w-full bg-transparent border-0 border-b-2 border-outline/40 dark:border-dark-border focus:border-gold dark:focus:border-gold focus:ring-0 font-body text-base px-2 py-3 placeholder:text-slate/50 dark:placeholder:text-dark-muted/50 text-ink dark:text-dark-text transition-colors"
+          ></textarea>
+        </div>
+
+        <button
+          id="submit-btn"
+          type="submit"
+          class="inline-flex items-center justify-center px-8 py-3.5 bg-gold hover:bg-maroon text-ink hover:text-paper dark:text-ink dark:hover:text-paper font-semibold text-sm uppercase tracking-wider transition-colors duration-300 rounded-none shadow-sm cursor-pointer disabled:opacity-50"
+        >
+          <span id="btn-text">বার্তা পাঠান</span>
+          <span id="btn-spinner" class="hidden ml-2">...</span>
+        </button>
+      </form>
+    </div>
   </div>
+
+  <script>
+    function initContactForm() {
+      const form = document.getElementById('contact-form') as HTMLFormElement | null;
+      const successBox = document.getElementById('contact-success');
+      const errorBox = document.getElementById('contact-error');
+      const submitBtn = document.getElementById('submit-btn') as HTMLButtonElement | null;
+      const btnText = document.getElementById('btn-text');
+
+      if (!form || !submitBtn || !btnText) return;
+
+      form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        submitBtn.disabled = true;
+        btnText.textContent = 'পাঠানো হচ্ছে...';
+        if (successBox) successBox.classList.add('hidden');
+        if (errorBox) errorBox.classList.add('hidden');
+
+        const formData = new FormData(form);
+        const name = (formData.get('name') as string) || '';
+        const email = (formData.get('email') as string) || '';
+        const subject = (formData.get('subject') as string) || '';
+        const message = (formData.get('message') as string) || '';
+
+        try {
+          // If a Web3Forms key is provided, use it; otherwise fallback smoothly to mailto link
+          const accessKey = formData.get('access_key') as string;
+          if (accessKey && accessKey !== 'YOUR_ACCESS_KEY_HERE') {
+            const response = await fetch('https://api.web3forms.com/submit', {
+              method: 'POST',
+              body: formData,
+            });
+            const result = await response.json();
+            if (result.success) {
+              if (successBox) successBox.classList.remove('hidden');
+              form.reset();
+            } else {
+              throw new Error(result.message);
+            }
+          } else {
+            // Default instant client-side mailto handler
+            const mailtoUrl = `mailto:contact@yahya.bd?subject=${encodeURIComponent(subject + ' - [yahya.bd] ' + name)}&body=${encodeURIComponent('প্রেরক: ' + name + ' (' + email + ')\n\n' + message)}`;
+            window.location.href = mailtoUrl;
+            if (successBox) {
+              successBox.textContent = '✓ ইমেইল ক্লায়েন্ট খোলা হচ্ছে... বার্তা পাঠানোর জন্য ধন্যবাদ!';
+              successBox.classList.remove('hidden');
+            }
+            form.reset();
+          }
+        } catch (_) {
+          if (errorBox) errorBox.classList.remove('hidden');
+        } finally {
+          submitBtn.disabled = false;
+          btnText.textContent = 'বার্তা পাঠান';
+        }
+      });
+    }
+
+    initContactForm();
+    document.addEventListener('astro:after-swap', initContactForm);
+  </script>
 </BaseLayout>

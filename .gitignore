@@ -5,6 +5,9 @@ dist/
 # Dependencies
 node_modules/
 
+# Design mockups (Excluded from public repo)
+UI/
+
 # Environment and logs
 .env
 .env.production

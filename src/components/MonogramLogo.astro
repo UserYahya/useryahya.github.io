@@ -14,7 +14,7 @@ const { className = "w-16 h-16", size = 64 } = Astro.props;
     xmlns="http://www.w3.org/2000/svg"
     class="w-full h-full text-ink dark:text-gold transition-colors duration-300"
   >
-    <!-- Tactile brush stamp background circle/shield -->
+    <!-- Tactile brush stamp background frame -->
     <rect
       x="8"
       y="8"
@@ -36,19 +36,41 @@ const { className = "w-16 h-16", size = 64 } = Astro.props;
       fill-opacity="0.04"
       class="dark:fill-gold/10"
     />
-    <!-- Calligraphic Bengali Letter 'য' / Yahya Monogram -->
+
+    <!-- Bengali Letter 'ই' Monogram (Bangla 'I' for 'ইয়াহিয়া') -->
+    <!-- 1. Top Flying Tail / উড়নি -->
     <path
-      d="M28 32 C38 31, 62 31, 72 32 M50 32 L50 68 C50 74, 46 76, 38 76 C32 76, 28 72, 28 66 C28 58, 38 52, 48 52 C58 52, 68 58, 68 68 C68 76, 62 78, 52 78"
+      d="M48 26 C52 14, 66 12, 74 19 C78 23, 76 27, 72 26"
       stroke="currentColor"
-      stroke-width="5.5"
+      stroke-width="4.5"
       stroke-linecap="round"
       stroke-linejoin="round"
       class="stroke-ink dark:stroke-gold"
     />
+
+    <!-- 2. Top Matra (মাত্রা) -->
+    <path
+      d="M24 28 L76 28"
+      stroke="currentColor"
+      stroke-width="5"
+      stroke-linecap="round"
+      class="stroke-ink dark:stroke-gold"
+    />
+
+    <!-- 3. Main Calligraphic Body of 'ই' -->
+    <path
+      d="M33 28 C26 34, 26 44, 34 46 C42 48, 56 42, 60 52 C64 62, 54 74, 42 74 C34 74, 30 68, 32 62 C34 56, 42 56, 42 62"
+      stroke="currentColor"
+      stroke-width="5"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+      class="stroke-ink dark:stroke-gold"
+    />
+
     <!-- Ink Accent Dot / Stamp -->
     <circle
-      cx="70"
-      cy="34"
+      cx="74"
+      cy="70"
       r="3.5"
       fill="#7C2D3B"
       class="dark:fill-gold"
