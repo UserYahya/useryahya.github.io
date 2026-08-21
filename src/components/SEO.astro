@@ -11,14 +11,14 @@ export interface Props {
   jsonLd?: Record<string, any>;
 }
 
-const siteTitle = "মুহাম্মদ ইয়াহিয়া | প্রযুক্তি ও জীবনবোধের কথকতা";
-const siteDescription = "মুহাম্মদ ইয়াহিয়ার ব্যক্তিগত ব্লগ ও পোর্টফোলিও। সফটওয়্যার আর্কিটেকচার, ভ্রমণ ডায়েরি এবং জীবনদর্শন নিয়ে গভীর চিন্তার খোরাক জোগানো বাংলা লেখালেখি।";
+const siteTitle = "মুহাম্মদ ইয়াহিয়া | উইকিমিডিয়া স্টুয়ার্ড ও উন্মুক্ত জ্ঞানের অভিযাত্রী";
+const siteDescription = "মুহাম্মদ ইয়াহিয়ার ব্যক্তিগত পোর্টফোলিও ও বাংলা ব্লগ। উইকিমিডিয়া স্টুয়ার্ড, উন্মুক্ত জ্ঞানের দর্শন, প্রযুক্তি ও সমাজভাবনার এক কাব্যিক ক্যানভাস।";
 const siteUrl = "https://yahya.bd";
 
 const {
   title,
   description = siteDescription,
-  image = `${siteUrl}/images/og-default.svg`,
+  image = `${siteUrl}/images/og.png`,
   canonicalURL = new URL(Astro.url.pathname, siteUrl),
   type = 'website',
   publishedTime,
