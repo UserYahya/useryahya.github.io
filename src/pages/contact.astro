@@ -4,7 +4,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 
 <BaseLayout
   title="যোগাযোগ"
-  description="মুহাম্মদ ইয়াহিয়ার সাথে যোগাযোগের ঠিকানা ও যোগাযোগ ফর্ম।"
+  description="মুহাম্মদ ইয়াহিয়ার সাথে যোগাযোগের ঠিকানা ও যোগাযোগ ফর্ম। উইকিমিডিয়া গভর্নেন্স, ডিজিটাল পলিসি ও কমিউনিটি উদ্যোগ।"
   activeNav="contact"
 >
   <div class="space-y-12 max-w-2xl">
@@ -17,7 +17,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
         কথা হোক
       </h2>
       <p class="font-body text-base text-slate dark:text-dark-muted leading-relaxed">
-        সফটওয়্যার আর্কিটেকচার, কনসালটেন্সি, যৌথ লেখালেখি কিংবা কেবল কুশল বিনিময়ের জন্য নিচের ফর্ম বা ইমেইলের মাধ্যমে বার্তা পাঠাতে পারেন।
+        উন্মুক্ত জ্ঞান, ডিজিটাল গভর্নেন্স, কমিউনিটি ডেভেলপমেন্ট কিংবা যৌথ উদ্যোগের বিষয়ে যেকোনো বার্তা পাঠাতে পারেন।
       </p>
     </header>
 
@@ -25,17 +25,17 @@ import BaseLayout from '../layouts/BaseLayout.astro';
     <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
       <div class="p-5 border border-outline/20 dark:border-dark-border bg-surface-container/50 dark:bg-dark-card space-y-1">
         <span class="text-xs font-semibold text-secondary dark:text-gold uppercase tracking-wider block">ইমেইল</span>
-        <a href="mailto:contact@yahya.bd" class="font-body font-medium text-ink dark:text-dark-text hover:text-gold transition-colors text-sm sm:text-base">
-          contact@yahya.bd
+        <a href="mailto:i@yahya.bd" class="font-body font-medium text-ink dark:text-dark-text hover:text-gold transition-colors text-sm sm:text-base">
+          i@yahya.bd
         </a>
       </div>
 
       <div class="p-5 border border-outline/20 dark:border-dark-border bg-surface-container/50 dark:bg-dark-card space-y-1">
-        <span class="text-xs font-semibold text-secondary dark:text-gold uppercase tracking-wider block">সামাজিক যোগাযোগ</span>
-        <div class="flex gap-4 pt-1 text-sm font-semibold text-ink dark:text-dark-text">
-          <a href="https://github.com/UserYahya" target="_blank" rel="noopener noreferrer" class="hover:text-gold transition-colors">GitHub</a>
+        <span class="text-xs font-semibold text-secondary dark:text-gold uppercase tracking-wider block">প্রোফাইল লিংক</span>
+        <div class="flex flex-wrap items-center gap-3 pt-1 text-sm font-semibold text-ink dark:text-dark-text">
+          <a href="https://meta.wikimedia.org/wiki/User:Yahya" target="_blank" rel="noopener noreferrer" class="hover:text-gold transition-colors">উইকিমিডিয়া</a>
           <span>•</span>
-          <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer" class="hover:text-gold transition-colors">LinkedIn</a>
+          <a href="https://github.com/UserYahya" target="_blank" rel="noopener noreferrer" class="hover:text-gold transition-colors">GitHub</a>
         </div>
       </div>
     </div>
@@ -47,7 +47,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
         ✓ ধন্যবাদ! আপনার বার্তাটি সফলভাবে পাঠানো হয়েছে। শীঘ্রই যোগাযোগ করা হবে।
       </div>
       <div id="contact-error" class="hidden p-4 bg-maroon/15 border-2 border-maroon text-maroon dark:text-paper font-semibold text-sm rounded">
-        ✕ বার্তা পাঠাতে সাময়িক সমস্যা হয়েছে। অনুগ্রহ করে সরাসরি <a href="mailto:contact@yahya.bd" class="underline">contact@yahya.bd</a> এ ইমেইল করুন।
+        ✕ বার্তা পাঠাতে সাময়িক সমস্যা হয়েছে। অনুগ্রহ করে সরাসরি <a href="mailto:i@yahya.bd" class="underline">i@yahya.bd</a> এ ইমেইল করুন।
       </div>
 
       <form id="contact-form" class="space-y-6">
@@ -147,7 +147,6 @@ import BaseLayout from '../layouts/BaseLayout.astro';
         const message = (formData.get('message') as string) || '';
 
         try {
-          // If a Web3Forms key is provided, use it; otherwise fallback smoothly to mailto link
           const accessKey = formData.get('access_key') as string;
           if (accessKey && accessKey !== 'YOUR_ACCESS_KEY_HERE') {
             const response = await fetch('https://api.web3forms.com/submit', {
@@ -162,8 +161,8 @@ import BaseLayout from '../layouts/BaseLayout.astro';
               throw new Error(result.message);
             }
           } else {
-            // Default instant client-side mailto handler
-            const mailtoUrl = `mailto:contact@yahya.bd?subject=${encodeURIComponent(subject + ' - [yahya.bd] ' + name)}&body=${encodeURIComponent('প্রেরক: ' + name + ' (' + email + ')\n\n' + message)}`;
+            // Default instant client-side mailto handler with i@yahya.bd
+            const mailtoUrl = `mailto:i@yahya.bd?subject=${encodeURIComponent(subject + ' - [yahya.bd] ' + name)}&body=${encodeURIComponent('প্রেরক: ' + name + ' (' + email + ')\n\n' + message)}`;
             window.location.href = mailtoUrl;
             if (successBox) {
               successBox.textContent = '✓ ইমেইল ক্লায়েন্ট খোলা হচ্ছে... বার্তা পাঠানোর জন্য ধন্যবাদ!';

@@ -4,61 +4,72 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 const personJsonLd = {
   "@context": "https://schema.org",
   "@type": "Person",
-  "name": "মুহাম্মদ ইয়াহিয়া",
-  "alternateName": "Muhammed Yahya",
+  "name": "Yahya",
+  "alternateName": "মুহাম্মদ ইয়াহিয়া",
   "url": "https://yahya.bd/about",
-  "image": "https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&w=800&auto=format&fit=crop",
-  "jobTitle": "সিনিয়র সফটওয়্যার আর্কিটেক্ট ও লেখক",
-  "description": "মুহাম্মদ ইয়াহিয়া একজন প্রযুক্তিবিদ, লেখক এবং পর্যটক। সফটওয়্যার আর্কিটেকচার এবং জীবনদর্শন নিয়ে লেখালেখি করেন।",
+  "image": "https://yahya.bd/images/yahya.png",
+  "jobTitle": "Development Professional & Wikimedia Steward",
+  "nationality": "Bangladeshi",
+  "alumniOf": [
+    {
+      "@type": "CollegeOrUniversity",
+      "name": "Bangladesh University of Engineering and Technology (BUET)"
+    }
+  ],
+  "description": "মুহাম্মদ ইয়াহিয়া একজন ডেভেলপমেন্ট প্রফেশনাল, উইকিমিডিয়া স্টুয়ার্ড এবং উন্মুক্ত জ্ঞান গবেষক। প্রযুক্তি, ডেটা পলিসি ও কমিউনিটি গভর্নেন্স নিয়ে কাজ করেন।",
   "sameAs": [
-    "https://github.com",
-    "https://linkedin.com"
+    "https://meta.wikimedia.org/wiki/User:Yahya",
+    "https://github.com/UserYahya"
   ],
   "knowsAbout": [
-    "Software Architecture",
-    "Distributed Systems",
-    "Philosophy",
-    "Travel Writing",
-    "Bangla Literature"
+    "Open Knowledge",
+    "Wikimedia Governance",
+    "Trust and Safety",
+    "Mathematics",
+    "Community Organizing",
+    "Wikidata & Structured Data",
+    "Digital Policy"
   ]
 };
 
 const timeline = [
   {
-    period: "২০২৩ — বর্তমান",
-    title: "সিনিয়র আর্কিটেক্ট",
-    description: "একটি শীর্ষস্থানীয় আন্তর্জাতিক টেক ফার্মে এন্টারপ্রাইজ লেভেল সিস্টেম আর্কিটেকচার ও স্কেলেবিলিটি ডিজাইনের দায়িত্বে। পাশাপাশি ওপেন সোর্স ও ডেভেলপার কমিউনিটিতে সক্রিয় অবদান।"
+    period: "২০২৫ — বর্তমান",
+    title: "উইকিমিডিয়া স্টুয়ার্ড ও গ্লোবাল গভর্নেন্স",
+    description: "বিশ্বব্যাপী উন্মুক্ত জ্ঞান ইকোসিস্টেমের গ্লোবাল ট্রাস্ট অ্যান্ড সেফটি অপারেশন, সংবেদনশীল পারমিশন হ্যান্ডলিং এবং প্ল্যাটফর্ম ইন্টিগ্রিটি নিশ্চিতকরণের দায়িত্ব। কেনিয়ার নাইরোবিতে অনুষ্ঠিত উইকিম্যানিয়া ২০২৫ এবং ইতালির মিলানে উইকিমিডিয়া হ্যাকাথন ২০২৬ এর পূর্ণ স্কলারশিপ প্রাপক।"
   },
   {
-    period: "২০১৯ — ২০২২",
-    title: "ভ্রমণ ও জীবনবোধ",
-    description: "ইউরোপ ও এশিয়ার প্রায় ১৫টি দেশ ভ্রমণ। প্রাচীন ইতিহাস ও সংস্কৃতির সাথে আধুনিক প্রযুক্তির মেলবন্ধন পর্যবেক্ষণ এবং নিয়মিত ভ্রমণ ডায়েরি রচনা।"
+    period: "২০২৩ — ২০২৪",
+    title: "প্রধান সমন্বয়ক ও প্রকল্প প্রশাসক",
+    description: "ঢাকা উইকিমিডিয়া কমিউনিটির চিফ কোঅর্ডিনেটর হিসেবে স্থানীয় ভলান্টিয়ার কমিউনিটি পরিচালনা; উইকিপিডিয়া, উইকিউপাত্ত (Wikidata) ও উইকিভ্রমণ (Wikivoyage) প্রশাসক; এবং উইকি লাভস আর্থ ২০২৫ আন্তর্জাতিক সমন্বয়কের দায়িত্ব পালন।"
   },
   {
-    period: "২০১৪ — ২০১৮",
-    title: "ক্যারিয়ারের সূচনা ও ভিত্তি",
-    description: "ফুল-স্ট্যাক সফটওয়্যার ইঞ্জিনিয়ার হিসেবে কর্মজীবন শুরু। লোকাল স্টার্টআপ ইকোসিস্টেমে হাই-ট্রাফিক অ্যাপ্লিকেশন তৈরিতে গুরুত্বপূর্ণ অবদান।"
+    period: "শিক্ষা ও প্রাতিষ্ঠানিক ভিত্তি",
+    title: "বুয়েট (BUET) ও গণিত অনুষদ",
+    description: "বাংলাদেশ প্রকৌশল বিশ্ববিদ্যালয় (BUET) থেকে পোস্ট গ্র্যাজুয়েট ডিপ্লোমা ইন বিজনেস আইটি এবং গণিতে স্নাতক ডিগ্রি অর্জন। গাণিতিক বিশ্লেষণ এবং ডেটা-ড্রিভেন সিদ্ধান্তের মেলবন্ধনে কমিউনিটি উন্নয়ন।"
   }
 ];
 
 const topics = [
-  "সফটওয়্যার আর্কিটেকচার",
-  "ভ্রমণ ও অন্বেষণ",
-  "প্রযুক্তি দর্শন",
-  "ওপেন সোর্স",
-  "সিস্টেম ডিজাইন",
-  "বাংলা সাহিত্য",
-  "ধীরস্থির জীবনযাপন"
+  "উইকিমিডিয়া স্টুয়ার্ড",
+  "উন্মুক্ত জ্ঞান (Open Knowledge)",
+  "স্ট্রাকচার্ড ডেটা (Wikidata)",
+  "ডিজিটাল পলিসি ও গভর্নেন্স",
+  "গণিত (Mathematics)",
+  "ওপেনস্ট্রিটম্যাপ (OpenStreetMap)",
+  "বিজনেস আইটি ও অ্যানালিটিক্স",
+  "কমিউনিটি লিডারশিপ"
 ];
 ---
 
 <BaseLayout
   title="আমার সম্পর্কে"
-  description="মুহাম্মদ ইয়াহিয়ার পরিচিতি, অভিজ্ঞতা ও জীবনপঞ্জিকা। সফটওয়্যার ইঞ্জিনিয়ারিং, ভ্রমণ অভিজ্ঞতা এবং জীবনদর্শনের মেলবন্ধন।"
+  description="মুহাম্মদ ইয়াহিয়ার পরিচিতি, অভিজ্ঞতা ও কর্মজীবন। ডেভেলপমেন্ট প্রফেশনাল, উইকিমিডিয়া স্টুয়ার্ড এবং উন্মুক্ত জ্ঞান গবেষক।"
   activeNav="about"
   seo={{
     title: "আমার সম্পর্কে",
-    description: "মুহাম্মদ ইয়াহিয়ার পরিচিতি, অভিজ্ঞতা ও জীবনপঞ্জিকা।",
+    description: "মুহাম্মদ ইয়াহিয়ার পরিচিতি, অভিজ্ঞতা ও কর্মজীবন।",
+    image: "/images/yahya.png",
     type: "profile",
     jsonLd: personJsonLd
   }}
@@ -78,18 +89,18 @@ const topics = [
 
         <div class="font-body text-base sm:text-lg text-slate dark:text-dark-muted space-y-4 leading-relaxed">
           <p>
-            আমি <strong class="text-ink dark:text-gold font-semibold">মুহাম্মদ ইয়াহিয়া</strong>। একজন প্রযুক্তিবিদ, লেখক এবং পর্যটক। প্রযুক্তির গভীরে ডুব দিয়ে মানুষের জীবনের সহজ সমাধান খোঁজার পাশাপাশি, পৃথিবীর পথে পথে ঘুরে বেড়িয়ে জীবনের অর্থ অন্বেষণ করাই আমার চিরন্তন আগ্রহ।
+            আমি <strong class="text-ink dark:text-gold font-semibold">মুহাম্মদ ইয়াহিয়া</strong>। একজন ডেভেলপমেন্ট প্রফেশনাল, উইকিমিডিয়া স্টুয়ার্ড এবং উন্মুক্ত জ্ঞান গবেষক। প্রযুক্তি, নীতিমালা (Policy) এবং তৃণমূল কমিউনিটির সংযোগস্থলে কাজ করাই আমার মূল ক্ষেত্র।
           </p>
           <p>
-            দীর্ঘ এক যুগের বেশি সময় ধরে আমি সফটওয়্যার ইঞ্জিনিয়ারিং পেশায় যুক্ত আছি। কোডের জটিল বিন্যাস থেকে শুরু করে ডিস্ট্রিবিউটেড সিস্টেম আর্কিটেকচার—সবকিছুতেই আমি খুঁজে পাই এক অদ্ভুত শৃঙ্খলা ও সৌন্দর্য। আমার বিশ্বাস, প্রযুক্তি শুধু যন্ত্রের উন্নয়ন নয়, এটি মানুষের চিন্তার বিস্তৃতির এক শক্তিশালী মাধ্যম।
+            গণিত ও তথ্যপ্রযুক্তির প্রাতিষ্ঠানিক ভিত্তি থেকে আমি যেকোনো জটিল কমিউনিটি চ্যালেঞ্জে অ্যানালিটিক্যাল নির্ভুলতা এবং মানবিক নেতৃত্বের সমন্বয় ঘটাই। বৈশ্বিক উন্মুক্ত জ্ঞান আন্দোলনে স্বল্প-প্রতিনিধিত্বশীল ভাষা সম্প্রদায়গুলোকে শক্তিশালী করা এবং মুক্ত বিশ্বকোষের ট্রাস্ট ও সেফটি নিশ্চিতে আমি নিরলসভাবে কাজ করে যাচ্ছি।
           </p>
 
           <blockquote class="pl-6 border-l-4 border-maroon dark:border-gold font-tiro text-lg sm:text-xl italic text-ink dark:text-gold my-6 py-1 bg-gold/5 dark:bg-gold/5">
-            "প্রযুক্তি আর জীবনবোধ—দুটোই আসলে এক বিন্দুতে এসে মেলে, যদি আমরা দেখতে জানি।"
+            "প্রযুক্তি, ডিজিটাল নীতিমালা ও তৃণমূল মানুষের স্বতঃস্ফূর্ত অংশগ্রহণের মেলবন্ধনেই উন্মুক্ত জ্ঞানের স্থায়ী ভবিষ্যৎ রচিত হয়।"
           </blockquote>
 
           <p>
-            পাহাড়ের চূড়ায় কুয়াশার নিঃশব্দ নৃত্য থেকে শুরু করে বইয়ের পাতার গন্ধ—প্রতিটি অভিজ্ঞতাই আমাকে নতুন করে ভাবতে শেখায়। এই ব্লগে আমি সেই ভাবনাগুলোই শব্দের ফ্রেমে ধরে রাখার চেষ্টা করি।
+            উইকিমিডিয়া স্টুয়ার্ড হিসেবে বৈশ্বিক প্রকল্পের নিরাপত্তা ও নীতি নির্ধারণের পাশাপাশি স্থানীয় পর্যায়ে নতুন স্বেচ্ছাসেবক তৈরি ও প্রশিক্ষণ প্রদানে আমি নিবেদিত।
           </p>
         </div>
 
@@ -102,19 +113,21 @@ const topics = [
             যোগাযোগ করুন
           </a>
           <a
-            href="/blog"
+            href="https://meta.wikimedia.org/wiki/User:Yahya"
+            target="_blank"
+            rel="noopener noreferrer"
             class="inline-flex items-center justify-center px-6 py-3 border-2 border-outline/40 dark:border-dark-border text-ink dark:text-dark-text hover:border-gold hover:text-secondary dark:hover:text-gold font-semibold text-xs sm:text-sm uppercase tracking-wider transition-colors duration-300 rounded-none"
           >
-            লেখাগুলো পড়ুন
+            উইকিমিডিয়া প্রোফাইল &rarr;
           </a>
         </div>
       </div>
 
-      <!-- Tactile Photo Frame -->
+      <!-- Tactile Photo Frame with Real Photo -->
       <div class="w-full sm:w-64 lg:w-72 shrink-0 self-center lg:self-start">
         <div class="relative w-full aspect-[3/4] p-2 border border-outline/30 dark:border-dark-border bg-surface-container dark:bg-dark-card shadow-md">
           <img
-            src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&w=800&auto=format&fit=crop"
+            src="/images/yahya.png"
             alt="মুহাম্মদ ইয়াহিয়ার প্রতিকৃতি"
             class="w-full h-full object-cover filter grayscale hover:grayscale-0 transition-all duration-700"
             loading="eager"
@@ -130,10 +143,10 @@ const topics = [
     <section class="space-y-10 pt-8 border-t border-outline/20 dark:border-dark-border" aria-label="জীবনপঞ্জিকা">
       <div class="space-y-2">
         <h3 class="font-tiro text-2xl sm:text-3xl font-bold text-ink dark:text-dark-text">
-          জীবনপঞ্জিকা
+          জীবনপঞ্জিকা ও ভূমিকা
         </h3>
         <p class="text-sm text-slate dark:text-dark-muted">
-          কাজের পথচলা ও অভিজ্ঞতার উল্লেখযোগ্য মাইলফলক
+          উন্মুক্ত জ্ঞান আন্দোলন, প্রাতিষ্ঠানিক শিক্ষা ও নেতৃত্বের পথচলা
         </p>
       </div>
 
@@ -161,9 +174,9 @@ const topics = [
     </section>
 
     <!-- 3. TOPICS & INTERESTS CHIPS -->
-    <section class="space-y-6 pt-8 border-t border-outline/20 dark:border-dark-border" aria-label="আগ্রহের ক্ষেত্র">
+    <section class="space-y-6 pt-8 border-t border-outline/20 dark:border-dark-border" aria-label="দক্ষতা ও গবেষণার ক্ষেত্র">
       <h3 class="font-tiro text-xl font-bold text-ink dark:text-dark-text">
-        আগ্রহ ও গবেষণার বিষয়সমূহ
+        দক্ষতা ও গবেষণার বিষয়সমূহ
       </h3>
       <div class="flex flex-wrap gap-2.5">
         {topics.map((topic) => (

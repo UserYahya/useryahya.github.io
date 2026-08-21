@@ -5,8 +5,9 @@ dist/
 # Dependencies
 node_modules/
 
-# Design mockups (Excluded from public repo)
+# Temporary reference files
 UI/
+index-old.html
 
 # Environment and logs
 .env
