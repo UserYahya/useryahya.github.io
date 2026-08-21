@@ -14,8 +14,8 @@ const olderPosts = sortedPosts.slice(1);
 ---
 
 <BaseLayout
-  title="মুহাম্মদ ইয়াহিয়া | উইকিমিডিয়া স্টুয়ার্ড ও ডেভেলপমেন্ট প্রফেশনাল"
-  description="মুহাম্মদ ইয়াহিয়ার ব্যক্তিগত পোর্টফোলিও ও বাংলা ব্লগ। উইকিমিডিয়া স্টুয়ার্ড, ওপেন নলেজ গভর্নেন্স, প্রযুক্তি ও কমিউনিটি লিডারশিপের কথকতা।"
+  title="মুহাম্মদ ইয়াহিয়া | উইকিমিডিয়া স্টুয়ার্ড ও উন্মুক্ত জ্ঞানের অভিযাত্রী"
+  description="মুহাম্মদ ইয়াহিয়ার ব্যক্তিগত পোর্টফোলিও ও বাংলা ব্লগ। উইকিমিডিয়া স্টুয়ার্ড, উন্মুক্ত জ্ঞানের দর্শন, প্রযুক্তি ও সমাজভাবনার এক কাব্যিক ক্যানভাস।"
   activeNav="home"
 >
   <div class="space-y-16 sm:space-y-24">
@@ -24,17 +24,17 @@ const olderPosts = sortedPosts.slice(1);
       <div class="flex flex-col-reverse md:flex-row gap-8 items-start justify-between">
         <div class="space-y-6 flex-1">
           <div class="inline-flex items-center gap-2 px-3 py-1 bg-gold/15 dark:bg-gold/10 border border-gold/40 text-xs font-semibold text-secondary dark:text-gold uppercase tracking-widest">
-            স্বাগতম
+            শুভাগমন
           </div>
           
           <h2 class="font-tiro text-3xl sm:text-4xl lg:text-5xl font-bold text-ink dark:text-dark-text leading-[1.3] text-balance">
-            আমি ইয়াহিয়া। আমি একজন <span class="text-secondary dark:text-gold italic underline decoration-gold/40 underline-offset-8">উইকিমিডিয়া স্টুয়ার্ড</span> ও ডেভেলপমেন্ট প্রফেশনাল।
+            আমি ইয়াহিয়া। আমি একজন <span class="text-secondary dark:text-gold italic underline decoration-gold/40 underline-offset-8">উন্মুক্ত জ্ঞানের অনুরাগী</span> এবং এখানে আমি জীবনবোধ, মুক্ত জ্ঞান ও ভ্রমণ নিয়ে লিখি।
           </h2>
 
           <div class="space-y-3.5 pt-2 text-slate dark:text-dark-muted font-body text-base sm:text-lg">
-            <p class="brush-bullet">উন্মুক্ত জ্ঞান (Open Knowledge), ডিজিটাল ট্রাস্ট অ্যান্ড সেফটি ও গ্লোবাল গভর্নেন্স নিয়ে কাজ করি</p>
-            <p class="brush-bullet">বুয়েট (BUET) থেকে পোস্ট গ্র্যাজুয়েট ডিপ্লোমা ইন বিজনেস আইটি এবং গণিতে স্নাতক</p>
-            <p class="brush-bullet">বাংলা উইকিকানেক্টের সহ-প্রতিষ্ঠাতা ও আন্তর্জাতিক উইকিমিডিয়া আন্দোলনের সক্রিয় সংগঠক</p>
+            <p class="brush-bullet">উন্মুক্ত জ্ঞান চর্চা, ডিজিটাল ট্রাস্ট অ্যান্ড সেফটি এবং বৈশ্বিক প্রযুক্তিগত নীতি-নির্ধারণ নিয়ে কাজ করছি</p>
+            <p class="brush-bullet">গণিতে স্নাতক শেষে বর্তমানে বুয়েটে (BUET) বিজনেস ইনফরমেশন টেকনোলজি নিয়ে অধ্যয়ন করছি</p>
+            <p class="brush-bullet">বাংলা উইকিকানেক্টের সহ-প্রতিষ্ঠাতা এবং আন্তর্জাতিক উইকিমিডিয়া আন্দোলনের একজন সক্রিয় সংগঠক</p>
           </div>
 
           <div class="pt-4 flex flex-wrap gap-4">
@@ -42,13 +42,13 @@ const olderPosts = sortedPosts.slice(1);
               href="/about"
               class="inline-flex items-center justify-center px-6 py-3 bg-gold hover:bg-maroon text-ink hover:text-paper dark:text-ink dark:hover:text-paper font-semibold text-xs sm:text-sm uppercase tracking-wider transition-colors duration-300 rounded-none shadow-sm"
             >
-              আমার সম্পর্কে বিস্তারিত
+              আমার অন্তর্লোকের খোঁজ
             </a>
             <a
               href="/blog"
               class="inline-flex items-center justify-center px-6 py-3 border-2 border-outline/40 dark:border-dark-border text-ink dark:text-dark-text hover:border-gold hover:text-secondary dark:hover:text-gold font-semibold text-xs sm:text-sm uppercase tracking-wider transition-colors duration-300 rounded-none"
             >
-              সব লেখাগুলো পড়ুন
+              অক্ষরের আঙিনায় পদচারণা
             </a>
           </div>
         </div>
@@ -72,13 +72,13 @@ const olderPosts = sortedPosts.slice(1);
 
     <!-- 2. LATEST / FEATURED JOURNAL ENTRY -->
     {featuredPost && (
-      <section class="space-y-6" aria-label="সাম্প্রতিক লেখা">
+      <section class="space-y-6" aria-label="সাম্প্রতিক ভাবনাগুচ্ছ">
         <div class="flex items-center justify-between border-b border-outline/20 dark:border-dark-border pb-3">
           <h3 class="font-tiro text-xl sm:text-2xl font-bold text-secondary dark:text-gold flex items-center gap-2">
-            <span>সাম্প্রতিক লেখা</span>
+            <span>সাম্প্রতিক ভাবনাগুচ্ছ</span>
           </h3>
           <a href="/blog" class="text-xs font-semibold text-slate dark:text-dark-muted hover:text-gold transition-colors">
-            সব দেখুন &rarr;
+            অক্ষরের গভীরে &rarr;
           </a>
         </div>
 
@@ -121,9 +121,9 @@ const olderPosts = sortedPosts.slice(1);
 
     <!-- 3. OLDER JOURNAL ENTRIES (JOURNAL INDEX FORMAT) -->
     {olderPosts.length > 0 && (
-      <section class="space-y-6 pt-4" aria-label="পূর্ববর্তী লেখাগুলো">
+      <section class="space-y-6 pt-4" aria-label="স্মৃতির পাতা থেকে">
         <h3 class="font-tiro text-xl sm:text-2xl font-bold text-ink dark:text-dark-text border-b-2 border-gold pb-3 inline-block">
-          পূর্ববর্তী লেখাগুলো
+          স্মৃতির পাতা থেকে
         </h3>
 
         <div class="divide-y divide-transparent">
