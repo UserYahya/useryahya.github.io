@@ -1,7 +1,7 @@
 ---
 title: "কেরালায় শেষ দিন: ফ্লাইট প্রায় মিসই করে ফেলেছিলাম!"
 description: "টানা দুই দিন মুন্নার, সুরিয়ানেলি ও কোলুক্কুমালাইয়ের রূপ উপভোগের পর কোচিতে শেষ দিন। শান্ত এক সকালের পর বিকেলে এয়ারপোর্টের পথে শুরু হওয়া রুদ্ধশ্বাস দৌড়ঝাঁপ এবং ফ্লাইট প্রায় মিস হতে গিয়েও নাটকীয়ভাবে বিমানে ওঠার অভিজ্ঞতা।"
-pubDate: 2024-10-20
+pubDate: 2026-09-17
 category: "ভ্রমণ কাহিনী"
 tags: ["ভ্রমণ", "কেরালা", "কোচি", "ভারত", "ভ্রমণ ডায়েরি"]
 heroImage: "https://thumb.wikimedia.org/wikipedia/commons/thumb/9/9a/Kolukkumalai_sunrise_view_point_39.jpg/1280px-Kolukkumalai_sunrise_view_point_39.jpg"
