@@ -3,27 +3,43 @@ export interface Props {
   title?: string;
   description?: string;
   image?: string;
+  imageAlt?: string;
   canonicalURL?: string | URL;
   type?: 'website' | 'article' | 'profile';
   publishedTime?: Date;
   modifiedTime?: Date;
+  section?: string;
   tags?: string[];
+  noindex?: boolean;
   jsonLd?: Record<string, any>;
 }
 
 const siteTitle = "মুহাম্মদ ইয়াহিয়া | উইকিমিডিয়া স্টুয়ার্ড ও উন্মুক্ত জ্ঞানের অভিযাত্রী";
+const siteName = "মুহাম্মদ ইয়াহিয়া";
 const siteDescription = "মুহাম্মদ ইয়াহিয়ার ব্যক্তিগত পোর্টফোলিও ও বাংলা ব্লগ। উইকিমিডিয়া স্টুয়ার্ড, উন্মুক্ত জ্ঞানের দর্শন, প্রযুক্তি ও সমাজভাবনার এক কাব্যিক ক্যানভাস।";
 const siteUrl = "https://yahya.bd";
+const defaultImage = `${siteUrl}/images/og.png`;
+
+// Profiles that identify the same person (helps search engines build a knowledge panel)
+const sameAs = [
+  "https://meta.wikimedia.org/wiki/User:Yahya",
+  "https://github.com/UserYahya",
+  "https://linkedin.com/in/ieahhiea",
+  "https://mudra.yahya.bd",
+];
 
 const {
   title,
   description = siteDescription,
-  image = `${siteUrl}/images/og.png`,
+  image = defaultImage,
+  imageAlt,
   canonicalURL = new URL(Astro.url.pathname, siteUrl),
   type = 'website',
   publishedTime,
   modifiedTime,
+  section,
   tags = [],
+  noindex = false,
   jsonLd,
 } = Astro.props;
 
@@ -32,43 +48,67 @@ if (title) {
   if (title.includes('ইয়াহিয়া')) {
     pageTitle = title;
   } else {
-    pageTitle = `${title} | মুহাম্মদ ইয়াহিয়া`;
+    pageTitle = `${title} | ${siteName}`;
   }
 }
 
 const imageUrl = image.startsWith('http') ? image : `${siteUrl}${image.startsWith('/') ? '' : '/'}${image}`;
+const canonical = canonicalURL.toString();
 
-// Default Website JSON-LD if none provided
-const defaultJsonLd = jsonLd || {
-  "@context": "https://schema.org",
-  "@type": type === 'article' ? 'BlogPosting' : 'WebSite',
-  "name": pageTitle,
-  "url": canonicalURL.toString(),
-  "description": description,
+const person = {
+  "@type": "Person",
+  "@id": `${siteUrl}/#person`,
+  "name": siteName,
+  "alternateName": "Yahya",
+  "url": `${siteUrl}/about/`,
+  "image": `${siteUrl}/images/yahya.png`,
+  "sameAs": sameAs,
+};
+
+const website = {
+  "@type": "WebSite",
+  "@id": `${siteUrl}/#website`,
+  "url": `${siteUrl}/`,
+  "name": siteName,
+  "description": siteDescription,
   "inLanguage": "bn",
-  ...(type === 'article' ? {
-    "headline": title || pageTitle,
-    "image": [imageUrl],
-    "datePublished": publishedTime?.toISOString(),
-    "dateModified": (modifiedTime || publishedTime)?.toISOString(),
-    "author": {
-      "@type": "Person",
-      "name": "মুহাম্মদ ইয়াহিয়া",
-      "url": "https://yahya.bd/about"
-    },
-    "publisher": {
-      "@type": "Person",
-      "name": "মুহাম্মদ ইয়াহিয়া",
-      "url": "https://yahya.bd"
-    },
-    "keywords": tags.join(", ")
-  } : {
-    "author": {
-      "@type": "Person",
-      "name": "মুহাম্মদ ইয়াহিয়া",
-      "url": "https://yahya.bd/about"
-    }
-  })
+  "publisher": { "@id": `${siteUrl}/#person` },
+};
+
+const article = type === 'article' ? {
+  "@type": "BlogPosting",
+  "@id": `${canonical}#article`,
+  "mainEntityOfPage": canonical,
+  "url": canonical,
+  "headline": title || pageTitle,
+  "description": description,
+  "image": [imageUrl],
+  "datePublished": publishedTime?.toISOString(),
+  "dateModified": (modifiedTime || publishedTime)?.toISOString(),
+  "inLanguage": "bn",
+  "author": { "@id": `${siteUrl}/#person` },
+  "publisher": { "@id": `${siteUrl}/#person` },
+  "isPartOf": { "@id": `${siteUrl}/#website` },
+  ...(section ? { "articleSection": section } : {}),
+  ...(tags.length > 0 ? { "keywords": tags.join(", ") } : {}),
+} : null;
+
+const breadcrumb = type === 'article' ? {
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    { "@type": "ListItem", "position": 1, "name": "হোম", "item": `${siteUrl}/` },
+    { "@type": "ListItem", "position": 2, "name": "ব্লগ", "item": `${siteUrl}/blog/` },
+    { "@type": "ListItem", "position": 3, "name": title || pageTitle, "item": canonical },
+  ],
+} : null;
+
+const graph = {
+  "@context": "https://schema.org",
+  "@graph": [website, person, article, breadcrumb, jsonLd].filter(Boolean).map((node) => {
+    // Page-supplied JSON-LD may carry its own @context; drop it inside the graph
+    const { ["@context"]: _ctx, ...rest } = node as Record<string, any>;
+    return rest;
+  }),
 };
 ---
 
@@ -76,39 +116,51 @@ const defaultJsonLd = jsonLd || {
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+<link rel="apple-touch-icon" href="/images/yahya.png" />
+<meta name="theme-color" content="#FAF8F3" media="(prefers-color-scheme: light)" />
+<meta name="theme-color" content="#0E1726" media="(prefers-color-scheme: dark)" />
 <meta name="generator" content={Astro.generator} />
 
 <!-- Canonical URL -->
-<link rel="canonical" href={canonicalURL} />
+<link rel="canonical" href={canonical} />
+<link rel="alternate" hreflang="bn" href={canonical} />
+<link rel="sitemap" type="application/xml" href="/sitemap-index.xml" />
 
 <!-- Primary Meta Tags -->
 <title>{pageTitle}</title>
 <meta name="title" content={pageTitle} />
 <meta name="description" content={description} />
-<meta name="author" content="মুহাম্মদ ইয়াহিয়া" />
+<meta name="author" content={siteName} />
+<meta name="robots" content={noindex ? 'noindex, follow' : 'index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1'} />
 {tags.length > 0 && <meta name="keywords" content={tags.join(", ")} />}
 
 <!-- Open Graph / Facebook -->
 <meta property="og:type" content={type} />
-<meta property="og:url" content={canonicalURL} />
+<meta property="og:url" content={canonical} />
 <meta property="og:title" content={pageTitle} />
 <meta property="og:description" content={description} />
 <meta property="og:image" content={imageUrl} />
-<meta property="og:site_name" content="মুহাম্মদ ইয়াহিয়া" />
+<meta property="og:image:alt" content={imageAlt || pageTitle} />
+{imageUrl === defaultImage && <meta property="og:image:width" content="1200" />}
+{imageUrl === defaultImage && <meta property="og:image:height" content="630" />}
+<meta property="og:site_name" content={siteName} />
 <meta property="og:locale" content="bn_BD" />
+{type === 'article' && <meta property="article:author" content={`${siteUrl}/about/`} />}
+{section && <meta property="article:section" content={section} />}
 {publishedTime && <meta property="article:published_time" content={publishedTime.toISOString()} />}
 {modifiedTime && <meta property="article:modified_time" content={modifiedTime.toISOString()} />}
 {tags.map((tag) => <meta property="article:tag" content={tag} />)}
 
 <!-- Twitter -->
-<meta property="twitter:card" content="summary_large_image" />
-<meta property="twitter:url" content={canonicalURL} />
-<meta property="twitter:title" content={pageTitle} />
-<meta property="twitter:description" content={description} />
-<meta property="twitter:image" content={imageUrl} />
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:url" content={canonical} />
+<meta name="twitter:title" content={pageTitle} />
+<meta name="twitter:description" content={description} />
+<meta name="twitter:image" content={imageUrl} />
+<meta name="twitter:image:alt" content={imageAlt || pageTitle} />
 
 <!-- RSS Feed Auto-discovery -->
 <link rel="alternate" type="application/rss+xml" title="মুহাম্মদ ইয়াহিয়ার ব্লগ আরএসএস ফিড" href="/rss.xml" />
 
 <!-- Structured Data (JSON-LD) -->
-<script type="application/ld+json" set:html={JSON.stringify(defaultJsonLd)} />
+<script type="application/ld+json" set:html={JSON.stringify(graph)} />

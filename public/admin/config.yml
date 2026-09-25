@@ -1,0 +1,79 @@
+# Sveltia CMS configuration — https://sveltiacms.app/en/docs
+# Open https://yahya.bd/admin/ and choose "Sign In with Token" (GitHub fine-grained token,
+# scoped to this repository with Contents: Read and write).
+backend:
+  name: github
+  repo: UserYahya/useryahya.github.io
+  branch: main
+  commit_messages:
+    create: 'নতুন লেখা: {{slug}}'
+    update: 'লেখা হালনাগাদ: {{slug}}'
+    delete: 'লেখা মুছে ফেলা: {{slug}}'
+    uploadMedia: 'ছবি আপলোড: {{path}}'
+    deleteMedia: 'ছবি মুছে ফেলা: {{path}}'
+
+site_url: https://yahya.bd
+display_url: https://yahya.bd
+logo_url: /favicon.svg
+
+media_folder: public/images/blog
+public_folder: /images/blog
+
+collections:
+  - name: blog
+    label: ব্লগ পোস্ট
+    label_singular: পোস্ট
+    folder: src/content/blog
+    extension: md
+    format: frontmatter
+    create: true
+    delete: true
+    # File name becomes the URL: https://yahya.bd/blog/<slug>/
+    slug:
+      template: '{{slug}}'
+      editable: [create]
+      hint: 'ইংরেজি ছোট হাতের অক্ষর ও হাইফেন ব্যবহার করুন, যেমন: kerala-last-day'
+      pattern: ['^[a-z0-9]+(-[a-z0-9]+)*$', 'শুধু a-z, 0-9 এবং হাইফেন (-) ব্যবহার করুন']
+    preview_path: 'blog/{{slug}}/'
+    summary: '{{title}} — {{pubDate}}'
+    sortable_fields:
+      fields: [pubDate, title]
+      default: { field: pubDate, direction: descending }
+    fields:
+      - { label: শিরোনাম, name: title, widget: string }
+      - label: সংক্ষিপ্ত বিবরণ
+        name: description
+        widget: text
+        hint: 'সার্চ রেজাল্ট ও সোশ্যাল শেয়ারে দেখাবে। ১২০–১৬০ অক্ষর আদর্শ।'
+      - label: প্রকাশের তারিখ
+        name: pubDate
+        widget: datetime
+        format: YYYY-MM-DD
+        date_format: YYYY-MM-DD
+        time_format: false
+      - label: হালনাগাদের তারিখ
+        name: updatedDate
+        widget: datetime
+        format: YYYY-MM-DD
+        date_format: YYYY-MM-DD
+        time_format: false
+        required: false
+      - label: বিভাগ
+        name: category
+        widget: select
+        options: ['ভ্রমণ কাহিনী', 'প্রযুক্তি', 'প্রবন্ধ', 'জীবনবোধ', 'উন্মুক্ত জ্ঞান']
+        hint: 'নতুন বিভাগ লাগলে public/admin/config.yml-এ যোগ করুন।'
+      - label: ট্যাগ
+        name: tags
+        widget: list
+        required: false
+        default: []
+      - label: কভার ছবি
+        name: heroImage
+        widget: image
+        required: false
+        hint: 'ছবি আপলোড করুন, অথবা উইকিমিডিয়া কমন্সের মতো কোনো ছবির লিংক দিন।'
+      - { label: কভার ছবির বিবরণ (alt), name: heroImageAlt, widget: string, required: false }
+      - { label: পড়ার সময়, name: readTime, widget: string, default: '৫ মিনিট' }
+      - { label: খসড়া (প্রকাশ করবেন না), name: draft, widget: boolean, default: false }
+      - { label: লেখা, name: body, widget: markdown }

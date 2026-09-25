@@ -28,7 +28,7 @@ const formattedDate = formatBanglaDate(pubDate);
 
 <article class="journal-item group flex flex-col sm:flex-row gap-6 py-8 border-b border-outline/15 dark:border-dark-border items-start w-full transition-all duration-300">
   {heroImage && (
-    <a href={`/blog/${slug}`} class="w-full sm:w-36 sm:h-28 h-48 shrink-0 overflow-hidden bg-surface-container dark:bg-dark-card border border-outline/20 dark:border-dark-border block" tab-index="-1" aria-hidden="true">
+    <a href={`/blog/${slug}/`} class="w-full sm:w-36 sm:h-28 h-48 shrink-0 overflow-hidden bg-surface-container dark:bg-dark-card border border-outline/20 dark:border-dark-border block" tab-index="-1" aria-hidden="true">
       <img
         src={heroImage}
         alt={heroImageAlt}
@@ -49,7 +49,7 @@ const formattedDate = formatBanglaDate(pubDate);
     </div>
 
     <h3 class="font-tiro text-xl sm:text-2xl font-bold leading-snug">
-      <a href={`/blog/${slug}`} class="text-ink dark:text-dark-text group-hover:text-primary dark:group-hover:text-gold transition-colors duration-200 brush-underline">
+      <a href={`/blog/${slug}/`} class="text-ink dark:text-dark-text group-hover:text-primary dark:group-hover:text-gold transition-colors duration-200 brush-underline">
         {title}
       </a>
     </h3>
