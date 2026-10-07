@@ -63,7 +63,7 @@ const formattedDate = formatBanglaDate(post.data.pubDate);
         <span class="w-1 h-1 rounded-full bg-outline/40"></span>
         <span>{post.data.readTime} পাঠ</span>
         <span class="w-1 h-1 rounded-full bg-outline/40"></span>
-        <span>লেখক: মুহাম্মদ ইয়াহিয়া</span>
+        <span>লেখক: {post.data.author || 'মুহাম্মদ ইয়াহিয়া'}</span>
       </div>
     </header>
 

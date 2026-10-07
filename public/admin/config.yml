@@ -61,7 +61,7 @@ collections:
       - label: বিভাগ
         name: category
         widget: select
-        options: ['ভ্রমণ কাহিনী', 'প্রযুক্তি', 'প্রবন্ধ', 'জীবনবোধ', 'উন্মুক্ত জ্ঞান']
+        options: ['ভ্রমণ কাহিনী', 'প্রযুক্তি', 'প্রবন্ধ', 'জীবনবোধ', 'উন্মুক্ত জ্ঞান', 'Engineering']
         hint: 'নতুন বিভাগ লাগলে public/admin/config.yml-এ যোগ করুন।'
       - label: ট্যাগ
         name: tags

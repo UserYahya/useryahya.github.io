@@ -12,6 +12,7 @@ const blog = defineCollection({
     category: z.string(),
     tags: z.array(z.string()).default([]),
     readTime: z.string().default('৫ মিনিট'),
+    author: z.string().optional(),
     draft: z.boolean().default(false),
   }),
 });
