@@ -4,7 +4,7 @@ description: "টানা দুই দিন মুন্নার, সুর�
 pubDate: 2026-09-17
 category: "ভ্রমণ কাহিনী"
 tags: ["ভ্রমণ", "কেরালা", "কোচি", "ভারত", "ভ্রমণ ডায়েরি"]
-heroImage: "https://thumb.wikimedia.org/wikipedia/commons/thumb/9/9a/Kolukkumalai_sunrise_view_point_39.jpg/1280px-Kolukkumalai_sunrise_view_point_39.jpg"
+heroImage: "https://upload.wikimedia.org/wikipedia/commons/thumb/9/9a/Kolukkumalai_sunrise_view_point_39.jpg/1280px-Kolukkumalai_sunrise_view_point_39.jpg"
 heroImageAlt: "কোলুক্কুমালাই সূর্যোদয়ের মনোরম দৃশ্য"
 readTime: "৫ মিনিট"
 ---

@@ -2,6 +2,7 @@
 import { getCollection, type CollectionEntry } from 'astro:content';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import { formatBanglaDate } from '../../utils/date';
+import { commonsThumb, PORTRAIT_FILE } from '../../consts';
 
 export async function getStaticPaths() {
   const posts = await getCollection('blog', ({ data }) => !data.draft);
@@ -104,7 +105,7 @@ const formattedDate = formatBanglaDate(post.data.pubDate);
     <div class="mt-12 p-6 sm:p-8 bg-surface-container/60 dark:bg-dark-card border border-outline/20 dark:border-dark-border flex flex-col sm:flex-row items-center sm:items-start gap-6 text-center sm:text-left">
       <div class="w-20 h-20 rounded-full overflow-hidden shrink-0 border-2 border-gold p-0.5">
         <img
-          src="https://thumb.wikimedia.org/wikipedia/commons/thumb/5/5f/Yahya_-_WikiConference_India_2026_-_Kochi_2026-09-04.jpg/1280px-Yahya_-_WikiConference_India_2026_-_Kochi_2026-09-04.jpg"
+          src={commonsThumb(PORTRAIT_FILE, 250)}
           alt="মুহাম্মদ ইয়াহিয়া"
           width="80"
           height="80"
