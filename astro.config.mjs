@@ -10,10 +10,12 @@ const postDates = new Map(
     .filter((file) => file.endsWith('.md') || file.endsWith('.mdx'))
     .map((file) => {
       const source = readFileSync(new URL(file, blogDir), 'utf-8');
-      const field = (name) => source.match(new RegExp(`^${name}:\s*["']?([^"'\r\n]+)`, 'm'))?.[1];
+      // Reads `name: value`, `name: "value"` or `name: 'value'`; an empty value (e.g. updatedDate: '') yields ''
+      const field = (name) =>
+        source.match(new RegExp(`^${name}:[ \\t]*["']?([^"'\\r\\n]*)`, 'm'))?.[1]?.trim();
       const slug = field('slug') || file.replace(/\.mdx?$/, '');
       const date = field('updatedDate') || field('pubDate');
-      return [`https://yahya.bd/blog/${slug}/`, date?.trim().slice(0, 10)];
+      return [`https://yahya.bd/blog/${slug}/`, date?.slice(0, 10)];
     })
 );
 

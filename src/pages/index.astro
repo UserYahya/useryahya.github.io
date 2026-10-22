@@ -4,6 +4,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 import JournalItem from '../components/JournalItem.astro';
 import Newsletter from '../components/Newsletter.astro';
 import { formatBanglaDate } from '../utils/date';
+import { commonsThumb, PORTRAIT_FILE } from '../consts';
 
 // Fetch and sort posts by publication date (descending)
 const allPosts = await getCollection('blog', ({ data }) => !data.draft);
@@ -39,7 +40,7 @@ const olderPosts = sortedPosts.slice(1);
 
           <div class="pt-4 flex flex-wrap gap-4">
             <a
-              href="/about/"
+              href="/contact/"
               class="inline-flex items-center justify-center px-6 py-3 bg-gold hover:bg-maroon text-ink hover:text-paper dark:text-ink dark:hover:text-paper font-semibold text-xs sm:text-sm uppercase tracking-wider transition-colors duration-300 rounded-none shadow-sm"
             >
               যোগাযোগ করুন
@@ -57,7 +58,7 @@ const olderPosts = sortedPosts.slice(1);
         <div class="w-36 h-36 sm:w-48 sm:h-48 md:w-52 md:h-52 shrink-0 relative self-center md:self-start">
           <div class="relative w-full h-full p-2 border border-outline/30 dark:border-dark-border bg-surface-container dark:bg-dark-card shadow-sm">
             <img
-              src="https://thumb.wikimedia.org/wikipedia/commons/thumb/5/5f/Yahya_-_WikiConference_India_2026_-_Kochi_2026-09-04.jpg/1280px-Yahya_-_WikiConference_India_2026_-_Kochi_2026-09-04.jpg"
+              src={commonsThumb(PORTRAIT_FILE, 500)}
               alt="মুহাম্মদ ইয়াহিয়ার প্রতিকৃতি"
               class="w-full h-full object-cover filter grayscale hover:grayscale-0 transition-all duration-700"
               loading="eager"

@@ -102,9 +102,12 @@ const breadcrumb = type === 'article' ? {
   ],
 } : null;
 
+// A page may supply a richer node for the same @id (the about page's Person); don't emit both
+const pageOverridesPerson = jsonLd?.["@id"] === person["@id"];
+
 const graph = {
   "@context": "https://schema.org",
-  "@graph": [website, person, article, breadcrumb, jsonLd].filter(Boolean).map((node) => {
+  "@graph": [website, pageOverridesPerson ? null : person, article, breadcrumb, jsonLd].filter(Boolean).map((node) => {
     // Page-supplied JSON-LD may carry its own @context; drop it inside the graph
     const { ["@context"]: _ctx, ...rest } = node as Record<string, any>;
     return rest;
@@ -116,7 +119,8 @@ const graph = {
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-<link rel="apple-touch-icon" href="/images/yahya.png" />
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
 <meta name="theme-color" content="#FAF8F3" media="(prefers-color-scheme: light)" />
 <meta name="theme-color" content="#0E1726" media="(prefers-color-scheme: dark)" />
 <meta name="generator" content={Astro.generator} />

@@ -1,12 +1,13 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
+import { commonsThumb, PORTRAIT_FILE } from '../consts';
 
 const personJsonLd = {
   "@context": "https://schema.org",
   "@type": "Person",
   "@id": "https://yahya.bd/#person",
-  "name": "Yahya",
-  "alternateName": "মুহাম্মদ ইয়াহিয়া",
+  "name": "মুহাম্মদ ইয়াহিয়া",
+  "alternateName": ["Muhammad Yahya", "Yahya"],
   "url": "https://yahya.bd/about/",
   "image": "https://yahya.bd/images/yahya.png",
   "jobTitle": "Development Professional",
@@ -95,7 +96,7 @@ const topics = [
   seo={{
     title: "আমার সম্পর্কে",
     description: "মুহাম্মদ ইয়াহিয়ার পরিচিতি, অভিজ্ঞতা ও কাজের ক্ষেত্র।",
-    image: "https://thumb.wikimedia.org/wikipedia/commons/thumb/5/5f/Yahya_-_WikiConference_India_2026_-_Kochi_2026-09-04.jpg/1280px-Yahya_-_WikiConference_India_2026_-_Kochi_2026-09-04.jpg",
+    image: commonsThumb(PORTRAIT_FILE, 1280),
     type: "profile",
     jsonLd: personJsonLd
   }}
@@ -162,7 +163,7 @@ const topics = [
       <div class="w-full sm:w-64 lg:w-72 shrink-0 self-center lg:self-start">
         <div class="relative w-full aspect-[3/4] p-2 border border-outline/30 dark:border-dark-border bg-surface-container dark:bg-dark-card shadow-md">
           <img
-            src="https://thumb.wikimedia.org/wikipedia/commons/thumb/5/5f/Yahya_-_WikiConference_India_2026_-_Kochi_2026-09-04.jpg/1280px-Yahya_-_WikiConference_India_2026_-_Kochi_2026-09-04.jpg"
+            src={commonsThumb(PORTRAIT_FILE, 960)}
             alt="মুহাম্মদ ইয়াহিয়ার প্রতিকৃতি"
             class="w-full h-full object-cover filter grayscale hover:grayscale-0 transition-all duration-700"
             loading="eager"
