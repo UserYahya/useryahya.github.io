@@ -1,0 +1,335 @@
+<!doctype html>
+<html lang="bn">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no">
+<meta name="theme-color" content="#1b1033">
+<title>বাংলা টেসলা — ঢাকা রিকশা রেস</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Galada&family=Hind+Siliguri:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink: #1d1428;
+    --plum: #1b1033;
+    --plum-2: #2c1754;
+    --cream: #fff7e8;
+    --pink: #ff4fa3;
+    --yellow: #ffd23f;
+    --green: #35d07f;
+    --sky: #4cc3ff;
+    --muted: #cbbbe8;
+    --red: #ff6b6b;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; height: 100%; background: #0d0820; overflow: hidden; }
+  body {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Hind Siliguri', 'Nirmala UI', 'Noto Sans Bengali', sans-serif;
+    color: var(--cream);
+    touch-action: none;
+    -webkit-user-select: none;
+    user-select: none;
+    -webkit-tap-highlight-color: transparent;
+  }
+  /* 16:9 stage; main.js sets its size and font-size (1em = 1/45 of its height) */
+  #stage { position: relative; overflow: hidden; background: var(--plum); line-height: 1.4; }
+  #game { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
+  button {
+    font: inherit;
+    font-weight: 700;
+    color: var(--ink);
+    background: var(--yellow);
+    border: 0.18em solid var(--ink);
+    border-radius: 999px;
+    box-shadow: 0.18em 0.18em 0 var(--ink);
+    cursor: pointer;
+    touch-action: manipulation;
+  }
+  button:hover { background: #ffe27a; }
+  button:active { transform: translate(0.12em, 0.12em); box-shadow: 0.06em 0.06em 0 var(--ink); }
+  button:disabled { background: #8a8296; color: #3d3550; cursor: default; }
+  button:focus-visible { outline: 0.15em solid var(--sky); outline-offset: 0.15em; }
+  button.off { background: #c9c2d6; }
+  .pill { padding: 0.25em 0.9em; font-size: 1em; }
+  .big { padding: 0.35em 1.2em; font-size: 1.35em; min-width: 11em; }
+
+  .screen { position: absolute; inset: 0; display: none; }
+  .screen.show { display: flex; }
+  .dim { background: rgba(13, 8, 32, 0.6); align-items: center; justify-content: center; }
+
+  /* title */
+  #title {
+    flex-direction: column;
+    align-items: center;
+    background: linear-gradient(rgba(27, 16, 51, 0.92), rgba(27, 16, 51, 0.35) 48%, rgba(27, 16, 51, 0) 62%, rgba(27, 16, 51, 0.55));
+  }
+  .logo {
+    margin: 0.35em 0 0;
+    font: 400 6em/1.15 'Galada', 'Nirmala UI', sans-serif;
+    color: var(--yellow);
+    -webkit-text-stroke: 0.025em var(--ink);
+    text-shadow: 0.05em 0.05em 0 var(--pink), 0.1em 0.1em 0 var(--green), 0.14em 0.14em 0 var(--ink);
+  }
+  .tag { font-size: 1.5em; color: #ffd9ec; margin-top: -0.2em; }
+  .menu { display: flex; flex-direction: column; gap: 0.7em; margin-top: 1.2em; align-items: center; }
+  .corner { position: absolute; bottom: 1em; display: flex; gap: 0.6em; align-items: center; }
+  .corner.left { left: 1em; }
+  .corner.right { right: 1em; }
+  .wallet {
+    font-weight: 700;
+    font-size: 1.3em;
+    color: var(--yellow);
+    background: rgba(29, 20, 40, 0.85);
+    border: 0.12em solid var(--yellow);
+    border-radius: 999px;
+    padding: 0.15em 0.9em;
+  }
+  .hint { position: absolute; bottom: 4.4em; font-size: 0.95em; color: var(--cream); background: rgba(29, 20, 40, 0.75); border-radius: 999px; padding: 0.2em 1em; }
+
+  /* panels */
+  .panel {
+    margin: auto;
+    background: rgba(27, 16, 51, 0.94);
+    border: 0.25em solid var(--ink);
+    border-radius: 1em;
+    box-shadow: 0 0 0 0.25em var(--pink), 0 0 0 0.5em var(--yellow);
+    padding: 1em 1.4em 1.3em;
+    max-height: 41em;
+    overflow: auto;
+  }
+  .panel.wide { width: 72em; }
+  .panel.small { width: 34em; text-align: center; }
+  .bar { display: flex; align-items: center; justify-content: space-between; gap: 1em; margin-bottom: 0.8em; }
+  h2 { margin: 0; font: 400 2.4em/1.2 'Galada', 'Nirmala UI', sans-serif; color: var(--yellow); }
+  h3 { margin: 0 0 0.4em; color: var(--yellow); font-size: 1.25em; }
+
+  /* routes */
+  .route-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.9em; }
+  .route {
+    text-align: left;
+    font-weight: 400;
+    color: var(--ink);
+    background: var(--cream);
+    border-radius: 0.8em;
+    padding: 0.7em 0.9em 0.8em;
+    display: flex;
+    flex-direction: column;
+    gap: 0.25em;
+  }
+  .route:hover { background: #fffdf6; }
+  .route .name { font-weight: 700; font-size: 1.15em; }
+  .route .meta { display: flex; justify-content: space-between; font-size: 0.9em; color: #5b4a75; }
+  .route .about { font-size: 0.92em; }
+  .route .stars { font-size: 1.3em; letter-spacing: 0.08em; color: #e0a800; }
+  .route .stars .no { color: #c9c2d6; }
+  .route.locked { background: #b9b0c8; color: #4b4260; }
+  .route .tagline { display: flex; gap: 0.4em; flex-wrap: wrap; }
+  .chip { font-size: 0.8em; font-weight: 700; border-radius: 999px; padding: 0 0.6em; background: var(--ink); color: var(--yellow); }
+
+  /* garage */
+  .garage { display: grid; grid-template-columns: 1fr 1fr; gap: 1.2em; }
+  .upgrade { display: grid; grid-template-columns: 1fr auto; gap: 0.2em 1em; align-items: center; padding: 0.7em 0; border-bottom: 0.08em solid rgba(255, 255, 255, 0.12); }
+  .upgrade .name { font-weight: 700; font-size: 1.15em; }
+  .upgrade .desc { font-size: 0.9em; color: var(--muted); }
+  .pips { color: var(--yellow); letter-spacing: 0.15em; }
+  .skins { display: grid; grid-template-columns: 1fr 1fr; gap: 0.8em; }
+  .skin { background: var(--cream); color: var(--ink); border: 0.15em solid var(--ink); border-radius: 0.8em; padding: 0.4em; text-align: center; }
+  .skin canvas { width: 100%; height: auto; display: block; }
+  .skin .name { font-weight: 700; }
+  .skin.on { box-shadow: 0 0 0 0.2em var(--green); }
+  .skin button { font-size: 0.9em; padding: 0.15em 0.8em; margin-top: 0.3em; }
+
+  /* help */
+  .help { display: grid; grid-template-columns: 1fr 1fr; gap: 1.6em; font-size: 1.05em; }
+  .help ul { margin: 0; padding-left: 1.1em; }
+  .help li { margin: 0.35em 0; }
+  kbd { font: 700 0.85em ui-monospace, Consolas, monospace; background: var(--cream); color: var(--ink); border-radius: 0.3em; padding: 0 0.4em; }
+
+  /* pause and results */
+  .stack { display: flex; flex-direction: column; gap: 0.7em; align-items: center; margin-top: 0.8em; }
+  .row { display: flex; gap: 0.7em; justify-content: center; flex-wrap: wrap; margin-top: 0.9em; }
+  .res-pos { font: 400 4.2em/1.1 'Galada', 'Nirmala UI', sans-serif; color: var(--yellow); -webkit-text-stroke: 0.02em var(--ink); text-shadow: 0.05em 0.05em 0 var(--pink); }
+  .res-route { color: var(--muted); }
+  .res-stars { font-size: 2.2em; letter-spacing: 0.1em; color: var(--yellow); margin: 0.1em 0; }
+  .res-stars .no { color: #4b3d66; }
+  .res-table { margin: 0.4em auto 0; border-collapse: collapse; min-width: 22em; font-size: 1.05em; }
+  .res-table td { padding: 0.15em 0.6em; text-align: left; }
+  .res-table td + td { text-align: right; font-weight: 700; }
+  .res-table tr.total td { border-top: 0.1em solid var(--muted); color: var(--yellow); font-size: 1.15em; }
+  .res-note { min-height: 1.4em; color: var(--green); font-weight: 700; margin-top: 0.4em; }
+
+  /* in-race controls */
+  .hud-btn { position: absolute; display: none; }
+  /* sits in the gap between the HUD panels drawn on the canvas */
+  #pauseBtn { top: 2.08em; left: 55.4em; width: 2.6em; height: 2.6em; padding: 0; font-size: 1em; border-radius: 50%; }
+  #touch { position: absolute; inset: auto 0 0 0; height: 12em; display: none; pointer-events: none; }
+  #touch .pad { position: absolute; bottom: 1em; display: flex; gap: 0.8em; pointer-events: auto; }
+  #touch .left { left: 1.2em; flex-direction: column; }
+  #touch .right { right: 1.2em; flex-direction: column; align-items: flex-end; }
+  #touch button { width: 4.4em; height: 4.4em; padding: 0; font-size: 1.1em; border-radius: 50%; opacity: 0.62; }
+  #touch button:active { opacity: 0.9; }
+  #touch .row { margin: 0; gap: 0.8em; }
+  #touch .small { width: 3.6em; height: 3.6em; font-size: 0.95em; }
+  #touch .pedal { width: 6.2em; border-radius: 1.2em; }
+  #stage.racing .hud-btn { display: block; }
+  #stage.racing.touch #touch { display: block; }
+
+  #rotate { position: fixed; inset: 0; display: none; flex-direction: column; align-items: center; justify-content: center; gap: 0.6em; background: var(--plum); font-size: 22px; text-align: center; z-index: 9; }
+  #rotate .icon { font-size: 64px; }
+  @media (orientation: portrait) and (pointer: coarse) {
+    #rotate { display: flex; }
+  }
+</style>
+</head>
+<body>
+<div id="stage">
+  <canvas id="game" aria-label="বাংলা টেসলা গেম"></canvas>
+
+  <button id="pauseBtn" class="hud-btn" data-act="pause" aria-label="বিরতি">❚❚</button>
+  <div id="touch">
+    <div class="pad left">
+      <button data-hold="up" aria-label="উপরের লেন">▲</button>
+      <button data-hold="down" aria-label="নিচের লেন">▼</button>
+    </div>
+    <div class="pad right">
+      <div class="row">
+        <button data-hold="bell" class="small">ঘণ্টি</button>
+        <button data-hold="boost" class="small">বুস্ট</button>
+      </div>
+      <div class="row">
+        <button data-hold="brake" class="pedal">ব্রেক</button>
+        <button data-hold="accel" class="pedal">গতি</button>
+      </div>
+    </div>
+  </div>
+
+  <section id="title" class="screen show">
+    <h1 class="logo">বাংলা টেসলা</h1>
+    <div class="tag">ঢাকা রিকশা রেস</div>
+    <nav class="menu">
+      <button class="big" data-go="routes">▶ রেস খেলুন</button>
+      <button class="big" data-act="endless">🚦 জ্যাম মোড</button>
+      <button class="big" data-go="garage">🔧 গ্যারেজ</button>
+      <button class="big" data-go="help">❓ কিভাবে খেলবেন</button>
+    </nav>
+    <div class="hint">কীবোর্ডে <kbd>Enter</kbd> চাপলেই রেস শুরু</div>
+    <div class="corner left">
+      <button class="pill" data-toggle="night"></button>
+      <button class="pill" data-toggle="music"></button>
+      <button class="pill" data-toggle="sfx"></button>
+    </div>
+    <div class="corner right"><div class="wallet">৳ <span data-wallet></span></div></div>
+  </section>
+
+  <section id="routes" class="screen">
+    <div class="panel wide">
+      <div class="bar">
+        <button class="pill" data-go="title">← পেছনে</button>
+        <h2>রুট বেছে নিন</h2>
+        <button class="pill" data-toggle="night"></button>
+      </div>
+      <div class="route-grid" id="routeGrid"></div>
+    </div>
+  </section>
+
+  <section id="garage" class="screen">
+    <div class="panel wide">
+      <div class="bar">
+        <button class="pill" data-go="title">← পেছনে</button>
+        <h2>গ্যারেজ</h2>
+        <div class="wallet">৳ <span data-wallet></span></div>
+      </div>
+      <div class="garage">
+        <div>
+          <h3>আপগ্রেড</h3>
+          <div id="upgrades"></div>
+        </div>
+        <div>
+          <h3>হুডের নকশা</h3>
+          <div class="skins" id="skins"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="help" class="screen">
+    <div class="panel wide">
+      <div class="bar">
+        <button class="pill" data-go="title">← পেছনে</button>
+        <h2>কিভাবে খেলবেন</h2>
+        <span></span>
+      </div>
+      <div class="help">
+        <div>
+          <h3>কন্ট্রোল</h3>
+          <ul>
+            <li><kbd>↑</kbd> <kbd>↓</kbd> বা <kbd>W</kbd> <kbd>S</kbd>: লেন বদল</li>
+            <li><kbd>→</kbd> বা <kbd>D</kbd> চেপে ধরুন: জোরে চালান (চার্জ বেশি খরচ হয়)</li>
+            <li><kbd>←</kbd> বা <kbd>A</kbd>: ব্রেক</li>
+            <li><kbd>Space</kbd>: ঘণ্টি (ক্রিং ক্রিং), সামনের লোকজন সরে যায়</li>
+            <li><kbd>Shift</kbd> বা <kbd>X</kbd>: বুস্ট, লুডিক্রাস মোড (১৫% চার্জ লাগে)</li>
+            <li><kbd>P</kbd> বা <kbd>Esc</kbd>: বিরতি · <kbd>M</kbd>: মিউজিক</li>
+            <li>মোবাইলে: স্ক্রিনের বাটন, বা উপরে-নিচে সোয়াইপ করে লেন বদল</li>
+          </ul>
+        </div>
+        <div>
+          <h3>নিয়ম</h3>
+          <ul>
+            <li>তিন প্রতিদ্বন্দ্বীর আগে গন্তব্যে পৌঁছান। ৩য় বা তার ভালো হলে পরের রুট খোলে।</li>
+            <li>প্রাইভেট কারে ধাক্কা: রিকশা থেমে যায়, ৳২০০ জরিমানা, আর "আমার ভুল হয়েছে, ক্ষমা করে দেন"।</li>
+            <li>মানুষকে ধাক্কা: গতি কমে, ৳৫০ জরিমানা, আর "রাগ করলা?"</li>
+            <li>বাস ৳১০০, সিএনজি ৳৫০। গর্ত আর পানিতে গতি কমে।</li>
+            <li>চার্জ শেষ হলে প্যাডেল মারতে হয়। ব্যাটারি, টাকা, বুস্ট আর চা কুড়ান। চা খেলে পরের জরিমানা মাফ।</li>
+            <li>জ্যাম মোড: যত দূর যাওয়া যায়। প্রাইভেট কারে ৪ বার ধাক্কা দিলেই খেলা শেষ।</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="pause" class="screen dim">
+    <div class="panel small">
+      <h2>বিরতি</h2>
+      <div class="stack">
+        <button class="big" data-act="resume">▶ চালিয়ে যান</button>
+        <button class="big" data-act="restart">↻ আবার শুরু</button>
+        <button class="big" data-act="quit">⌂ মেনু</button>
+      </div>
+      <div class="row">
+        <button class="pill" data-toggle="music"></button>
+        <button class="pill" data-toggle="sfx"></button>
+      </div>
+    </div>
+  </section>
+
+  <section id="results" class="screen dim">
+    <div class="panel small">
+      <div class="res-pos" id="resPos"></div>
+      <div class="res-route" id="resRoute"></div>
+      <div class="res-stars" id="resStars"></div>
+      <table class="res-table" id="resTable"></table>
+      <div class="res-note" id="resNote"></div>
+      <div class="row">
+        <button class="big" data-act="retry">↻ আবার</button>
+        <button class="big" data-act="next" id="btnNext">পরের রুট →</button>
+        <button class="big" data-act="quit">⌂ মেনু</button>
+      </div>
+    </div>
+  </section>
+</div>
+
+<div id="rotate">
+  <div class="icon">📱↻</div>
+  <div>ফোনটা আড়াআড়ি করে ধরুন</div>
+</div>
+
+<script src="src/art.js"></script>
+<script src="src/scenery.js"></script>
+<script src="src/audio.js"></script>
+<script src="src/race.js"></script>
+<script src="src/main.js"></script>
+</body>
+</html>
