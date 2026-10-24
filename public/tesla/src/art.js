@@ -196,11 +196,12 @@
   }
 
   // ------------------------------------------------------------------ night lighting
-  // At night each depth layer is drawn with its daytime colours and darkened with a
-  // multiply tint. Anything that gives off light queues an emit() while it is drawn,
-  // and is painted again on top of its layer at full strength.
+  // At night each depth layer is drawn with its daytime colours and darkened with its own
+  // multiply tint: the city darkest, the street a little lighter, and traffic and people
+  // lightest so they stay easy to see. Anything that gives off light queues an emit() while
+  // it is drawn, and is painted again on top of its layer at full strength.
 
-  const NIGHT_TINT = '#465087';
+  const TINT = { city: '#465087', street: '#5e68a8', sprites: '#9aa1d2' };
   const night = { on: false, items: [] };
 
   function beginNight(on) {
@@ -210,9 +211,10 @@
 
   const isNight = () => night.on;
 
-  // Runs fn(ctx) in the light pass, with the transform that is current now.
-  function emit(ctx, fn, op) {
-    if (night.on) night.items.push({ m: ctx.getTransform(), fn, op: op || 'source-over' });
+  // Runs fn(ctx) in the light pass, with the transform that is current now. ground lights
+  // (headlight beams) are laid on the road beneath the traffic instead of over it.
+  function emit(ctx, fn, op, ground) {
+    if (night.on) night.items.push({ m: ctx.getTransform(), fn, op: op || 'source-over', ground: !!ground });
   }
 
   function glow(ctx, x, y, r, color, alpha) {
@@ -239,26 +241,29 @@
       c.lineTo(x, y + 3);
       c.closePath();
       c.fill();
-    }, 'lighter');
+    }, 'lighter', true);
   }
 
-  // Draws one depth layer. At night the layer is painted off-screen, darkened on its own
-  // (so nearer layers still cover its lit windows), composited, and then its lights go on top.
+  // Off-screen canvases for night layers, per target canvas; slot lets two layers be in flight.
   const layerCache = new WeakMap();
-  function layer(ctx, draw) {
-    if (!night.on) {
-      draw(ctx);
-      return;
-    }
-    const cv = ctx.canvas;
-    let L = layerCache.get(cv);
-    if (!L) layerCache.set(cv, (L = { off: document.createElement('canvas'), tint: document.createElement('canvas') }));
+  function layerCanvases(cv, slot) {
+    let slots = layerCache.get(cv);
+    if (!slots) layerCache.set(cv, (slots = []));
+    const L = slots[slot] || (slots[slot] = { off: document.createElement('canvas'), tint: document.createElement('canvas') });
     for (const c of [L.off, L.tint]) {
       if (c.width !== cv.width || c.height !== cv.height) {
         c.width = cv.width;
         c.height = cv.height;
       }
     }
+    return L;
+  }
+
+  // Night only: paints a layer off-screen, darkened by its own tint, and returns it with the
+  // lights it emitted ({ img, lights }), for putLayer() to composite when the caller is ready.
+  function paintLayer(ctx, draw, tint, slot = 0) {
+    const cv = ctx.canvas;
+    const L = layerCanvases(cv, slot);
     const oc = L.off.getContext('2d');
     oc.setTransform(1, 0, 0, 1, 0, 0);
     oc.clearRect(0, 0, cv.width, cv.height);
@@ -268,27 +273,39 @@
     draw(oc);
     const lights = night.items;
     night.items = outer;
-    // darken only the pixels this layer painted: tint = layer alpha × NIGHT_TINT, then multiply
+    // darken only the pixels this layer painted: tint = layer alpha × tint colour, then multiply
     oc.setTransform(1, 0, 0, 1, 0, 0);
     const tc = L.tint.getContext('2d');
     tc.globalCompositeOperation = 'copy';
     tc.drawImage(L.off, 0, 0);
     tc.globalCompositeOperation = 'source-in';
-    tc.fillStyle = NIGHT_TINT;
+    tc.fillStyle = tint || TINT.sprites;
     tc.fillRect(0, 0, cv.width, cv.height);
     oc.globalCompositeOperation = 'multiply';
     oc.drawImage(L.tint, 0, 0);
     oc.globalCompositeOperation = 'source-over';
+    return { img: L.off, lights };
+  }
+
+  // Composites a painted layer, then the given lights (by default its own) on top of it.
+  function putLayer(ctx, layer, lights) {
     ctx.save();
     ctx.setTransform(1, 0, 0, 1, 0, 0);
-    ctx.drawImage(L.off, 0, 0);
-    for (const it of lights) {
+    ctx.drawImage(layer.img, 0, 0);
+    for (const it of lights || layer.lights) {
       ctx.setTransform(it.m);
       ctx.globalCompositeOperation = it.op;
       ctx.globalAlpha = 1;
       it.fn(ctx);
     }
     ctx.restore();
+  }
+
+  // Draws one depth layer: straight onto ctx by day; at night darkened on its own (so nearer
+  // layers still cover its lit windows), composited, and then its lights go on top.
+  function layer(ctx, draw, tint) {
+    if (!night.on) draw(ctx);
+    else putLayer(ctx, paintLayer(ctx, draw, tint, 0));
   }
 
   // ------------------------------------------------------------------ rickshaws
@@ -803,7 +820,7 @@
     circle(ctx, 101, -107.5, 4.2);
     paint(ctx, o.lights ? '#fffbe0' : '#ffe58a', OL, 1);
     if (night.on && (k.battery || o.lights)) {
-      beam(ctx, 104, -107, 320, 75, '#fff2c4', 0.4);
+      beam(ctx, 104, -107, 270, 60, '#fff2c4', 0.22);
       glow(ctx, 101, -107.5, 18, '#fff2c4', 0.95);
     }
     circle(ctx, BB[0], BB[1], 8.5);
@@ -973,7 +990,7 @@
       }
     }
     if (night.on) {
-      beam(ctx, 178, -60, 380, 60, '#fff4cf', 0.36);
+      beam(ctx, 178, -60, 300, 50, '#fff4cf', 0.2);
       glow(ctx, 171, -62, 20, '#fff4cf', 0.95);
       glow(ctx, -176, -61, 24, blink ? '#ffb703' : '#ff3b3b', 0.75);
       if (blink) glow(ctx, 173, -51, 22, '#ffb703', 0.8);
@@ -1215,7 +1232,7 @@
         fitText(c, 'মিরপুর - গুলিস্তান', 176, -225.5, 118, 13, FONT_UI, '#ffc46b', null, 0, '700');
         c.shadowBlur = 0;
       });
-      beam(ctx, 294, -62, 420, 80, '#fff4cf', 0.36);
+      beam(ctx, 294, -62, 320, 60, '#fff4cf', 0.2);
       glow(ctx, 287, -62, 24, '#fff4cf', 0.95);
       glow(ctx, -288, -71, 24, '#ff3b3b', 0.7);
     }
@@ -1322,7 +1339,7 @@
     rrect(ctx, -111, -68, 7, 18, 1.5);
     paint(ctx, '#ffffff', OL, 1);
     if (night.on) {
-      beam(ctx, 122, -64, 320, 70, '#fff4cf', 0.36);
+      beam(ctx, 122, -64, 260, 55, '#fff4cf', 0.2);
       glow(ctx, 116, -64, 18, '#fff4cf', 0.95);
       glow(ctx, -108, -40, 16, '#ff3b3b', 0.6);
     }
@@ -1964,7 +1981,7 @@
   BT.art = {
     TAU, OL, FONT_DISPLAY, FONT_UI,
     rrect, paint, circle, ellipse, tube, shade, hash, rng, bn, check, fitText, star, flower, bolt, easeOutBack, rgba,
-    beginNight, isNight, layer, emit, glow, beam,
+    TINT, beginNight, isNight, layer, paintLayer, putLayer, emit, glow, beam,
     SKINS, CAR_COLORS, PEOPLE_NAMES,
     PEOPLE_TYPES: Object.keys(PEOPLE),
     drawRickshaw, drawCar, drawBus, drawCNG, drawPerson,

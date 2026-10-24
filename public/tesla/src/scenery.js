@@ -417,11 +417,11 @@
     tiles(camX, 0.45, 222, (i, tx) => {
       const x = tx + hash(i * 97 + 1) * 10, w = 182 + hash(i * 97 + 2) * 34;
       emit(ctx, (c) => {
-        const g = c.createLinearGradient(0, FOOT_TOP, 0, ROAD_TOP + 30);
-        g.addColorStop(0, 'rgba(255,205,140,0.32)');
+        const g = c.createLinearGradient(0, FOOT_TOP, 0, ROAD_TOP + 10);
+        g.addColorStop(0, 'rgba(255,205,140,0.2)');
         g.addColorStop(1, 'rgba(255,205,140,0)');
         c.fillStyle = g;
-        c.fillRect(x + 6, FOOT_TOP, w - 12, ROAD_TOP + 30 - FOOT_TOP);
+        c.fillRect(x + 6, FOOT_TOP, w - 12, ROAD_TOP + 10 - FOOT_TOP);
       }, 'lighter');
     });
   }
@@ -444,24 +444,30 @@
     ctx.stroke();
   }
 
+  // Sodium lamp: a faint glow under the lamp and a soft pool on the footpath and kerb lane.
+  // Kept gentle, and drawn under the traffic, so it never washes over the rickshaws.
   function streetLight(c, lx) {
-    // sodium lamp: a cone down to the road and a pool of light on the tarmac
-    const cone = c.createLinearGradient(0, 130, 0, H);
-    cone.addColorStop(0, 'rgba(255,204,128,0.34)');
-    cone.addColorStop(1, 'rgba(255,204,128,0.03)');
+    const cone = c.createLinearGradient(0, 130, 0, ROAD_TOP + 40);
+    cone.addColorStop(0, 'rgba(255,204,128,0.1)');
+    cone.addColorStop(1, 'rgba(255,204,128,0)');
     c.fillStyle = cone;
     c.beginPath();
-    c.moveTo(lx - 8, 131);
-    c.lineTo(lx + 8, 131);
-    c.lineTo(lx + 190, H);
-    c.lineTo(lx - 170, H);
+    c.moveTo(lx - 6, 131);
+    c.lineTo(lx + 6, 131);
+    c.lineTo(lx + 80, ROAD_TOP + 40);
+    c.lineTo(lx - 70, ROAD_TOP + 40);
     c.closePath();
     c.fill();
-    const pool = c.createRadialGradient(lx + 10, 590, 10, lx + 10, 590, 200);
-    pool.addColorStop(0, 'rgba(255,204,128,0.22)');
+    const py = ROAD_TOP + 4;
+    const pool = c.createRadialGradient(lx + 5, py, 4, lx + 5, py, 150);
+    pool.addColorStop(0, 'rgba(255,204,128,0.2)');
     pool.addColorStop(1, 'rgba(255,204,128,0)');
+    c.save();
+    c.translate(lx + 5, py);
+    c.scale(1, 0.4);
     c.fillStyle = pool;
-    c.fillRect(lx - 200, 390, 420, 330);
+    c.fillRect(-150, -150, 300, 300);
+    c.restore();
   }
 
   function poles(ctx, camX) {
@@ -606,7 +612,7 @@
       paint(ctx, 'rgba(255,255,255,' + (0.8 * (1 - p)).toFixed(2) + ')');
     }
     if (A.isNight()) {
-      glow(ctx, x - 6, y - 60, 120, '#ffc978', 0.42);
+      glow(ctx, x - 6, y - 60, 100, '#ffc978', 0.3);
       emit(ctx, (c) => {
         circle(c, x - 6, y - 69, 3.5);
         c.fillStyle = '#fffbe6';
@@ -667,7 +673,7 @@
     paint(ctx, '#ffd98a', OL, 1);
     if (A.isNight()) {
       const f = 0.75 + Math.sin(t * 11) * 0.08;
-      glow(ctx, x - 52, y - 94, 90, '#ffb347', f * 0.6);
+      glow(ctx, x - 52, y - 94, 80, '#ffb347', f * 0.45);
       emit(ctx, (c) => {
         ellipse(c, x - 52, y - 94, 3.8, 5.2);
         c.fillStyle = '#fff1b8';
@@ -799,23 +805,39 @@
     ctx.restore();
   }
 
-  /* Draws the whole street. drawSprites(ctx) paints the vehicles and people on the road,
-   * inside the street layer so they share its night lighting. finishX (screen x) adds the
-   * finish line. Call A.beginNight(on) first to choose day or night. */
-  function drawScene(ctx, camX, t, drawSprites, finish) {
-    if (A.isNight()) nightSky(ctx, t);
-    else daySky(ctx, t);
-    skyline(ctx, camX);
-    A.layer(ctx, (c) => buildings(c, camX, t));
-    A.layer(ctx, (c) => {
+  /* Draws the whole street. draw is either a function that paints the traffic and people,
+   * or { ground, sprites }: ground paints things lying on the road (potholes, puddles) and
+   * sprites the traffic and people on top. finish ({ x, label }, screen x) adds a banner.
+   * Call A.beginNight(on) first to choose day or night. */
+  function drawScene(ctx, camX, t, draw, finish) {
+    const sprites = typeof draw === 'function' ? draw : draw && draw.sprites;
+    const decals = draw && draw.ground;
+    const night = A.isNight();
+    const street = (c) => {
       footpath(c, camX);
-      if (A.isNight()) shopSpills(c, camX);
+      if (night) shopSpills(c, camX);
       poles(c, camX);
       props(c, camX, t);
       road(c, camX);
       if (finish && finish.x > -200 && finish.x < W + 200) finishLine(c, finish.x, finish.label);
-      if (drawSprites) drawSprites(c);
-    });
+      if (decals) decals(c);
+    };
+    if (night) nightSky(ctx, t);
+    else daySky(ctx, t);
+    skyline(ctx, camX);
+    if (!night) {
+      buildings(ctx, camX, t);
+      street(ctx);
+      if (sprites) sprites(ctx);
+      return;
+    }
+    // Traffic is painted first, off-screen, so its headlight beams can be laid on the road
+    // beneath it; then the city, the street and the traffic are stacked back to front.
+    const traffic = sprites ? A.paintLayer(ctx, sprites, A.TINT.sprites, 1) : null;
+    A.layer(ctx, (c) => buildings(c, camX, t), A.TINT.city);
+    const ground = A.paintLayer(ctx, street, A.TINT.street, 0);
+    A.putLayer(ctx, ground, ground.lights.concat(traffic ? traffic.lights.filter((l) => l.ground) : []));
+    if (traffic) A.putLayer(ctx, traffic, traffic.lights.filter((l) => !l.ground));
   }
 
   window.BT.scenery = {

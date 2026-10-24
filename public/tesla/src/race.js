@@ -840,7 +840,7 @@
         if (this.len - cx < S.W + 300) banner = { x: this.len - cx, label: this.route.to };
         else if (cx < 500) banner = { x: 170 - cx, label: this.route.from };
       }
-      S.drawScene(ctx, cx, this.t, (c) => this.drawWorld(c, cx), banner);
+      S.drawScene(ctx, cx, this.t, { ground: (c) => this.drawDecals(c, cx), sprites: (c) => this.drawWorld(c, cx) }, banner);
       if (this.route.rain) S.drawRain(ctx, this.t, 1);
       this.drawFx(ctx, cx);
       ctx.restore();
@@ -851,14 +851,18 @@
       if (this.phase === 'over') this.drawOver(ctx);
     }
 
-    drawWorld(c, cx) {
-      const t = this.t;
+    // Potholes and puddles lie on the road, under the traffic and its headlights.
+    drawDecals(c, cx) {
       for (const o of this.objs) {
         const x = o.x - cx;
         if (x < -400 || x > S.W + 400) continue;
         if (o.kind === 'pothole') A.drawPothole(c, x, o.y, o.s);
-        else if (o.kind === 'puddle') A.drawPuddle(c, x, o.y, o.s * 0.7, t);
+        else if (o.kind === 'puddle') A.drawPuddle(c, x, o.y, o.s * 0.7, this.t);
       }
+    }
+
+    drawWorld(c, cx) {
+      const t = this.t;
       const list = [this.hero];
       for (const o of this.objs) if (!KIND[o.kind].decal && !o.gone) list.push(o);
       list.sort((a, b) => a.y - (KIND[a.kind] && KIND[a.kind].pickup ? 1 : 0) - (b.y - (KIND[b.kind] && KIND[b.kind].pickup ? 1 : 0)));
