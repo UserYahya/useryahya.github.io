@@ -5,6 +5,14 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no">
 <meta name="theme-color" content="#1b1033">
 <title>বাংলা টেসলা — ঢাকা রিকশা রেস</title>
+<!-- "Add to Home Screen" opens it full screen like an app -->
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" type="image/png" sizes="192x192" href="assets/icons/icon-192.png">
+<link rel="apple-touch-icon" href="assets/icons/icon-180.png">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="বাংলা টেসলা">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Galada&family=Hind+Siliguri:wght@400;600;700&display=swap" rel="stylesheet">
@@ -22,20 +30,29 @@
     --red: #ff6b6b;
   }
   * { box-sizing: border-box; }
-  html, body { margin: 0; height: 100%; background: #0d0820; overflow: hidden; }
+  html, body { margin: 0; height: 100%; background: #0d0820; overflow: hidden; overscroll-behavior: none; }
   body {
-    display: flex;
-    align-items: center;
-    justify-content: center;
     font-family: 'Hind Siliguri', 'Nirmala UI', 'Noto Sans Bengali', sans-serif;
     color: var(--cream);
     touch-action: none;
     -webkit-user-select: none;
     user-select: none;
+    -webkit-touch-callout: none;
     -webkit-tap-highlight-color: transparent;
   }
-  /* 16:9 stage; main.js sets its size and font-size (1em = 1/45 of its height) */
-  #stage { position: relative; overflow: hidden; background: var(--plum); line-height: 1.4; }
+  /* the screen minus the notch / home-indicator areas; main.js fits the stage inside it */
+  #safe {
+    position: fixed;
+    left: env(safe-area-inset-left, 0px);
+    right: env(safe-area-inset-right, 0px);
+    top: env(safe-area-inset-top, 0px);
+    bottom: env(safe-area-inset-bottom, 0px);
+    visibility: hidden;
+    pointer-events: none;
+  }
+  /* main.js sizes and places the stage (and turns it sideways on portrait phones);
+     1em is 1/45 of its height, but at least 11.5px */
+  #stage { position: absolute; overflow: hidden; background: var(--plum); line-height: 1.4; transform-origin: 50% 50%; }
   #game { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
   button {
     font: inherit;
@@ -88,6 +105,11 @@
     padding: 0.15em 0.9em;
   }
   .hint { position: absolute; bottom: 4.4em; font-size: 0.95em; color: var(--cream); background: rgba(29, 20, 40, 0.75); border-radius: 999px; padding: 0.2em 1em; }
+  #stage.touch .hint { display: none; }
+  /* fullscreen only where the browser supports it; flip only while the stage is turned sideways */
+  #stage.no-fs [data-toggle="fullscreen"] { display: none; }
+  [data-toggle="flip"] { display: none; }
+  #stage.turned [data-toggle="flip"] { display: inline-block; }
 
   /* panels */
   .panel {
@@ -97,8 +119,11 @@
     border-radius: 1em;
     box-shadow: 0 0 0 0.25em var(--pink), 0 0 0 0.5em var(--yellow);
     padding: 1em 1.4em 1.3em;
-    max-height: 41em;
+    max-height: calc(100% - 2em);
+    max-width: calc(100% - 2em);
     overflow: auto;
+    -webkit-overflow-scrolling: touch;
+    touch-action: pan-y;
   }
   .panel.wide { width: 72em; }
   .panel.small { width: 34em; text-align: center; }
@@ -107,7 +132,7 @@
   h3 { margin: 0 0 0.4em; color: var(--yellow); font-size: 1.25em; }
 
   /* routes */
-  .route-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.9em; }
+  .route-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(16em, 1fr)); gap: 0.9em; }
   .route {
     text-align: left;
     font-weight: 400;
@@ -130,7 +155,7 @@
   .chip { font-size: 0.8em; font-weight: 700; border-radius: 999px; padding: 0 0.6em; background: var(--ink); color: var(--yellow); }
 
   /* garage */
-  .garage { display: grid; grid-template-columns: 1fr 1fr; gap: 1.2em; }
+  .garage { display: grid; grid-template-columns: repeat(auto-fit, minmax(21em, 1fr)); gap: 1.2em; }
   .upgrade { display: grid; grid-template-columns: 1fr auto; gap: 0.2em 1em; align-items: center; padding: 0.7em 0; border-bottom: 0.08em solid rgba(255, 255, 255, 0.12); }
   .upgrade .name { font-weight: 700; font-size: 1.15em; }
   .upgrade .desc { font-size: 0.9em; color: var(--muted); }
@@ -143,7 +168,7 @@
   .skin button { font-size: 0.9em; padding: 0.15em 0.8em; margin-top: 0.3em; }
 
   /* help */
-  .help { display: grid; grid-template-columns: 1fr 1fr; gap: 1.6em; font-size: 1.05em; }
+  .help { display: grid; grid-template-columns: repeat(auto-fit, minmax(22em, 1fr)); gap: 1.6em; font-size: 1.05em; }
   .help ul { margin: 0; padding-left: 1.1em; }
   .help li { margin: 0.35em 0; }
   kbd { font: 700 0.85em ui-monospace, Consolas, monospace; background: var(--cream); color: var(--ink); border-radius: 0.3em; padding: 0 0.4em; }
@@ -163,8 +188,8 @@
 
   /* in-race controls */
   .hud-btn { position: absolute; display: none; }
-  /* sits in the gap between the HUD panels drawn on the canvas */
-  #pauseBtn { top: 2.08em; left: 55.4em; width: 2.6em; height: 2.6em; padding: 0; font-size: 1em; border-radius: 50%; }
+  /* main.js puts it in the top-right corner of the canvas HUD */
+  #pauseBtn { padding: 0; border-radius: 50%; }
   #touch { position: absolute; inset: auto 0 0 0; height: 12em; display: none; pointer-events: none; }
   #touch .pad { position: absolute; bottom: 1em; display: flex; gap: 0.8em; pointer-events: auto; }
   #touch .left { left: 1.2em; flex-direction: column; }
@@ -177,11 +202,22 @@
   #stage.racing .hud-btn { display: block; }
   #stage.racing.touch #touch { display: block; }
 
-  #rotate { position: fixed; inset: 0; display: none; flex-direction: column; align-items: center; justify-content: center; gap: 0.6em; background: var(--plum); font-size: 22px; text-align: center; z-index: 9; }
-  #rotate .icon { font-size: 64px; }
-  @media (orientation: portrait) and (pointer: coarse) {
-    #rotate { display: flex; }
-  }
+  /* phones (short stage): bigger text relative to the screen, so tighter layouts */
+  #stage.compact .logo { font-size: 4.4em; margin-top: 0.25em; }
+  #stage.compact .tag { font-size: 1.25em; }
+  #stage.compact .menu { display: grid; grid-template-columns: 1fr 1fr; gap: 0.6em; margin-top: 0.9em; }
+  #stage.compact .big { font-size: 1.2em; min-width: 9.5em; }
+  #stage.compact .corner { bottom: 0.6em; }
+  #stage.compact .panel { padding: 0.7em 1em 0.9em; }
+  #stage.compact h2 { font-size: 1.9em; }
+  #stage.compact .bar { margin-bottom: 0.5em; }
+  #stage.compact .results { width: 54em; }
+  #stage.compact .res-grid { display: grid; grid-template-columns: 1fr 1.15fr; gap: 1em; align-items: center; }
+  #stage.compact .res-table { min-width: 0; width: 100%; font-size: 0.95em; }
+  #stage.compact .res-pos { font-size: 2.6em; }
+  #stage.compact .res-stars { font-size: 1.6em; }
+  #stage.compact .stack { gap: 0.5em; margin-top: 0.5em; }
+  #stage.compact .row { margin-top: 0.6em; }
 </style>
 </head>
 <body>
@@ -220,6 +256,8 @@
       <button class="pill" data-toggle="night"></button>
       <button class="pill" data-toggle="music"></button>
       <button class="pill" data-toggle="sfx"></button>
+      <button class="pill" data-toggle="fullscreen"></button>
+      <button class="pill" data-toggle="flip">🔄 উল্টে দিন</button>
     </div>
     <div class="corner right"><div class="wallet">৳ <span data-wallet></span></div></div>
   </section>
@@ -273,6 +311,8 @@
             <li><kbd>Shift</kbd> বা <kbd>X</kbd>: বুস্ট, লুডিক্রাস মোড (১৫% চার্জ লাগে)</li>
             <li><kbd>P</kbd> বা <kbd>Esc</kbd>: বিরতি · <kbd>M</kbd>: মিউজিক</li>
             <li>মোবাইলে: স্ক্রিনের বাটন, বা উপরে-নিচে সোয়াইপ করে লেন বদল</li>
+            <li>ফোন আড়াআড়ি ধরুন। অটো-রোটেট বন্ধ থাকলেও খেলা নিজেই ঘুরে যায়; উল্টো দেখালে "🔄 উল্টে দিন" চাপুন।</li>
+            <li>iPhone-এ পুরো স্ক্রিনে খেলতে: Safari-র Share থেকে "Add to Home Screen" দিন।</li>
           </ul>
         </div>
         <div>
@@ -301,17 +341,23 @@
       <div class="row">
         <button class="pill" data-toggle="music"></button>
         <button class="pill" data-toggle="sfx"></button>
+        <button class="pill" data-toggle="fullscreen"></button>
+        <button class="pill" data-toggle="flip">🔄 উল্টে দিন</button>
       </div>
     </div>
   </section>
 
   <section id="results" class="screen dim">
-    <div class="panel small">
-      <div class="res-pos" id="resPos"></div>
-      <div class="res-route" id="resRoute"></div>
-      <div class="res-stars" id="resStars"></div>
-      <table class="res-table" id="resTable"></table>
-      <div class="res-note" id="resNote"></div>
+    <div class="panel small results">
+      <div class="res-grid">
+        <div>
+          <div class="res-pos" id="resPos"></div>
+          <div class="res-route" id="resRoute"></div>
+          <div class="res-stars" id="resStars"></div>
+          <div class="res-note" id="resNote"></div>
+        </div>
+        <table class="res-table" id="resTable"></table>
+      </div>
       <div class="row">
         <button class="big" data-act="retry">↻ আবার</button>
         <button class="big" data-act="next" id="btnNext">পরের রুট →</button>
@@ -321,10 +367,7 @@
   </section>
 </div>
 
-<div id="rotate">
-  <div class="icon">📱↻</div>
-  <div>ফোনটা আড়াআড়ি করে ধরুন</div>
-</div>
+<div id="safe"></div>
 
 <script src="src/art.js"></script>
 <script src="src/scenery.js"></script>

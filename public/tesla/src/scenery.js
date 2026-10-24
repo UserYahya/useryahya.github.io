@@ -7,7 +7,12 @@
   const A = window.BT.art;
   const { TAU, OL, FONT_DISPLAY, FONT_UI, rrect, paint, circle, ellipse, shade, hash, fitText, emit, glow } = A;
 
-  const W = 1280, H = 720;
+  // The height is always 720; the width stretches from 1280 (16:9) to fill wider phone screens.
+  let W = 1280;
+  const H = 720;
+  function setWidth(w) {
+    W = w;
+  }
   const FOOT_TOP = 392; // footpath begins
   const ROAD_TOP = 436; // kerb
   const LANE_EDGES = [436, 531, 626, 720];
@@ -31,13 +36,13 @@
     g.addColorStop(1, '#f8e2bd');
     ctx.fillStyle = g;
     ctx.fillRect(0, 0, W, FOOT_TOP + 4);
-    const sg = ctx.createRadialGradient(1060, 110, 8, 1060, 110, 130);
+    const sg = ctx.createRadialGradient(W - 220, 110, 8, W - 220, 110, 130);
     sg.addColorStop(0, 'rgba(255,250,225,1)');
     sg.addColorStop(0.22, 'rgba(255,238,185,0.65)');
     sg.addColorStop(1, 'rgba(255,238,185,0)');
     ctx.fillStyle = sg;
-    ctx.fillRect(920, 0, 280, 250);
-    circle(ctx, 1060, 110, 26);
+    ctx.fillRect(W - 360, 0, 280, 250);
+    circle(ctx, W - 220, 110, 26);
     paint(ctx, '#fff7de');
     kites(ctx, t);
     crows(ctx, t);
@@ -58,16 +63,16 @@
       ctx.fillRect(hash(i * 7 + 1) * W, hash(i * 13 + 2) * 300, sz, sz);
     }
     // full moon over the city
-    const mg = ctx.createRadialGradient(1060, 104, 20, 1060, 104, 130);
+    const mg = ctx.createRadialGradient(W - 220, 104, 20, W - 220, 104, 130);
     mg.addColorStop(0, 'rgba(255,246,210,0.35)');
     mg.addColorStop(1, 'rgba(255,246,210,0)');
     ctx.fillStyle = mg;
-    ctx.fillRect(930, 0, 260, 240);
-    circle(ctx, 1060, 104, 26);
+    ctx.fillRect(W - 350, 0, 260, 240);
+    circle(ctx, W - 220, 104, 26);
     paint(ctx, '#fff3cf');
     ctx.fillStyle = 'rgba(205,190,150,0.5)';
     for (const [dx, dy, r] of [[-9, -6, 5.5], [7, 7, 4.5], [8, -10, 3], [-4, 11, 2.6]]) {
-      circle(ctx, 1060 + dx, 104 + dy, r);
+      circle(ctx, W - 220 + dx, 104 + dy, r);
       ctx.fill();
     }
   }
@@ -75,7 +80,7 @@
   const KITES = [[230, 92, '#ff4fa3', '#ffd23f'], [700, 58, '#35d07f', '#ff9f1c'], [905, 168, '#4cc3ff', '#ffffff']];
   function kites(ctx, t) {
     KITES.forEach(([kx, ky, c1, c2], i) => {
-      const x = kx + Math.sin(t * 0.5 + i) * 18, y = ky + Math.cos(t * 0.7 + i * 2) * 10;
+      const x = (kx * W) / 1280 + Math.sin(t * 0.5 + i) * 18, y = ky + Math.cos(t * 0.7 + i * 2) * 10;
       ctx.beginPath();
       ctx.moveTo(x, y + 4);
       ctx.quadraticCurveTo(x + 60, y + 120, x + 140, 300);
@@ -813,5 +818,10 @@
     });
   }
 
-  window.BT.scenery = { W, H, FOOT_TOP, ROAD_TOP, LANE_EDGES, LANES, scaleAt, drawScene, drawRain };
+  window.BT.scenery = {
+    get W() {
+      return W;
+    },
+    H, FOOT_TOP, ROAD_TOP, LANE_EDGES, LANES, scaleAt, setWidth, drawScene, drawRain,
+  };
 })();

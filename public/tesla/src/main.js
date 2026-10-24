@@ -51,25 +51,118 @@
 
   // ------------------------------------------------------------------ stage
 
+  const { scenery: S, hudLayout } = window.BT;
   const stage = document.getElementById('stage');
   const canvas = document.getElementById('game');
   const ctx = canvas.getContext('2d');
-  let scale = 1;
+  const safeArea = document.getElementById('safe');
+  const pauseBtn = document.getElementById('pauseBtn');
+  let scale = 1; // canvas px per logical px
+  let hudScale = 1;
+  let turned = 0; // 90 or -90 while the stage is turned to play landscape on a portrait screen
+  let tilt = 90; // which way the phone is held sideways, from the motion sensor
 
-  // 16:9 letterbox; 1em on the stage is 1/45 of its height, so the menus scale with it.
-  function resize() {
-    const w = Math.min(window.innerWidth, (window.innerHeight * 16) / 9);
-    const h = (w * 9) / 16;
+  const isTouch = () => stage.classList.contains('touch');
+  if (window.matchMedia('(pointer: coarse)').matches) stage.classList.add('touch');
+
+  /* Fits the stage to the screen (inside the notch-safe area). The logical height is always 720;
+   * the width stretches from 16:9 up to 21:9 so wide phones get no black bars. On a portrait
+   * touch screen (rotation locked, or not turned yet) the whole stage is turned sideways, so the
+   * game still plays in landscape: turn the phone and it reads the right way up. */
+  function layout() {
+    const r = safeArea.getBoundingClientRect();
+    turned = isTouch() && r.height > r.width ? tilt : 0;
+    const vw = turned ? r.height : r.width, vh = turned ? r.width : r.height;
+    const aspect = Math.max(16 / 9, Math.min(21 / 9, vw / vh));
+    const W = Math.round(720 * aspect);
+    const h = Math.min(vh, vw / aspect), w = h * aspect;
+    S.setWidth(W);
     stage.style.width = w + 'px';
     stage.style.height = h + 'px';
-    stage.style.fontSize = h / 45 + 'px';
-    const dpr = Math.min(window.devicePixelRatio || 1, 1.75);
+    stage.style.left = r.left + (r.width - w) / 2 + 'px';
+    stage.style.top = r.top + (r.height - h) / 2 + 'px';
+    stage.style.transform = turned ? 'rotate(' + turned + 'deg)' : '';
+    stage.classList.toggle('turned', !!turned);
+    // menus: 1em is 1/45 of the stage height, but never below 11.5px so phones stay readable
+    const em = h / 45;
+    stage.style.fontSize = Math.max(em, 11.5) + 'px';
+    stage.classList.toggle('compact', em < 11.5);
+    const dpr = Math.min(window.devicePixelRatio || 1, isTouch() ? 1.5 : 1.75);
     canvas.width = Math.round(w * dpr);
     canvas.height = Math.round(h * dpr);
-    scale = canvas.width / 1280;
+    scale = canvas.width / W;
+    const cssScale = w / W;
+    // HUD text at least ~11 CSS px on phones, as long as the panels still fit across the screen
+    hudScale = Math.max(1, Math.min(11 / (16 * cssScale), (W - 80) / 912));
+    const p = hudLayout(W, hudScale).pause;
+    Object.assign(pauseBtn.style, {
+      left: p.x * cssScale + 'px',
+      top: p.y * cssScale + 'px',
+      width: p.size * cssScale + 'px',
+      height: p.size * cssScale + 'px',
+      fontSize: p.size * cssScale * 0.38 + 'px',
+    });
   }
-  window.addEventListener('resize', resize);
-  resize();
+  window.addEventListener('resize', layout);
+  window.addEventListener('orientationchange', () => setTimeout(layout, 300));
+  if (window.visualViewport) window.visualViewport.addEventListener('resize', layout);
+  layout();
+
+  // ------------------------------------------------------------------ phone orientation and fullscreen
+
+  // accelerationIncludingGravity points up along whichever axis faces the sky. iOS reports it with
+  // the opposite sign; we learn the sign whenever the phone is held upright.
+  let gSign = /iPad|iPhone|iPod/.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1) ? -1 : 1;
+  window.addEventListener('devicemotion', (e) => {
+    const g = e.accelerationIncludingGravity;
+    if (!g || g.x == null || g.y == null) return;
+    if (Math.abs(g.y) > 7 && Math.abs(g.x) < 3) gSign = Math.sign(g.y);
+    if (Math.abs(g.x) > 6.5 && Math.abs(g.y) < 4) {
+      const t = g.x * gSign > 0 ? 90 : -90;
+      if (t !== tilt) {
+        tilt = t;
+        if (turned) layout();
+      }
+    }
+  });
+
+  // iOS 13+ only shares the motion sensor after asking, and only from a tap.
+  let motionAsked = false;
+  function askMotion() {
+    if (motionAsked || !turned || typeof DeviceMotionEvent === 'undefined' || typeof DeviceMotionEvent.requestPermission !== 'function') return;
+    motionAsked = true;
+    DeviceMotionEvent.requestPermission().catch(() => {});
+  }
+
+  const isFullscreen = () => !!(document.fullscreenElement || document.webkitFullscreenElement);
+  if (!(document.fullscreenEnabled || document.webkitFullscreenEnabled)) stage.classList.add('no-fs');
+
+  // In fullscreen, Android lets a page lock the screen to landscape even with auto-rotate off.
+  function lockLandscape() {
+    if (isFullscreen() && screen.orientation && screen.orientation.lock) screen.orientation.lock('landscape').catch(() => {});
+  }
+
+  function fullscreen(on) {
+    try {
+      if (on && !isFullscreen()) {
+        const el = document.documentElement;
+        const req = el.requestFullscreen || el.webkitRequestFullscreen;
+        const p = req && req.call(el, { navigationUI: 'hide' });
+        if (p && p.then) p.then(lockLandscape, () => {});
+      } else if (!on && isFullscreen()) {
+        (document.exitFullscreen || document.webkitExitFullscreen).call(document);
+      }
+    } catch (e) {
+      // not allowed here (iPhone Safari); "Add to Home Screen" gives a full-screen app instead
+    }
+  }
+  for (const ev of ['fullscreenchange', 'webkitfullscreenchange']) {
+    document.addEventListener(ev, () => {
+      layout();
+      lockLandscape();
+      refresh();
+    });
+  }
 
   // ------------------------------------------------------------------ screens
 
@@ -99,11 +192,23 @@
       } else if (k === 'sfx') {
         b.textContent = (save.sfx ? '🔊' : '🔈') + ' সাউন্ড';
         b.classList.toggle('off', !save.sfx);
+      } else if (k === 'fullscreen') {
+        b.textContent = isFullscreen() ? '⛶ ছোট পর্দা' : '⛶ ফুলস্ক্রিন';
       }
     }
   }
 
   function toggle(what) {
+    if (what === 'fullscreen') {
+      fullscreen(!isFullscreen());
+      return;
+    }
+    if (what === 'flip') {
+      // upside down? turn the stage the other way (for phones without a motion sensor)
+      tilt = -tilt;
+      layout();
+      return;
+    }
     if (what === 'night') {
       save.night = !save.night;
       if (race && race.demo) race.night = save.night;
@@ -242,6 +347,7 @@
 
   function startRace(route) {
     if (race) race.stopSounds();
+    if (isTouch()) fullscreen(true); // phones: full screen, locked to landscape where allowed
     lastRoute = route;
     paused = false;
     const r = new Race({
@@ -249,6 +355,7 @@
       night: route.night || save.night,
       audio,
       sound: true,
+      touch: isTouch(),
       upgrades: save.upgrades,
       skin: A.SKINS[save.skin] || A.SKINS.tesla,
       // let the finish (or the last crash) play out before the results card
@@ -374,6 +481,8 @@
       show('routes');
     } else if (e.code === 'KeyM') {
       toggle('music');
+    } else if (e.code === 'KeyF') {
+      toggle('fullscreen');
     }
   });
   window.addEventListener('keyup', (e) => {
@@ -384,6 +493,7 @@
     held.accel = held.brake = false;
   });
   window.addEventListener('pointerdown', () => audio.unlock(), { capture: true });
+  window.addEventListener('click', askMotion, { capture: true });
 
   stage.addEventListener('click', (e) => {
     const b = e.target.closest('button');
@@ -408,18 +518,23 @@
     b.addEventListener('lostpointercapture', off);
   }
   // swipe up or down anywhere on the road to change lanes
-  let swipeY = null;
+  let swipe = null;
   canvas.addEventListener('pointerdown', (e) => {
-    swipeY = current === null ? e.clientY : null;
+    swipe = current === null ? { x: e.clientX, y: e.clientY } : null;
   });
   canvas.addEventListener('pointerup', (e) => {
-    if (swipeY == null || current !== null) return;
-    const dy = e.clientY - swipeY;
-    if (Math.abs(dy) > 24) press(dy < 0 ? 'up' : 'down', true);
-    swipeY = null;
+    if (!swipe || current !== null) return;
+    const dx = e.clientX - swipe.x, dy = e.clientY - swipe.y;
+    // measure the swipe in the game's own frame, which may be turned sideways
+    const d = turned === 90 ? -dx : turned === -90 ? dx : dy;
+    if (Math.abs(d) > 24) press(d < 0 ? 'up' : 'down', true);
+    swipe = null;
   });
-  if (window.matchMedia('(pointer: coarse)').matches) stage.classList.add('touch');
-  window.addEventListener('touchstart', () => stage.classList.add('touch'), { once: true, passive: true });
+  window.addEventListener('touchstart', () => {
+    if (isTouch()) return;
+    stage.classList.add('touch');
+    layout();
+  }, { passive: true });
 
   document.addEventListener('visibilitychange', () => {
     if (document.hidden) pause();
@@ -435,7 +550,7 @@
       race.update(dt, { up: tapped.up, down: tapped.down, bell: tapped.bell, boost: tapped.boost, accel: held.accel, brake: held.brake });
     }
     tapped.up = tapped.down = tapped.bell = tapped.boost = false;
-    if (race) race.render(ctx, scale);
+    if (race) race.render(ctx, scale, hudScale);
     requestAnimationFrame(frame);
   }
 

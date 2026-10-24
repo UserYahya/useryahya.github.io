@@ -86,6 +86,17 @@
     return 'coin';
   }
 
+  // HUD layout for a screen W logical px wide at HUD scale s: battery on the left, position,
+  // taka and time on the right, the pause button in the top-right corner, progress in between.
+  function hudLayout(W, s) {
+    const top = 14, h = 76 * s, side = 300 * s, btn = 52 * s;
+    const left = { x: 16, w: side };
+    const pause = { x: W - 16 - btn, y: top + (h - btn) / 2, size: btn };
+    const right = { x: pause.x - 12 - side, w: side };
+    const center = { x: left.x + side + 12, w: right.x - 12 - (left.x + side + 12) };
+    return { top, h, s, left, right, center, pause };
+  }
+
   function fmtTime(s) {
     const m = Math.floor(s / 60), sec = Math.floor(s % 60);
     return bn(String(m).padStart(2, '0') + ':' + String(sec).padStart(2, '0'));
@@ -93,10 +104,12 @@
 
   class Race {
     /* opts: route, demo, night, audio (BT.audio), sound, upgrades {battery, motor, bell},
-     *       skin, onEvent(type, data) — 'finish' and 'over' */
+     *       skin, touch (show touch hints), onEvent(type, data) — 'finish' and 'over' */
     constructor(opts) {
       this.route = opts.route || DEMO;
       this.demo = !!opts.demo;
+      this.touch = !!opts.touch;
+      this.hudScale = 1;
       this.night = opts.night != null ? !!opts.night : !!this.route.night;
       this.audio = opts.audio || null;
       this.sound = opts.sound != null ? !!opts.sound : !this.demo;
@@ -159,7 +172,12 @@
     }
 
     float(text, x, y, color, opts = {}) {
-      this.fx.push({ kind: opts.hud ? 'hud' : 'text', x, y, text, color, t: 0, life: opts.life || 1.3, size: opts.size });
+      this.fx.push({ kind: 'text', x, y, text, color, t: 0, life: opts.life || 1.3 });
+    }
+
+    // A message pinned to the HUD: 'taka' floats under the money, 'center' under the progress bar.
+    hudMsg(text, color, at, life) {
+      this.fx.push({ kind: 'hud', at, text, color, t: 0, life: life || 1.3 });
     }
 
     burst(text, x, y) {
@@ -309,7 +327,7 @@
         const car = this.objs.find((o) => o.kind === 'car' && o.lane === h.lane && o.x > h.x && o.x - h.x < range + 200);
         if (car) {
           this.carBellHint = true;
-          this.float('প্রাইভেট কার ঘণ্টি শোনে না!', 640, 150, '#ffd23f', { hud: true, life: 2 });
+          this.hudMsg('প্রাইভেট কার ঘণ্টি শোনে না!', '#ffd23f', 'center', 2);
         }
       }
     }
@@ -319,7 +337,7 @@
       if (!free) {
         if (h.battery < 15) {
           h.boostCd = 0.6;
-          this.float('বুস্টের চার্জ নেই', 640, 150, '#ff6b6b', { hud: true });
+          this.hudMsg('বুস্টের চার্জ নেই', '#ff6b6b', 'center');
           return;
         }
         h.battery -= 15;
@@ -334,11 +352,11 @@
       const h = this.hero;
       if (h.tea) {
         h.tea = false;
-        this.float('চা খেয়ে মাথা ঠান্ডা, জরিমানা মাফ!', 640, 150, '#ffd23f', { hud: true, life: 2 });
+        this.hudMsg('চা খেয়ে মাথা ঠান্ডা, জরিমানা মাফ!', '#ffd23f', 'center', 2);
         return;
       }
       this.fines += amount;
-      this.float('−৳' + bn(amount), 1112, 118, '#ff6b6b', { hud: true, life: 1.8 });
+      this.hudMsg('−৳' + bn(amount), '#ff6b6b', 'taka', 1.8);
     }
 
     // ---------------------------------------------------------------- collisions
@@ -420,7 +438,7 @@
           if (this.route.endless) {
             this.forgive--;
             if (this.forgive < 0) this.gameOver();
-            else this.float('ক্ষমা বাকি: ' + bn(this.forgive), 640, 150, '#ffd23f', { hud: true, life: 1.6 });
+            else this.hudMsg('ক্ষমা বাকি: ' + bn(this.forgive), '#ffd23f', 'center', 1.6);
           }
           break;
         case 'bus':
@@ -592,7 +610,7 @@
         h.battery = Math.max(0, h.battery - drain * dt);
         if (h.battery <= 0 && !h.flatWarned) {
           h.flatWarned = true;
-          this.float('ব্যাটারি শেষ! এবার প্যাডেল মারো!', 640, 150, '#ff6b6b', { hud: true, life: 2.2 });
+          this.hudMsg('ব্যাটারি শেষ! এবার প্যাডেল মারো!', '#ff6b6b', 'center', 2.2);
         }
         if (h.battery > 5) h.flatWarned = false;
       }
@@ -809,7 +827,9 @@
 
     // ---------------------------------------------------------------- drawing
 
-    render(ctx, scale) {
+    // hudScale > 1 enlarges the HUD and speech bubbles on small (phone) screens.
+    render(ctx, scale, hudScale) {
+      this.hudScale = hudScale || 1;
       ctx.setTransform(scale, 0, 0, scale, 0, 0);
       A.beginNight(this.night);
       const cx = this.camX();
@@ -938,7 +958,7 @@
       const h = this.hero;
       if (h.bubble) {
         const hs = S.scaleAt(h.y);
-        A.drawBubble(ctx, this.screenX + 60 * hs, h.y + (this.heroBob() - 168) * hs, h.bubble.text, { pop: h.bubble.t / 0.22, size: 24 });
+        A.drawBubble(ctx, this.screenX + 60 * hs, h.y + (this.heroBob() - 168) * hs, h.bubble.text, { pop: h.bubble.t / 0.22, size: 24 * Math.min(1.3, this.hudScale) });
       }
     }
 
@@ -953,12 +973,9 @@
     }
 
     drawHud(ctx) {
-      const UI = A.FONT_UI, CREAM = '#fff7e8';
+      const L = hudLayout(S.W, this.hudScale);
+      const s = L.s, UI = A.FONT_UI, CREAM = '#fff7e8';
       const h = this.hero;
-      const panel = (x, y, w, hh) => {
-        A.rrect(ctx, x, y, w, hh, 14);
-        A.paint(ctx, 'rgba(29,20,40,0.82)', '#ffd23f', 2.5);
-      };
       const label = (text, x, y, font, color, align) => {
         ctx.font = font;
         ctx.textAlign = align || 'left';
@@ -967,80 +984,104 @@
         ctx.fillText(text, x, y);
         return ctx.measureText(text).width;
       };
-      // battery, speed, boost, tea
-      panel(18, 16, 330, 76);
-      A.bolt(ctx, 42, 54, 34, h.battery > 0 ? '#ffd23f' : '#ff4d4d', A.OL);
-      label('ব্যাটারি', 64, 36, '700 16px ' + UI, CREAM);
-      const b = h.battery / 100;
-      A.rrect(ctx, 136, 27, 130, 17, 5);
-      A.paint(ctx, 'rgba(255,255,255,0.12)', CREAM, 1.5);
-      if (b > 0) {
-        A.rrect(ctx, 139, 30, 124 * b, 11, 3);
-        A.paint(ctx, b > 0.5 ? '#39ff88' : b > 0.2 ? '#ffd23f' : '#ff4d4d');
-      }
-      label(bn(Math.round(h.battery)) + '%', 274, 36, '700 16px ' + UI, b > 0.2 ? CREAM : '#ff6b6b');
-      const w = label(bn(Math.round(h.speed * KMH)), 64, 70, '700 26px ' + UI, '#ffd23f');
-      label('কিমি/ঘণ্টা', 70 + w, 72, '600 15px ' + UI, CREAM);
-      if (h.boostT > 0) label('বুস্ট!', 336, 72, '700 17px ' + UI, '#4cc3ff', 'right');
-      else if (h.battery <= 0) label('প্যাডেল!', 336, 72, '700 16px ' + UI, '#ff6b6b', 'right');
-      else if (h.tea) label('চা ☕', 336, 72, '700 16px ' + UI, '#ffb347', 'right');
-      if (this.route.endless) {
-        panel(398, 16, 484, 76);
-        label('জ্যাম মোড', 418, 38, '26px ' + A.FONT_DISPLAY, '#ffd23f');
-        label(bn((h.x / PX_PER_KM).toFixed(2)) + ' কিমি', 862, 38, '700 20px ' + UI, CREAM, 'right');
-        label('ক্ষমা:', 418, 70, '700 16px ' + UI, CREAM);
-        for (let i = 0; i < 3; i++) {
-          A.circle(ctx, 480 + i * 30, 70, 11);
-          A.paint(ctx, i < this.forgive ? '#ff4fa3' : 'rgba(255,255,255,0.15)', CREAM, 1.5);
-          label('🙏', 480 + i * 30, 71, '13px sans-serif', '#fff', 'center');
+      // each panel is drawn unscaled (76px tall) in its own frame, then scaled up on phones
+      const panel = (p, draw) => {
+        const w = p.w / s;
+        ctx.save();
+        ctx.translate(p.x, L.top);
+        ctx.scale(s, s);
+        A.rrect(ctx, 0, 0, w, 76, 14);
+        A.paint(ctx, 'rgba(29,20,40,0.82)', '#ffd23f', 2.5);
+        draw(w);
+        ctx.restore();
+      };
+      // battery, speed, boost / flat / tea
+      panel(L.left, (w) => {
+        const b = h.battery / 100;
+        A.bolt(ctx, 24, 38, 34, b > 0 ? '#ffd23f' : '#ff4d4d', A.OL);
+        label('ব্যাটারি', 46, 20, '700 15px ' + UI, CREAM);
+        A.rrect(ctx, 114, 12, 124, 16, 5);
+        A.paint(ctx, 'rgba(255,255,255,0.12)', CREAM, 1.5);
+        if (b > 0) {
+          A.rrect(ctx, 117, 15, 118 * b, 10, 3);
+          A.paint(ctx, b > 0.5 ? '#39ff88' : b > 0.2 ? '#ffd23f' : '#ff4d4d');
         }
-        label('প্রাইভেট কারে ৪ বার ধাক্কা = শেষ', 862, 70, '600 14px ' + UI, '#cbbbe8', 'right');
-      } else {
+        label(bn(Math.round(h.battery)) + '%', 246, 20, '700 15px ' + UI, b > 0.2 ? CREAM : '#ff6b6b');
+        const sw = label(bn(Math.round(h.speed * KMH)), 46, 54, '700 26px ' + UI, '#ffd23f');
+        label('কিমি/ঘণ্টা', 52 + sw, 56, '600 14px ' + UI, CREAM);
+        if (h.boostT > 0) label('বুস্ট!', w - 12, 56, '700 17px ' + UI, '#4cc3ff', 'right');
+        else if (b <= 0) label('প্যাডেল!', w - 12, 56, '700 16px ' + UI, '#ff6b6b', 'right');
+        else if (h.tea) label('চা ☕', w - 12, 56, '700 16px ' + UI, '#ffb347', 'right');
+      });
+      panel(L.center, (w) => {
+        if (this.route.endless) {
+          label('জ্যাম মোড', 16, 24, '24px ' + A.FONT_DISPLAY, '#ffd23f');
+          label(bn((h.x / PX_PER_KM).toFixed(2)) + ' কিমি', w - 16, 24, '700 19px ' + UI, CREAM, 'right');
+          label('ক্ষমা', 16, 56, '700 15px ' + UI, CREAM);
+          for (let i = 0; i < 3; i++) {
+            A.circle(ctx, 72 + i * 28, 56, 10);
+            A.paint(ctx, i < this.forgive ? '#ff4fa3' : 'rgba(255,255,255,0.15)', CREAM, 1.5);
+          }
+          if (w >= 420) label('কারে ৪ বার ধাক্কা = শেষ', w - 16, 56, '600 14px ' + UI, '#cbbbe8', 'right');
+          return;
+        }
         // route progress with every racer
-        panel(398, 16, 484, 76);
-        label(this.route.from, 418, 38, '700 16px ' + UI, CREAM);
-        label(this.route.to, 856, 38, '700 16px ' + UI, CREAM, 'right');
-        const left = Math.max(0, this.len - h.x) / PX_PER_KM;
-        label('আর ' + bn(left.toFixed(1)) + ' কিমি', 640, 38, '600 14px ' + UI, '#cbbbe8', 'center');
-        const prog = (x) => 418 + 438 * clamp(x / this.len, 0, 1);
-        A.rrect(ctx, 418, 62, 438, 8, 4);
+        const left = 'আর ' + bn((Math.max(0, this.len - h.x) / PX_PER_KM).toFixed(1)) + ' কিমি';
+        if (w >= 420) {
+          label(this.route.from, 16, 20, '700 15px ' + UI, CREAM);
+          label(left, w / 2, 20, '600 14px ' + UI, '#cbbbe8', 'center');
+        } else {
+          label(left, 16, 20, '600 14px ' + UI, '#cbbbe8');
+        }
+        label(this.route.to, w - 16, 20, '700 15px ' + UI, CREAM, 'right');
+        const x0 = 16, x1 = w - 34;
+        const prog = (x) => x0 + (x1 - x0) * clamp(x / this.len, 0, 1);
+        A.rrect(ctx, x0, 48, x1 - x0, 8, 4);
         A.paint(ctx, 'rgba(255,255,255,0.15)');
-        A.rrect(ctx, 418, 62, Math.max(8, prog(h.x) - 418), 8, 4);
+        A.rrect(ctx, x0, 48, Math.max(8, prog(h.x) - x0), 8, 4);
         A.paint(ctx, '#ff4fa3');
         for (const r of this.rivals) {
-          A.circle(ctx, prog(r.x), 66, 6);
+          A.circle(ctx, prog(r.x), 52, 6);
           A.paint(ctx, r.skin.frame, A.OL, 1.5);
         }
-        A.circle(ctx, prog(h.x), 66, 9);
+        A.circle(ctx, prog(h.x), 52, 9);
         A.paint(ctx, this.skin.frame, '#ffd23f', 2.5);
         for (let r = 0; r < 3; r++) {
           for (let c = 0; c < 2; c++) {
             ctx.fillStyle = (r + c) % 2 ? '#ffffff' : '#111111';
-            ctx.fillRect(862 + c * 5, 58 + r * 5, 5, 5);
+            ctx.fillRect(w - 26 + c * 5, 44 + r * 5, 5, 5);
           }
         }
-      }
-      // position, taka, time
-      panel(932, 16, 330, 76);
-      if (this.route.endless) {
-        label('৳ ' + bn(this.coins - this.fines), 952, 54, '700 26px ' + UI, '#ffd23f');
-      } else {
-        const pos = this.positions().findIndex((r) => r.hero) + 1;
-        const pw = label(ORDINAL[pos - 1], 950, 54, '50px ' + A.FONT_DISPLAY, '#ffd23f');
-        label('/' + bn(4), 954 + pw, 66, '600 18px ' + UI, CREAM);
-      }
-      label('৳ ' + bn(this.coins - this.fines), 1100, 38, '700 22px ' + UI, this.coins - this.fines < 0 ? '#ff6b6b' : '#ffd23f');
-      label('⏱ ' + fmtTime(this.time), 1100, 70, '600 17px ' + UI, CREAM);
+      });
+      // position (or money in জ্যাম মোড), taka, time
+      panel(L.right, () => {
+        const net = this.coins - this.fines;
+        if (this.route.endless) {
+          label('৳ ' + bn(net), 16, 38, '700 25px ' + UI, net < 0 ? '#ff6b6b' : '#ffd23f');
+        } else {
+          const pos = this.positions().findIndex((r) => r.hero) + 1;
+          const pw = label(ORDINAL[pos - 1], 14, 40, '48px ' + A.FONT_DISPLAY, '#ffd23f');
+          label('/' + bn(4), 18 + pw, 52, '600 17px ' + UI, CREAM);
+          label('৳ ' + bn(net), 150, 22, '700 21px ' + UI, net < 0 ? '#ff6b6b' : '#ffd23f');
+        }
+        label('⏱ ' + fmtTime(this.time), 150, this.route.endless ? 38 : 55, '600 16px ' + UI, CREAM);
+      });
       for (const f of this.fx) {
         if (f.kind !== 'hud') continue;
         const p = f.t / f.life;
-        A.drawFloatText(ctx, f.x, f.y - p * 40, f.text, f.color, p < 0.7 ? 1 : (1 - p) / 0.3);
+        const x = f.at === 'taka' ? L.right.x + 150 * s : S.W / 2;
+        const y = L.top + L.h + (f.at === 'taka' ? 26 : 58) * s - p * 40;
+        ctx.save();
+        ctx.translate(x, y);
+        ctx.scale(s, s);
+        A.drawFloatText(ctx, 0, 0, f.text, f.color, p < 0.7 ? 1 : (1 - p) / 0.3);
+        ctx.restore();
       }
     }
 
     bigText(ctx, text, y, size, color, sc) {
       ctx.save();
-      ctx.translate(640, y);
+      ctx.translate(S.W / 2, y);
       ctx.scale(sc, sc);
       ctx.font = size + 'px ' + A.FONT_DISPLAY;
       ctx.textAlign = 'center';
@@ -1060,13 +1101,21 @@
       const text = n >= 1 ? bn(n) : 'চলো!';
       const p = n >= 1 ? 1 - frac : 1 - this.countT / 0.6;
       this.bigText(ctx, text, 330, 150, n >= 1 ? '#ffd23f' : '#35d07f', 0.6 + 0.4 * A.easeOutBack(Math.min(1, p * 3)));
+      const hint = this.touch
+        ? '▲ ▼ লেন বদল · গতি · ব্রেক · ঘণ্টি · বুস্ট'
+        : '↑ ↓ লেন বদল · → গতি · ← ব্রেক · Space ঘণ্টি · Shift বুস্ট';
+      ctx.save();
+      ctx.translate(S.W / 2, 461);
+      ctx.scale(this.hudScale, this.hudScale);
       ctx.font = '700 20px ' + A.FONT_UI;
-      ctx.textAlign = 'center';
-      A.rrect(ctx, 290, 440, 700, 40, 20);
+      const bw = ctx.measureText(hint).width + 60;
+      A.rrect(ctx, -bw / 2, -20, bw, 40, 20);
       A.paint(ctx, 'rgba(29,20,40,0.78)');
       ctx.fillStyle = '#fff7e8';
+      ctx.textAlign = 'center';
       ctx.textBaseline = 'middle';
-      ctx.fillText('↑ ↓ লেন বদল · → গতি · ← ব্রেক · Space ঘণ্টি · Shift বুস্ট', 640, 461);
+      ctx.fillText(hint, 0, 1);
+      ctx.restore();
     }
 
     drawFinish(ctx) {
@@ -1090,5 +1139,6 @@
   window.BT.ENDLESS = ENDLESS;
   window.BT.DEMO = DEMO;
   window.BT.fmtTime = fmtTime;
+  window.BT.hudLayout = hudLayout;
   window.BT.ORDINAL = ORDINAL;
 })();
