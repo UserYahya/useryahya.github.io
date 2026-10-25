@@ -1,6 +1,8 @@
 /* বাংলা টেসলা — the race engine. A Race runs one race (or the endless জ্যাম মোড, or the
  * self-driving demo behind the menus): the hero, rivals, traffic, people, pickups,
- * collisions, effects and the HUD. update(dt, input) advances it; render(ctx, scale) draws it. */
+ * collisions, effects and the HUD. update(dt, input) advances it; render(ctx, scale) draws it
+ * in 2D. In 3D (opts.view3d) BT.View3D draws the street and renderOverlay() adds the HUD,
+ * speech bubbles and bursts on top. */
 (function () {
   'use strict';
 
@@ -38,6 +40,8 @@
   };
 
   const FINES = { car: 200, bus: 100, cng: 50, person: 50 };
+  const DASH = { car: 620, cng: 700, bus: 470 }; // pulling away when a jam clears (px/s)
+  const PX_M = 90; // race px per metre of the 3D street, where the real routes' streets are measured
   const BONUS = [400, 250, 120, 40];
   const ORDINAL = ['১ম', '২য়', '৩য়', '৪র্থ'];
   const BUS_COLORS = ['#d62839', '#1d4e89', '#2a9d4b', '#e09f00'];
@@ -116,6 +120,12 @@
       this.up = Object.assign({ battery: 0, motor: 0, bell: 0 }, opts.upgrades);
       this.skin = opts.skin || A.SKINS.tesla;
       this.onEvent = opts.onEvent || (() => {});
+      // 3D: every lane is the same size (no 2D depth scaling), traffic appears far ahead in the
+      // haze, and the 3D view picks up what happened each frame from events
+      this.view3d = !!opts.view3d;
+      this.sc = this.view3d ? () => 1 : S.scaleAt;
+      this.ahead = this.view3d ? 8600 : 0;
+      this.events = [];
       this.len = this.route.km * PX_PER_KM;
       this.t = 0;
       this.time = 0;
@@ -126,7 +136,7 @@
         kind: 'hero', x: 0, lane: 1, prevLane: 1, y: LANES[1], from: LANES[1], laneT: 1,
         speed: this.demo ? CRUISE : 0, rot: 0, crank: 0, battery: 100,
         boostT: 0, boostCd: 0, bellCd: 0, bell: 0, stun: 0, invuln: 0, bump: 0, puddle: 0,
-        pose: null, poseT: 0, bubble: null, tea: false, flatWarned: false,
+        pose: null, poseT: 0, bubble: null, tea: false, flatWarned: false, queued: 0, queuedT: 0,
       };
       this.screenX = HERO_X;
       this.objs = [];
@@ -162,7 +172,7 @@
 
     add(o) {
       o.y = o.y != null ? o.y : LANES[o.lane];
-      o.s = S.scaleAt(o.kind === 'person' ? o.y : LANES[o.lane]);
+      o.s = this.sc(o.kind === 'person' ? o.y : LANES[o.lane]);
       o.vx = o.vx || 0;
       o.cruise = o.vx;
       o.rot = 0;
@@ -171,8 +181,21 @@
       return o;
     }
 
-    float(text, x, y, color, opts = {}) {
-      this.fx.push({ kind: 'text', x, y, text, color, t: 0, life: opts.life || 1.3 });
+    // Effects sit at world x, ground y gy and height z (px); 2D draws them at y = gy - z.
+    float(text, x, gy, z, color, opts = {}) {
+      this.fx.push({ kind: 'text', x, y: gy - z, gy, z, text, color, t: 0, life: opts.life || 1.3 });
+    }
+
+    // Something the 3D view should show (sparks, splashes); cleared every update.
+    event(type, x, gy, extra) {
+      if (this.view3d) this.events.push(Object.assign({ type, x, gy }, extra));
+    }
+
+    // 3D: a person stands on the footpath until the rickshaw is `near` px away, then crosses.
+    wait(p, near) {
+      p.vy0 = p.vy;
+      p.vy = 0;
+      p.wake = near;
     }
 
     // A message pinned to the HUD: 'taka' floats under the money, 'center' under the progress bar.
@@ -180,8 +203,8 @@
       this.fx.push({ kind: 'hud', at, text, color, t: 0, life: life || 1.3 });
     }
 
-    burst(text, x, y) {
-      this.fx.push({ kind: 'burst', x, y, text, t: 0, life: 0.7, seed: Math.floor(Math.random() * 99) });
+    burst(text, x, gy, z) {
+      this.fx.push({ kind: 'burst', x, y: gy - z, gy, z, text, t: 0, life: 0.7, seed: Math.floor(Math.random() * 99) });
     }
 
     // Is anything solid (or a pothole/puddle) in `lane` overlapping world span [x0, x1]?
@@ -212,7 +235,7 @@
       }
       const h = this.hero;
       if (Math.abs(h.y - o.y) < 40 && h.x > o.x) {
-        const gap = h.x - 128 * S.scaleAt(h.y) - front;
+        const gap = h.x - 128 * this.sc(h.y) - front;
         if (!best || gap < best.gap) best = { gap, vx: h.speed, hero: true };
       }
       return best;
@@ -230,7 +253,8 @@
       const grid = [
         { skin: A.SKINS.peacock, lane: 0, x: 0, pace: 0.99 },
         { skin: A.SKINS.redfairy, lane: 2, x: 0, pace: 1.03 },
-        { skin: A.SKINS.golden, lane: 1, x: -330, pace: 1.01 },
+        // in 3D it starts further back, clear of the camera behind the hero
+        { skin: A.SKINS.golden, lane: 1, x: this.view3d ? -900 : -330, pace: 1.01 },
       ];
       grid.forEach((g, i) => {
         const r = this.add({ kind: 'rival', lane: g.lane, x: g.x, skin: g.skin, pace: g.pace, vx: this.demo ? CRUISE : 0 });
@@ -246,7 +270,7 @@
     }
 
     spawnTick() {
-      const horizon = this.camX() + S.W + 520;
+      const horizon = this.camX() + (this.view3d ? this.ahead : S.W + 520);
       const stop = this.len + 1200;
       while (this.nextSpawn < horizon && this.nextSpawn < stop) {
         this.spawnOne(this.nextSpawn);
@@ -281,7 +305,8 @@
         }
         case 'person': {
           const top = Math.random() < 0.6;
-          this.add({ kind: 'person', type: pick(A.PEOPLE_TYPES), x, y: top ? S.FOOT_TOP + 34 : S.H + 40, vy: (top ? 1 : -1) * rand(50, 85), phase: rand(0, 6) });
+          const p = this.add({ kind: 'person', type: pick(A.PEOPLE_TYPES), x, y: top ? S.FOOT_TOP + 34 : S.H + 40, vy: (top ? 1 : -1) * rand(50, 85), phase: rand(0, 6) });
+          if (this.view3d) this.wait(p, 1500);
           break;
         }
         case 'pothole':
@@ -304,6 +329,7 @@
     heroLane(l, bounce) {
       const h = this.hero;
       if (l < 0 || l > 2 || l === h.lane) return;
+      if (bounce) h.queued = 0; // bounced off a vehicle's side: forget any tap still waiting
       h.prevLane = bounce ? l : h.lane;
       h.from = h.y;
       h.lane = l;
@@ -316,6 +342,7 @@
       h.bellCd = 1.2 * (1 - 0.2 * this.up.bell);
       h.bell = 1;
       this.sfx('bell', 0.9);
+      this.event('bell', h.x, h.y);
       const front = h.x + 120;
       for (const o of this.objs) {
         if (o.kind === 'person' && o.hit == null && !o.hurry && o.x > front - 60 && o.x - front < range) {
@@ -345,7 +372,8 @@
       h.boostT = 2;
       h.boostCd = 2.6;
       this.sfx('boost', 0.9);
-      this.float('লুডিক্রাস মোড!', h.x + 60, h.y - 240, '#4cc3ff');
+      this.event('boost', h.x, h.y);
+      this.float('লুডিক্রাস মোড!', h.x + 60, h.y, 240, '#4cc3ff');
     }
 
     fine(amount) {
@@ -364,14 +392,14 @@
     collide() {
       const h = this.hero;
       if (this.phase !== 'race' && this.phase !== 'finished') return;
-      const hs = S.scaleAt(h.y);
+      const hs = this.sc(h.y);
       const back = h.x - 128 * hs, front = h.x + 136 * hs;
       for (const o of this.objs) {
         if (o.gone) continue;
         const k = KIND[o.kind];
         const person = o.kind === 'person';
         if (Math.abs(o.y - h.y) > (person ? 16 : 30)) continue;
-        const s = person ? S.scaleAt(o.y) : o.s;
+        const s = person ? this.sc(o.y) : o.s;
         const ob = o.x - k.half * s, of = o.x + k.half * s;
         if (of < back || ob > front) continue;
         if (k.pickup) {
@@ -383,12 +411,14 @@
             h.bump = 0.45;
             this.shake = Math.max(this.shake, 0.2);
             this.sfx('pothole', 0.8);
+            this.event('pothole', o.x, o.y);
           }
         } else if (o.kind === 'puddle') {
           h.puddle = 0.25;
           if (!o.done) {
             o.done = true;
             this.sfx('splash', 0.8);
+            this.event('splash', h.x + 60, h.y);
             for (let i = 0; i < 18; i++) this.parts.push({ x: h.x + rand(-90, 120), y: h.y - rand(0, 10), vx: rand(-160, 160), vy: -rand(120, 320), t: 0, life: rand(0.4, 0.8), r: rand(2, 4.5), c: '#bcd3ea' });
           }
         } else if (k.solid) {
@@ -419,8 +449,9 @@
       h.invuln = 1.1;
       h.lock = 0; // a staged demo moment has played out
       this.shake = 0.4;
-      this.burst(o.kind === 'rival' ? 'ঠুস!' : 'ধুম!', Math.max(ob, h.x + 100 * hs), h.y - 120 * hs);
+      this.burst(o.kind === 'rival' ? 'ঠুস!' : 'ধুম!', Math.max(ob, h.x + 100 * hs), h.y, 120 * hs);
       this.sfx('crash', 0.9);
+      this.event('crash', Math.max(ob, h.x + 100 * hs), h.y, { kind: o.kind });
       switch (o.kind) {
         case 'car':
           h.speed = 0;
@@ -478,8 +509,9 @@
       h.invuln = 0.8;
       h.lock = 0;
       this.shake = Math.max(this.shake, 0.25);
-      this.burst('ধপাস!', o.x, o.y - 110 * S.scaleAt(o.y));
+      this.burst('ধপাস!', o.x, o.y, 110 * this.sc(o.y));
       this.sfx('thud', 0.9);
+      this.event('thud', o.x, o.y);
       this.hits.person++;
       this.fine(FINES.person);
       h.pose = 'scratch';
@@ -491,17 +523,18 @@
     collect(o) {
       const h = this.hero;
       o.gone = true;
-      const y = o.y - 100 * o.s;
+      const z = 100 * o.s;
+      this.event('collect', o.x, o.y, { kind: o.kind });
       switch (o.kind) {
         case 'coin':
           this.coins += 10;
           this.sfx('coin', 0.8, rand(0.95, 1.1));
-          this.float('+৳' + bn(10), o.x, y, '#ffd23f', { life: 0.9 });
+          this.float('+৳' + bn(10), o.x, o.y, z, '#ffd23f', { life: 0.9 });
           break;
         case 'battery':
           h.battery = Math.min(100, h.battery + 25);
           this.sfx('battery', 0.8);
-          this.float('+' + bn(25) + '% চার্জ', o.x, y, '#39ff88');
+          this.float('+' + bn(25) + '% চার্জ', o.x, o.y, z, '#39ff88');
           break;
         case 'boost':
           this.startBoost(true);
@@ -509,7 +542,7 @@
         case 'tea':
           h.tea = true;
           this.sfx('tea', 0.9);
-          this.float('গরম চা! পরের জরিমানা মাফ', o.x, y, '#ffb347', { life: 1.6 });
+          this.float('গরম চা! পরের জরিমানা মাফ', o.x, o.y, z, '#ffb347', { life: 1.6 });
           break;
       }
     }
@@ -537,6 +570,7 @@
     update(dt, input) {
       dt = Math.min(dt, 0.05);
       this.t += dt;
+      this.events.length = 0;
       const inp = this.demo ? this.autopilot(dt) : input || {};
       if (this.phase === 'countdown') {
         this.countT -= dt;
@@ -549,13 +583,16 @@
       }
       if (this.phase === 'race' && !this.demo) this.time += dt;
       this.updateHero(dt, inp);
+      if (this.view3d && this.phase === 'countdown') this.spawnTick(); // traffic waits at the start
       if (this.phase !== 'countdown') {
         this.spawnTick();
         this.updateTraffic(dt);
+        this.unjam(dt);
         this.updateRivals(dt);
       }
       this.updatePeople(dt);
       this.collide();
+      this.streetSign();
       if (this.phase === 'race' && !this.demo && this.hero.x >= this.len) this.finish();
       if (this.phase === 'over') this.overT += dt;
       // effects
@@ -573,7 +610,8 @@
       const want = HERO_X + clamp((this.hero.speed - CRUISE) * 0.22, -40, 90);
       this.screenX += (want - this.screenX) * Math.min(1, dt * 2.5);
       const cx = this.camX();
-      this.objs = this.objs.filter((o) => o.kind === 'rival' || (!o.gone && o.x > cx - 1100 && o.x < cx + S.W + 3200 && !(o.kind === 'person' && (o.y > S.H + 90 || o.y < S.FOOT_TOP - 10))));
+      const far = this.view3d ? this.ahead + 2000 : S.W + 3200;
+      this.objs = this.objs.filter((o) => o.kind === 'rival' || (!o.gone && o.x > cx - 1100 && o.x < cx + far && (this.view3d || !(o.kind === 'person' && (o.y > S.H + 90 || o.y < S.FOOT_TOP - 10)))));
       if (this.sound && this.audio) {
         const h = this.hero;
         const moving = this.phase !== 'over' && h.speed > 25;
@@ -614,9 +652,15 @@
         }
         if (h.battery > 5) h.flatWarned = false;
       }
-      if (racing && h.laneT > 0.6) {
-        if (inp.up) this.heroLane(h.lane - 1);
-        else if (inp.down) this.heroLane(h.lane + 1);
+      // a lane tap made while the last change is still under way waits a moment for it, so a
+      // quick double tap crosses two lanes instead of losing the second tap
+      if (inp.up || inp.down) {
+        h.queued = inp.up ? -1 : 1;
+        h.queuedT = 0.25;
+      }
+      if (racing && h.queued && h.laneT > 0.6) {
+        this.heroLane(h.lane + h.queued);
+        h.queued = 0;
       }
       if (h.laneT < 1) {
         h.laneT = Math.min(1, h.laneT + dt / 0.24);
@@ -624,7 +668,8 @@
       }
       if (racing && inp.bell && h.bellCd <= 0) this.ringBell();
       if (racing && inp.boost && h.boostT <= 0 && h.boostCd <= 0) this.startBoost(false);
-      for (const k of ['boostT', 'boostCd', 'bellCd', 'bell', 'stun', 'invuln', 'bump', 'puddle', 'lock']) if (h[k] > 0) h[k] = Math.max(0, h[k] - dt);
+      for (const k of ['boostT', 'boostCd', 'bellCd', 'bell', 'stun', 'invuln', 'bump', 'puddle', 'lock', 'queuedT']) if (h[k] > 0) h[k] = Math.max(0, h[k] - dt);
+      if (h.queuedT <= 0) h.queued = 0;
       if (h.poseT > 0 && (h.poseT -= dt) <= 0) h.pose = null;
       if (h.bubble && (h.bubble.t += dt) > h.bubble.life) h.bubble = null;
     }
@@ -647,11 +692,20 @@
           }
         }
         let want = cruise;
+        if (o.dash > 0) {
+          // a jam is clearing: it pulls away
+          o.dash -= dt;
+          want = Math.max(want, DASH[o.kind]);
+        }
         const lead = this.leader(o);
         if (lead && lead.gap < 90) want = Math.min(want, lead.vx);
         if (lead && lead.gap < 20) want = Math.min(want, lead.vx * 0.7);
-        if (lead && lead.gap < 240 && lead.vx < cruise * 0.7 && o.laneT >= 1 && o.kind !== 'bus' && Math.random() < dt * 2.5) {
-          const opts = [o.lane - 1, o.lane + 1].filter((l) => l >= 0 && l <= 2 && !this.blocked(l, o.x - 280, o.x + 440, o, false) && !(l === h.lane && Math.abs(h.x - o.x) < 420));
+        // stuck behind something standing still (road works, a bus at a stop), it squeezes into
+        // the next lane sooner and through a smaller gap, Dhaka style
+        const stuck = !!lead && !lead.hero && lead.vx < 30 && lead.gap < 240;
+        if (lead && lead.gap < 240 && lead.vx < cruise * 0.7 && o.laneT >= 1 && o.kind !== 'bus' && Math.random() < dt * (stuck ? 6 : 2.5)) {
+          const back = stuck ? 150 : 280, fwd = stuck ? 300 : 440;
+          const opts = [o.lane - 1, o.lane + 1].filter((l) => l >= 0 && l <= 2 && !this.blocked(l, o.x - back, o.x + fwd, o, false) && !(l === h.lane && Math.abs(h.x - o.x) < 420));
           if (opts.length) this.laneTo(o, pick(opts));
         }
         if (lead && lead.hero && lead.gap < 160 && (o.honkCd -= dt) <= 0) {
@@ -674,10 +728,53 @@
       }
     }
 
+    /* Traffic moving at different speeds can bunch up until every lane just ahead is blocked by
+     * something slow. Being held up for a moment is part of the race; being boxed in is not. So
+     * after a second boxed in, the lane easiest to clear gets moving: the cars in it spot a gap
+     * and pull away with a honk, and a bus at a stop moves off. Road works never move. */
+    // On a real route, the name of each street as the race turns onto it (from OpenStreetMap).
+    streetSign() {
+      const osm = window.BT.osm && window.BT.osm[this.route.id];
+      if (!osm || this.phase !== 'race' || this.demo) return;
+      const i = this.streetI || 0, st = osm.streets[i];
+      if (st && this.hero.x / PX_M >= Math.max(st[0], 12)) {
+        this.hudMsg('📍 ' + st[1], '#ffffff', 'center', 2.6);
+        this.streetI = i + 1;
+      }
+    }
+
+    unjam(dt) {
+      const h = this.hero;
+      if (this.phase !== 'race') {
+        this.jamT = 0;
+        return;
+      }
+      const blockers = [0, 1, 2].map((l) => this.objs.filter((o) => !o.gone && o.lane === l && KIND[o.kind].solid && o.x - h.x > 60 && o.x - h.x < 1000 && (o.kind === 'barricade' || o.vx < CRUISE * 0.75)));
+      if (!blockers.every((list) => list.length)) {
+        this.jamT = 0;
+        return;
+      }
+      if ((this.jamT = (this.jamT || 0) + dt) < 1) return;
+      // the hero's own lane if it can be cleared, else the nearest; road works rule a lane out,
+      // and a lane without a rival in it is better
+      const order = [h.lane, h.lane - 1, h.lane + 1, h.lane - 2, h.lane + 2].filter((l) => l >= 0 && l <= 2 && !blockers[l].some((o) => o.kind === 'barricade'));
+      order.sort((a, b) => blockers[a].some((o) => o.kind === 'rival') - blockers[b].some((o) => o.kind === 'rival'));
+      const l = order[0];
+      if (l == null) return;
+      for (const o of this.objs) {
+        if (o.gone || o.lane !== l || !DASH[o.kind] || o.x < h.x || o.x - h.x > 2600) continue;
+        o.dash = 3;
+        o.stopT = 0;
+      }
+      this.sfx('horn-car', 0.45);
+      this.jamT = 0;
+    }
+
     updateRivals(dt) {
       const h = this.hero;
       for (const r of this.rivals) {
-        let target = r.pace * this.route.rival * CRUISE;
+        // 3D rivals meet the traffic you can see ahead, which slows them a little more
+        let target = r.pace * this.route.rival * CRUISE * (this.view3d ? 1.03 : 1);
         const gap = r.x - h.x;
         if (this.demo) target = Math.max(0, h.speed + clamp((r.demoGap - gap) * 0.6, -300, 300)); // hold their spot on screen
         else target *= gap > 2600 ? 0.9 : gap < -2600 ? 1.1 : 1; // keep the race close
@@ -690,7 +787,7 @@
           target *= 1.12;
         }
         if (r.finished) target = 150;
-        if (Math.abs(gap) < 1800) {
+        if (gap > -1800 && gap < (this.view3d ? 9000 : 1800)) {
           // puddles and potholes slow rivals down too
           for (const o of this.objs) {
             if (KIND[o.kind].decal && o.lane === r.lane && Math.abs(o.x - r.x) < KIND[o.kind].half * o.s + 100) target *= o.kind === 'puddle' ? 0.6 : 0.75;
@@ -739,7 +836,17 @@
         if (o.hit != null) {
           o.hit += dt;
           if (o.hit < 0.7) o.y += o.knock * 130 * dt;
-          else if (o.hit > 2.6) o.y += (o.knock > 0 ? 70 : -70) * dt; // dusts off and keeps going
+          else if (o.hit > 2.6 && !o.safe) o.y += (o.knock > 0 ? 70 : -70) * dt; // dusts off and keeps going
+          if (this.view3d) this.reachSide(o);
+          continue;
+        }
+        if (o.wake) {
+          if (o.x - h.x > o.wake) continue;
+          o.vy = o.vy0;
+          o.wake = 0;
+        }
+        if (o.stroll) {
+          o.x += o.stroll * 95 * dt; // walking along the footpath
           continue;
         }
         if (o.staged && o.y < ly + 20) {
@@ -748,7 +855,7 @@
             o.belled = true;
             h.bell = 1;
             this.sfx('bell', 0.9);
-            this.float('ক্রিং ক্রিং!', h.x + 90, h.y - 215, '#ffffff', { life: 1.2 });
+            this.float('ক্রিং ক্রিং!', h.x + 90, h.y, 215, '#ffffff', { life: 1.2 });
           }
           if (o.belled) o.vy = 280;
           else if (o.y < ly) {
@@ -760,6 +867,23 @@
           if (o.belled) h.lock = 0;
         }
         o.y += o.vy * dt;
+        if (this.view3d) this.reachSide(o);
+      }
+    }
+
+    // 3D: people who make it across stop off the road: strolling along the footpath, or
+    // waiting on the median for the other carriageway.
+    reachSide(o) {
+      if (o.safe) return;
+      if (o.y < S.FOOT_TOP + 30 && (o.vy < 0 || (o.hit != null && o.knock < 0))) {
+        o.y = S.FOOT_TOP + 30;
+        o.vy = 0;
+        o.safe = true;
+        o.stroll = Math.random() < 0.5 ? -1 : 1;
+      } else if (o.y > S.H + 45 && (o.vy > 0 || (o.hit != null && o.knock > 0))) {
+        o.y = S.H + 45 + Math.random() * 20;
+        o.vy = 0;
+        o.safe = true;
       }
     }
 
@@ -781,7 +905,7 @@
     autopilot(dt) {
       const h = this.hero;
       const inp = {};
-      if ((this.gagIn -= dt) <= 0) this.gagIn = this.stage() ? 6.5 : 1;
+      if ((this.gagIn -= dt) <= 0) this.gagIn = this.stage() ? (this.view3d ? 10 : 6.5) : 1;
       this.cap = Infinity;
       if (h.lock > 0) return inp;
       const front = h.x + 140;
@@ -818,9 +942,15 @@
         if (l != null) this.heroLane(l);
         return false;
       }
-      if (kind === 'car') this.add({ kind: 'car', lane: h.lane, x: h.x + 1300, vx: 170, color: A.CAR_COLORS[0], honkCd: 9 });
-      else this.add({ kind: 'person', type: pick(A.PEOPLE_TYPES), x: h.x + 120 + CRUISE * 3.2, y: S.FOOT_TOP + 34, vy: 60, staged: kind, phase: rand(0, 6) });
-      h.lock = 7; // hold the lane until it plays out
+      if (kind === 'car') {
+        // 3D: a slow car further off, so it doesn't pop out of nowhere
+        this.add({ kind: 'car', lane: h.lane, x: h.x + (this.view3d ? 3300 : 1300), vx: this.view3d ? 60 : 170, color: A.CAR_COLORS[0], honkCd: 9 });
+      } else {
+        const near = 120 + CRUISE * 3.2;
+        const p = this.add({ kind: 'person', type: pick(A.PEOPLE_TYPES), x: h.x + (this.view3d ? 4200 : near), y: S.FOOT_TOP + 34, vy: 60, staged: kind, phase: rand(0, 6) });
+        if (this.view3d) this.wait(p, near);
+      }
+      h.lock = this.view3d ? 11 : 7; // hold the lane until it plays out
       this.gag++;
       return true;
     }
@@ -928,25 +1058,27 @@
         skin: this.skin, wheelRot: h.rot, crank: h.crank, bob, pose: h.pose, talk: !!h.bubble,
         boost: h.boostT > 0, sway: Math.min(1, h.speed / 600), pedal: h.battery <= 0,
       });
-      if (h.bell > 0) {
-        const bx = this.screenX + 80 * hs, by = h.y + (bob - 129) * hs;
-        c.save();
-        c.lineCap = 'round';
-        for (let i = 1; i <= 3; i++) {
-          const r = i * 9 + (1.2 - h.bell) * 22;
-          for (const [a0, a1] of [[-1.2, -0.3], [Math.PI + 0.3, Math.PI + 1.2]]) {
-            c.beginPath();
-            c.arc(bx, by, r, a0, a1);
-            c.strokeStyle = A.OL;
-            c.lineWidth = 5;
-            c.stroke();
-            c.strokeStyle = '#ffd23f';
-            c.lineWidth = 2.5;
-            c.stroke();
-          }
+      if (h.bell > 0) this.drawBellRings(c, this.screenX + 80 * hs, h.y + (bob - 129) * hs, h.bell);
+    }
+
+    // ক্রিং ক্রিং: sound rings round the bell
+    drawBellRings(c, bx, by, bell, sc = 1) {
+      c.save();
+      c.lineCap = 'round';
+      for (let i = 1; i <= 3; i++) {
+        const r = (i * 9 + (1.2 - bell) * 22) * sc;
+        for (const [a0, a1] of [[-1.2, -0.3], [Math.PI + 0.3, Math.PI + 1.2]]) {
+          c.beginPath();
+          c.arc(bx, by, r, a0, a1);
+          c.strokeStyle = A.OL;
+          c.lineWidth = 5;
+          c.stroke();
+          c.strokeStyle = '#ffd23f';
+          c.lineWidth = 2.5;
+          c.stroke();
         }
-        c.restore();
       }
+      c.restore();
     }
 
     drawFx(ctx, cx) {
@@ -964,6 +1096,62 @@
         const hs = S.scaleAt(h.y);
         A.drawBubble(ctx, this.screenX + 60 * hs, h.y + (this.heroBob() - 168) * hs, h.bubble.text, { pop: h.bubble.t / 0.22, size: 24 * Math.min(1.3, this.hudScale) });
       }
+    }
+
+    /* 3D: the street is drawn by BT.View3D underneath; this clears the overlay canvas and adds
+     * the bursts, floating text, bell rings and speech bubble at their projected 3D spots,
+     * speed streaks while boosting, and the HUD. */
+    renderOverlay(ctx, scale, hudScale, view) {
+      this.hudScale = hudScale || 1;
+      ctx.setTransform(1, 0, 0, 1, 0, 0);
+      ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+      ctx.setTransform(scale, 0, 0, scale, 0, 0);
+      const h = this.hero;
+      if (h.boostT > 0) this.drawStreaks(ctx, Math.min(1, h.boostT * 2));
+      for (const f of this.fx) {
+        if (f.kind === 'hud') continue;
+        const p = view.project(f.x, f.gy, f.z);
+        if (!p) continue;
+        const k = f.t / f.life;
+        if (f.kind === 'burst') {
+          const sc = k < 0.7 ? 0.45 + 0.55 * A.easeOutBack(Math.min(1, f.t / 0.16)) : (1 - k) / 0.3;
+          A.drawBurst(ctx, p.x, p.y, f.text, sc, { seed: f.seed });
+        } else {
+          A.drawFloatText(ctx, p.x, p.y - k * 50, f.text, f.color, k < 0.7 ? 1 : (1 - k) / 0.3);
+        }
+      }
+      if (h.bell > 0) {
+        const b = view.bell();
+        if (b) this.drawBellRings(ctx, b.x, b.y, h.bell, 1.2);
+      }
+      if (h.bubble) {
+        const p = view.heroHead();
+        if (p) A.drawBubble(ctx, p.x, p.y, h.bubble.text, { pop: h.bubble.t / 0.22, size: 24 * Math.min(1.3, this.hudScale) });
+      }
+      if (!this.demo) this.drawHud(ctx);
+      if (this.phase === 'countdown') this.drawCountdown(ctx);
+      if (this.phase === 'finished') this.drawFinish(ctx);
+      if (this.phase === 'over') this.drawOver(ctx);
+    }
+
+    // Ludicrous mode: white streaks rushing out from the middle of the screen.
+    drawStreaks(ctx, a) {
+      const W = S.W, cx = W / 2, cy = 330;
+      const f = Math.floor(this.t * 30);
+      ctx.save();
+      ctx.lineCap = 'round';
+      for (let i = 0; i < 26; i++) {
+        const ang = A.hash(f * 13 + i) * Math.PI * 2;
+        const r0 = 260 + A.hash(f * 7 + i) * 260, len = 80 + A.hash(f * 3 + i) * 160;
+        const dx = Math.cos(ang), dy = Math.sin(ang) * 0.6;
+        ctx.strokeStyle = 'rgba(255,255,255,' + (0.35 * a).toFixed(3) + ')';
+        ctx.lineWidth = 2 + A.hash(i * 5 + f) * 3;
+        ctx.beginPath();
+        ctx.moveTo(cx + dx * r0, cy + dy * r0);
+        ctx.lineTo(cx + dx * (r0 + len), cy + dy * (r0 + len));
+        ctx.stroke();
+      }
+      ctx.restore();
     }
 
     // ---------------------------------------------------------------- HUD
@@ -1105,9 +1293,12 @@
       const text = n >= 1 ? bn(n) : 'চলো!';
       const p = n >= 1 ? 1 - frac : 1 - this.countT / 0.6;
       this.bigText(ctx, text, 330, 150, n >= 1 ? '#ffd23f' : '#35d07f', 0.6 + 0.4 * A.easeOutBack(Math.min(1, p * 3)));
+      // the keys follow the view: lanes run up and down the 2D screen, left and right in 3D
       const hint = this.touch
-        ? '▲ ▼ লেন বদল · গতি · ব্রেক · ঘণ্টি · বুস্ট'
-        : '↑ ↓ লেন বদল · → গতি · ← ব্রেক · Space ঘণ্টি · Shift বুস্ট';
+        ? (this.view3d ? '◀ ▶' : '▲ ▼') + ' লেন বদল · গতি · ব্রেক · ঘণ্টি · বুস্ট'
+        : this.view3d
+          ? '← → লেন বদল · ↑ গতি · ↓ ব্রেক · Space ঘণ্টি · Shift বুস্ট'
+          : '↑ ↓ লেন বদল · → গতি · ← ব্রেক · Space ঘণ্টি · Shift বুস্ট';
       ctx.save();
       ctx.translate(S.W / 2, 461);
       ctx.scale(this.hudScale, this.hudScale);

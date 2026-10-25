@@ -62,7 +62,10 @@
   /* main.js sizes and places the stage (and turns it sideways on portrait phones);
      1em is 1/45 of its height, but at least 11.5px */
   #stage { position: absolute; overflow: hidden; background: var(--plum); line-height: 1.4; transform-origin: 50% 50%; }
-  #game { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
+  #game, #gl { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
+  /* 3D: WebGL draws the street on #gl, and #game on top only carries the HUD */
+  #gl { display: none; }
+  #stage.three #gl { display: block; }
   button {
     font: inherit;
     font-weight: 700;
@@ -157,6 +160,10 @@
   .route .name { font-weight: 700; font-size: 1.15em; }
   .route .meta { display: flex; justify-content: space-between; font-size: 0.9em; color: #5b4a75; }
   .route .about { font-size: 0.92em; }
+  .route .via { font-size: 0.85em; color: #0b6e4f; font-weight: 600; }
+  .route.locked .via { color: inherit; }
+  .credit { margin: 0.9em 0 0; font-size: 0.82em; opacity: 0.8; }
+  .credit a { color: inherit; }
   .route .stars { font-size: 1.3em; letter-spacing: 0.08em; color: #e0a800; }
   .route .stars .no { color: #c9c2d6; }
   .route.locked { background: #b9b0c8; color: #4b4260; }
@@ -211,6 +218,12 @@
   #stage.racing .hud-btn { display: block; }
   #stage.racing.touch #touch { display: block; }
 
+  /* the controls follow the view: in 2D the lanes run up and down the screen (▲ ▼, ↑ ↓),
+     in 3D the camera rides behind the rickshaw and they run left and right (◀ ▶, ← →) */
+  #stage.three .only2d, #stage:not(.three) .only3d { display: none; }
+  #stage.three #touch .left { flex-direction: row; }
+  #touch .left button span { font-size: 1.5em; line-height: 1; }
+
   /* phones (short stage): bigger text relative to the screen, so tighter layouts */
   #stage.compact .logo { font-size: 4.4em; margin-top: 0.25em; }
   #stage.compact .tag { font-size: 1.25em; }
@@ -231,13 +244,14 @@
 </head>
 <body>
 <div id="stage">
+  <canvas id="gl" aria-hidden="true"></canvas>
   <canvas id="game" aria-label="বাংলা টেসলা গেম"></canvas>
 
   <button id="pauseBtn" class="hud-btn" data-act="pause" aria-label="বিরতি">❚❚</button>
   <div id="touch">
     <div class="pad left">
-      <button data-hold="up" aria-label="উপরের লেন">▲</button>
-      <button data-hold="down" aria-label="নিচের লেন">▼</button>
+      <button data-hold="up" aria-label="উপরের লেন"><span class="only2d">▲</span><span class="only3d">◀</span></button>
+      <button data-hold="down" aria-label="নিচের লেন"><span class="only2d">▼</span><span class="only3d">▶</span></button>
     </div>
     <div class="pad right">
       <div class="row">
@@ -262,6 +276,7 @@
     </nav>
     <div class="hint">কীবোর্ডে <kbd>Enter</kbd> চাপলেই রেস শুরু</div>
     <div class="corner left">
+      <button class="pill" data-toggle="view"></button>
       <button class="pill" data-toggle="night"></button>
       <button class="pill" data-toggle="music"></button>
       <button class="pill" data-toggle="sfx"></button>
@@ -279,6 +294,7 @@
         <button class="pill" data-toggle="night"></button>
       </div>
       <div class="route-grid" id="routeGrid"></div>
+      <p class="credit">৩ডি-তে রুটগুলো আসল রাস্তা: বাঁক, পাশের গলি, চেনা জায়গা আর দালানের উচ্চতা <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">© OpenStreetMap contributors</a> (ODbL) থেকে, রেসের দৈর্ঘ্যে ছোট করে আনা।</p>
     </div>
   </section>
 
@@ -313,13 +329,17 @@
         <div>
           <h3>কন্ট্রোল</h3>
           <ul>
-            <li><kbd>↑</kbd> <kbd>↓</kbd> বা <kbd>W</kbd> <kbd>S</kbd>: লেন বদল</li>
-            <li><kbd>→</kbd> বা <kbd>D</kbd> চেপে ধরুন: জোরে চালান (চার্জ বেশি খরচ হয়)</li>
-            <li><kbd>←</kbd> বা <kbd>A</kbd>: ব্রেক</li>
+            <li class="only3d"><kbd>←</kbd> <kbd>→</kbd> বা <kbd>A</kbd> <kbd>D</kbd>: লেন বদল</li>
+            <li class="only3d"><kbd>↑</kbd> বা <kbd>W</kbd> চেপে ধরুন: জোরে চালান (চার্জ বেশি খরচ হয়)</li>
+            <li class="only3d"><kbd>↓</kbd> বা <kbd>S</kbd>: ব্রেক</li>
+            <li class="only2d"><kbd>↑</kbd> <kbd>↓</kbd> বা <kbd>W</kbd> <kbd>S</kbd>: লেন বদল</li>
+            <li class="only2d"><kbd>→</kbd> বা <kbd>D</kbd> চেপে ধরুন: জোরে চালান (চার্জ বেশি খরচ হয়)</li>
+            <li class="only2d"><kbd>←</kbd> বা <kbd>A</kbd>: ব্রেক</li>
             <li><kbd>Space</kbd>: ঘণ্টি (ক্রিং ক্রিং), সামনের লোকজন সরে যায়</li>
             <li><kbd>Shift</kbd> বা <kbd>X</kbd>: বুস্ট, লুডিক্রাস মোড (১৫% চার্জ লাগে)</li>
             <li><kbd>P</kbd> বা <kbd>Esc</kbd>: বিরতি · <kbd>M</kbd>: মিউজিক</li>
-            <li>মোবাইলে: স্ক্রিনের বাটন, বা উপরে-নিচে সোয়াইপ করে লেন বদল</li>
+            <li>মোবাইলে: স্ক্রিনের বাটন, বা <span class="only3d">ডানে-বাঁয়ে</span><span class="only2d">উপরে-নিচে</span> সোয়াইপ করে লেন বদল</li>
+            <li>মেনুর "🧊 ৩ডি" বাটনে ৩ডি আর পুরনো ২ডি খেলার মধ্যে বদলানো যায়। কন্ট্রোলও দৃশ্যের সাথে মিলিয়ে বদলায়: ২ডি-তে লেন উপরে-নিচে, ৩ডি-তে ডানে-বাঁয়ে।</li>
             <li>ফোন আড়াআড়ি ধরুন। অটো-রোটেট বন্ধ থাকলেও খেলা নিজেই ঘুরে যায়; উল্টো দেখালে "🔄 উল্টে দিন" চাপুন।</li>
             <li>iPhone-এ পুরো স্ক্রিনে খেলতে: Safari-র Share থেকে "Add to Home Screen" দিন।</li>
           </ul>
@@ -333,6 +353,7 @@
             <li>বাস ৳১০০, সিএনজি ৳৫০। গর্ত আর পানিতে গতি কমে।</li>
             <li>চার্জ শেষ হলে প্যাডেল মারতে হয়। ব্যাটারি, টাকা, বুস্ট আর চা কুড়ান। চা খেলে পরের জরিমানা মাফ।</li>
             <li>জ্যাম মোড: যত দূর যাওয়া যায়। প্রাইভেট কারে ৪ বার ধাক্কা দিলেই খেলা শেষ।</li>
+            <li class="only3d">৩ডি-তে পাঁচটা রুটই ঢাকার আসল রাস্তা ধরে, <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">© OpenStreetMap contributors</a>-এর মানচিত্র থেকে। দূরত্ব ছোট করা, তবে বাঁক, গলি আর চেনা জায়গা আসল ক্রমেই আসে।</li>
           </ul>
         </div>
       </div>
@@ -379,10 +400,23 @@
 <div id="safe"></div>
 
 <!-- bump ?v= whenever a script changes: yahya.bd lets browsers cache scripts for 4 hours -->
-<script src="src/art.js?v=3"></script>
-<script src="src/scenery.js?v=3"></script>
-<script src="src/audio.js?v=3"></script>
-<script src="src/race.js?v=3"></script>
-<script src="src/main.js?v=3"></script>
+<script src="src/art.js?v=4"></script>
+<script src="src/scenery.js?v=4"></script>
+<script src="src/audio.js?v=4"></script>
+<script src="src/race.js?v=7"></script>
+<!-- the real routes, from OpenStreetMap (© OpenStreetMap contributors, ODbL); made by tools/osm-routes.js -->
+<script src="src/routes/farmgate.js?v=1"></script>
+<script src="src/routes/dhanmondi.js?v=1"></script>
+<script src="src/routes/gulshan.js?v=1"></script>
+<script src="src/routes/puran.js?v=1"></script>
+<script src="src/routes/motijheel.js?v=2"></script>
+<!-- 3D: Three.js r149 (MIT) and the 3D street, models and view -->
+<script src="src/vendor/three.min.js?v=149"></script>
+<script src="src/3d/kit.js?v=4"></script>
+<script src="src/3d/textures.js?v=5"></script>
+<script src="src/3d/models.js?v=4"></script>
+<script src="src/3d/city.js?v=5"></script>
+<script src="src/3d/view.js?v=5"></script>
+<script src="src/main.js?v=6"></script>
 </body>
 </html>

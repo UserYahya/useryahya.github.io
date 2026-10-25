@@ -11,7 +11,7 @@
   const DEFAULTS = {
     wallet: 0, unlocked: 1, best: {}, endlessBest: 0,
     upgrades: { battery: 0, motor: 0, bell: 0 }, owned: ['tesla'], skin: 'tesla',
-    night: false, music: true, sfx: true,
+    night: false, music: true, sfx: true, view3d: true,
   };
   const save = loadSave();
 
@@ -55,8 +55,34 @@
   const stage = document.getElementById('stage');
   const canvas = document.getElementById('game');
   const ctx = canvas.getContext('2d');
+  // 3D: the street is drawn with WebGL on #gl; #game on top carries the HUD and speech bubbles
+  const glCanvas = document.getElementById('gl');
+  let can3d = !!(window.THREE && window.BT.View3D && window.BT.View3D.supported());
+  let view = null;
+  const use3d = () => can3d && save.view3d;
+
+  function ensureView() {
+    if (view || !use3d()) return view;
+    try {
+      view = new window.BT.View3D(glCanvas, { touch: isTouch() });
+    } catch (e) {
+      // no WebGL after all: the 2D game it is
+      can3d = false;
+      view = null;
+    }
+    return view;
+  }
+  glCanvas.addEventListener('webglcontextlost', (e) => {
+    e.preventDefault();
+    // the GPU gave up: carry on in 2D for this visit
+    can3d = false;
+    view = null;
+    layout();
+    refresh();
+  });
   const safeArea = document.getElementById('safe');
   const pauseBtn = document.getElementById('pauseBtn');
+  const laneBtns = [document.querySelector('[data-hold="up"]'), document.querySelector('[data-hold="down"]')];
   let scale = 1; // canvas px per logical px
   let hudScale = 1;
   let turned = 0; // 90 or -90 while the stage is turned to play landscape on a portrait screen
@@ -91,6 +117,12 @@
     canvas.width = Math.round(w * dpr);
     canvas.height = Math.round(h * dpr);
     scale = canvas.width / W;
+    stage.classList.toggle('three', use3d() && !!view);
+    if (view) view.setSize(w, h, W);
+    // the lane buttons follow the view: ▲ ▼ in 2D, ◀ ▶ in 3D (index.html swaps the arrows)
+    const three = stage.classList.contains('three');
+    laneBtns[0].setAttribute('aria-label', three ? 'বাঁ দিকের লেন' : 'উপরের লেন');
+    laneBtns[1].setAttribute('aria-label', three ? 'ডান দিকের লেন' : 'নিচের লেন');
     const cssScale = w / W;
     // HUD text at least ~11 CSS px on phones, as long as the panels still fit across the screen
     hudScale = Math.max(1, Math.min(11 / (16 * cssScale), (W - 80) / 912));
@@ -175,6 +207,8 @@
     current = id;
     for (const s of document.querySelectorAll('.screen')) s.classList.toggle('show', s.id === id);
     stage.classList.toggle('racing', !id && !!race && !race.demo);
+    // racing: let go of the focus on any button, so Space or Enter can't press it mid-race
+    if (!id && document.activeElement && document.activeElement !== document.body) document.activeElement.blur();
     if (id === 'routes') renderRoutes();
     if (id === 'garage') renderGarage();
     refresh();
@@ -194,6 +228,9 @@
         b.classList.toggle('off', !save.sfx);
       } else if (k === 'fullscreen') {
         b.textContent = isFullscreen() ? '⛶ ছোট পর্দা' : '⛶ ফুলস্ক্রিন';
+      } else if (k === 'view') {
+        b.textContent = use3d() ? '🧊 ৩ডি' : '🖼 ২ডি';
+        b.style.display = can3d ? '' : 'none';
       }
     }
   }
@@ -207,6 +244,17 @@
       // upside down? turn the stage the other way (for phones without a motion sensor)
       tilt = -tilt;
       layout();
+      return;
+    }
+    if (what === 'view') {
+      // 3D or the classic 2D game; the demo behind the menus restarts in the new look
+      if (!can3d) return;
+      save.view3d = !save.view3d;
+      ensureView();
+      layout();
+      store();
+      startDemo();
+      show(current);
       return;
     }
     if (what === 'night') {
@@ -233,10 +281,14 @@
       const card = document.createElement('button');
       card.className = 'route' + (locked ? ' locked' : '');
       card.disabled = locked;
+      // the real streets the route runs along (OpenStreetMap)
+      const osm = window.BT.osm && window.BT.osm[r.id];
+      const via = osm ? osm.streets.map((st) => st[1]).join(' · ') : '';
       card.innerHTML =
         '<div class="name">' + (locked ? '🔒 ' : '') + r.from + ' → ' + r.to + '</div>' +
         '<div class="tagline"><span class="chip">' + bn(r.km) + ' কিমি</span>' +
         (r.night ? '<span class="chip">🌙 রাত</span>' : '') + (r.rain ? '<span class="chip">🌧 বৃষ্টি</span>' : '') + '</div>' +
+        (via ? '<div class="via">🛣 ' + via + '</div>' : '') +
         '<div class="about">' + (locked ? 'আগের রুটে ৩য় বা তার ভালো হলে খুলবে।' : r.about) + '</div>' +
         '<div class="meta"><span class="stars">' + stars(b ? b.stars : 0) + '</span><span>' + (b ? 'সেরা সময় ' + fmtTime(b.time) : '') + '</span></div>';
       card.addEventListener('click', () => startRace(r));
@@ -306,7 +358,8 @@
       cv.width = 600;
       cv.height = 380;
       card.appendChild(cv);
-      drawSkinPreview(cv, A.SKINS[s.id]);
+      if (use3d() && ensureView()) view.snapshot(A.SKINS[s.id], cv);
+      else drawSkinPreview(cv, A.SKINS[s.id]);
       const name = document.createElement('div');
       name.className = 'name';
       name.textContent = s.name;
@@ -340,7 +393,8 @@
 
   function startDemo() {
     if (race) race.stopSounds();
-    race = new Race({ route: DEMO, demo: true, night: save.night, sound: false });
+    ensureView();
+    race = new Race({ route: DEMO, demo: true, night: save.night, sound: false, view3d: use3d() });
     paused = false;
     audio.music('menu');
   }
@@ -358,6 +412,7 @@
       touch: isTouch(),
       upgrades: save.upgrades,
       skin: A.SKINS[save.skin] || A.SKINS.tesla,
+      view3d: use3d(),
       // let the finish (or the last crash) play out before the results card
       onEvent: (type, res) => setTimeout(() => race === r && endRace(res), type === 'over' ? 2200 : 2600),
     });
@@ -455,11 +510,20 @@
 
   const held = { accel: false, brake: false };
   const tapped = { up: false, down: false, bell: false, boost: false };
-  const KEYS = {
+  // The keys follow the view. In 2D the lanes run up and down the screen, so ↑ ↓ change lane
+  // and → ← speed up and brake; in 3D the camera rides behind the rickshaw, so ← → change lane
+  // and ↑ ↓ speed up and brake. ('up' is the lane toward the kerb: above in 2D, left in 3D.)
+  const COMMON_KEYS = { Space: 'bell', ShiftLeft: 'boost', ShiftRight: 'boost', KeyX: 'boost' };
+  const KEYS_2D = Object.assign({
     ArrowUp: 'up', KeyW: 'up', ArrowDown: 'down', KeyS: 'down',
     ArrowRight: 'accel', KeyD: 'accel', ArrowLeft: 'brake', KeyA: 'brake',
-    Space: 'bell', ShiftLeft: 'boost', ShiftRight: 'boost', KeyX: 'boost',
-  };
+  }, COMMON_KEYS);
+  const KEYS_3D = Object.assign({
+    ArrowLeft: 'up', KeyA: 'up', ArrowRight: 'down', KeyD: 'down',
+    ArrowUp: 'accel', KeyW: 'accel', ArrowDown: 'brake', KeyS: 'brake',
+  }, COMMON_KEYS);
+  const in3d = () => !!(race && race.view3d && view);
+  const pressedBy = {}; // key code → the action it pressed, so its key-up lets go of that same action
 
   function press(k, down) {
     if (k in held) held[k] = down;
@@ -468,10 +532,13 @@
 
   window.addEventListener('keydown', (e) => {
     audio.unlock();
-    const k = KEYS[e.code];
+    const k = (in3d() ? KEYS_3D : KEYS_2D)[e.code];
     if (k && current === null) {
       e.preventDefault();
-      if (!e.repeat) press(k, true);
+      if (!e.repeat) {
+        pressedBy[e.code] = k;
+        press(k, true);
+      }
     } else if (e.code === 'KeyP' || e.code === 'Escape') {
       if (current === null) pause();
       else if (current === 'pause') resume();
@@ -486,11 +553,16 @@
     }
   });
   window.addEventListener('keyup', (e) => {
-    const k = KEYS[e.code];
-    if (k) press(k, false);
+    const k = pressedBy[e.code];
+    if (!k) return;
+    if (current === null) e.preventDefault(); // so Space can't press a focused button either
+    delete pressedBy[e.code];
+    // ↑ and W both hold the throttle in 3D: let go only when neither is down
+    if (!Object.values(pressedBy).includes(k)) press(k, false);
   });
   window.addEventListener('blur', () => {
     held.accel = held.brake = false;
+    for (const code in pressedBy) delete pressedBy[code];
   });
   window.addEventListener('pointerdown', () => audio.unlock(), { capture: true });
   window.addEventListener('click', askMotion, { capture: true });
@@ -517,7 +589,8 @@
     b.addEventListener('pointercancel', off);
     b.addEventListener('lostpointercapture', off);
   }
-  // swipe up or down anywhere on the road to change lanes
+  // swipe across the lanes anywhere on the road to change lanes: up or down in 2D, left or
+  // right in 3D
   let swipe = null;
   canvas.addEventListener('pointerdown', (e) => {
     swipe = current === null ? { x: e.clientX, y: e.clientY } : null;
@@ -526,7 +599,9 @@
     if (!swipe || current !== null) return;
     const dx = e.clientX - swipe.x, dy = e.clientY - swipe.y;
     // measure the swipe in the game's own frame, which may be turned sideways
-    const d = turned === 90 ? -dx : turned === -90 ? dx : dy;
+    const gx = turned === 90 ? dy : turned === -90 ? -dy : dx;
+    const gy = turned === 90 ? -dx : turned === -90 ? dx : dy;
+    const d = in3d() ? gx : gy;
     if (Math.abs(d) > 24) press(d < 0 ? 'up' : 'down', true);
     swipe = null;
   });
@@ -550,12 +625,21 @@
       race.update(dt, { up: tapped.up, down: tapped.down, bell: tapped.bell, boost: tapped.boost, accel: held.accel, brake: held.brake });
     }
     tapped.up = tapped.down = tapped.bell = tapped.boost = false;
-    if (race) race.render(ctx, scale, hudScale);
+    if (race) {
+      if (race.view3d && view) {
+        view.render(race, paused ? 0 : dt);
+        race.renderOverlay(ctx, scale, hudScale, view);
+      } else {
+        race.render(ctx, scale, hudScale);
+      }
+    }
     requestAnimationFrame(frame);
   }
 
   audio.set({ music: save.music, sfx: save.sfx });
   audio.preload();
+  ensureView();
+  layout();
   startDemo();
   show('title');
   requestAnimationFrame(frame);
@@ -564,6 +648,9 @@
   window.BT.game = {
     get race() {
       return race;
+    },
+    get view() {
+      return view;
     },
     save,
     startRace,
